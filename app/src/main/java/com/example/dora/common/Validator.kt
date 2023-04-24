@@ -1,29 +1,48 @@
 package com.example.dora.common
 
-enum class ValidationStatus {
-    PASS,
-    REJECT
-}
-data class ValidationResult(
-    val status: ValidationStatus,
-    val message: String?
-)
+enum class ValidationStatus { PASS, REJECT }
+
+class ValidationResult(var status: ValidationStatus, var message: String?)
 
 object Validator {
-    internal fun validateEmailAddress(emailAddress: String): ValidationResult =
-        validateString(emailAddress, Regexs.emailAddress, "Email not valid")
+    private fun <T> validate(
+        subject: T,
+        vararg filters: (subject:  T) -> Boolean
+    ) : ValidationResult {
 
-    internal fun validatePassword(password: String): ValidationResult =
-        validateString(password, Regexs.password, "Password not valid")
+        val validationResult = ValidationResult(ValidationStatus.PASS, null)
 
-    private fun validateString(
-        toValidate: String,
-        regex: Regex,
-        errorMessage: String
-    ): ValidationResult {
-        return when (toValidate.matches(regex)) {
-            true -> ValidationResult(ValidationStatus.PASS, null)
-            false -> ValidationResult(ValidationStatus.REJECT, errorMessage)
+        for (filter in filters) {
+            if (!filter(subject)) {
+                validationResult.status = ValidationStatus.REJECT
+                break
+            }
+        }
+
+        return validationResult
+    }
+
+    internal fun validateEmailAddress(emailAddress: String): ValidationResult {
+        return validate(
+            emailAddress,
+            { e -> e.isNotEmpty() },
+            { e -> e.matches(Regexs.emailAddress) }
+        ).also {
+            if (it.status == ValidationStatus.REJECT) {
+                it.message = "Email address is not valid"
+            }
+        }
+    }
+
+    internal fun validatePassword(password: String): ValidationResult {
+        return validate(
+            password,
+            { p -> p.isNotEmpty() },
+            { p -> p.matches(Regexs.password)}
+        ).also {
+            if (it.status == ValidationStatus.REJECT) {
+                it.message = "Password is not valid"
+            }
         }
     }
 }

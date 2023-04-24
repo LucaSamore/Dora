@@ -19,7 +19,7 @@ class FirebaseAuthAPI(private var auth: FirebaseAuth = Firebase.auth) {
     internal fun signUpWithEmailAndPassword(request: FirebaseRequest<UserCredentials>) : FirebaseResponse<out Any, Throwable> {
         val validationResult = validateCredentials(request.body)
 
-        if (!validationResult.data!!) {
+        if (validationResult.data!! == ValidationStatus.REJECT) {
             return validationResult
         }
 
@@ -27,18 +27,18 @@ class FirebaseAuthAPI(private var auth: FirebaseAuth = Firebase.auth) {
         return FirebaseResponse(null, null)
     }
 
-    private fun validateCredentials(credentials: UserCredentials) : FirebaseResponse<Boolean, Throwable> {
+    private fun validateCredentials(credentials: UserCredentials) : FirebaseResponse<ValidationStatus, Throwable> {
         val emailValidationResult = Validator.validateEmailAddress(credentials.emailAddress)
         val passwordValidationResult = Validator.validatePassword(credentials.password)
 
         if (emailValidationResult.status == ValidationStatus.REJECT) {
-            return FirebaseResponse(false, Throwable(emailValidationResult.message))
+            return FirebaseResponse(ValidationStatus.REJECT, Throwable(emailValidationResult.message))
         }
 
         if (passwordValidationResult.status == ValidationStatus.REJECT) {
-            return FirebaseResponse(false, Throwable(passwordValidationResult.message))
+            return FirebaseResponse(ValidationStatus.REJECT, Throwable(passwordValidationResult.message))
         }
 
-        return FirebaseResponse(true, null)
+        return FirebaseResponse(ValidationStatus.PASS, null)
     }
 }
