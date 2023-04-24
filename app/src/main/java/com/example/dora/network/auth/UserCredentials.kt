@@ -1,14 +1,10 @@
-package com.example.dora.model
+package com.example.dora.network.auth
 
-import java.time.LocalDateTime
-
-data class User(
-    val uid: String,
+data class UserCredentials(
     val firstName: String,
     val lastName: String,
     val emailAddress: String,
     val password: String,
     val location: String?,
     val profilePicture: String?,
-    val createdAt: LocalDateTime = LocalDateTime.now(),
 )
