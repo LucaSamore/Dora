@@ -22,7 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.auth.FirebaseAuthAPI
-import com.example.dora.network.auth.UserCredentials
+import com.example.dora.network.auth.Credentials
 import com.example.dora.ui.theme.DoraTheme
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -56,11 +56,11 @@ class MainActivity : ComponentActivity() {
                         var name by rememberSaveable { mutableStateOf("") }
                         Button(onClick = {
                             firebaseAuth.signUpWithEmailAndPassword(
-                                NetworkRequest(UserCredentials(
-                                    "L",
-                                    "Samore",
-                                    "test@gmail.com",
+                                NetworkRequest(Credentials.Register(
+                                    "luca.samore@gmail.com",
                                     "Test123!",
+                                    "Luca",
+                                    "Samore",
                                 ))
                             ).data?.addOnCompleteListener(context) { task ->
                                 if (task.isSuccessful) {
@@ -77,6 +77,24 @@ class MainActivity : ComponentActivity() {
                             firebaseAuth.signOut()
                         }) {
                             Text(text = "Test logout")
+                        }
+
+                        Button(onClick = {
+                            firebaseAuth.signInWithEmailAndPassword(
+                                NetworkRequest(
+                                    Credentials.Login(
+                                        "luca.samore@gmail.com",
+                                        "Test123!",
+                                ))
+                            ).data?.addOnCompleteListener(context) {task ->
+                                if (task.isSuccessful) {
+                                    name = Firebase.auth.currentUser?.uid!!
+                                } else {
+                                    name = task.exception?.message!!
+                                }
+                            }
+                        }) {
+                            Text(text = "Test login")
                         }
 
                         Button(onClick = {
