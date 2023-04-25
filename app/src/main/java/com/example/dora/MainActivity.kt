@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.dora.network.FirebaseRequest
+import com.example.dora.network.NetworkRequest
 import com.example.dora.network.auth.FirebaseAuthAPI
 import com.example.dora.network.auth.UserCredentials
 import com.example.dora.ui.theme.DoraTheme
@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
                         var name by rememberSaveable { mutableStateOf("") }
                         Button(onClick = {
                             firebaseAuth.signUpWithEmailAndPassword(
-                                FirebaseRequest(UserCredentials(
+                                NetworkRequest(UserCredentials(
                                     "L",
                                     "Samore",
                                     "test@gmail.com",

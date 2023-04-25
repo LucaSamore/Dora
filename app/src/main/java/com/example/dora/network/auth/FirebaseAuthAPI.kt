@@ -1,7 +1,7 @@
 package com.example.dora.network.auth
 
-import com.example.dora.network.FirebaseRequest
-import com.example.dora.network.FirebaseResponse
+import com.example.dora.network.NetworkRequest
+import com.example.dora.network.NetworkResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.ktx.auth
@@ -17,27 +17,29 @@ import com.example.dora.common.validation.ValidationStatus
 // 2. Register user (X)
 // 3. Save user to firestore
 
-class FirebaseAuthAPI(private var auth: FirebaseAuth = Firebase.auth) {
+class FirebaseAuthAPI(private var auth: FirebaseAuth = Firebase.auth) : AuthenticationAPI<UserCredentials, Task<*>, Throwable> {
 
-    internal fun signUpWithEmailAndPassword(request: FirebaseRequest<UserCredentials>) : FirebaseResponse<Task<AuthResult>, Throwable> {
+    override fun signUpWithEmailAndPassword(request: NetworkRequest<UserCredentials>) : NetworkResponse<Task<*>, Throwable> {
         val validationResult = validateCredentials(request.body)
 
         if (validationResult.data!! == ValidationStatus.REJECT) {
-            return FirebaseResponse(null, validationResult.error)
+            return NetworkResponse(null, validationResult.error)
         }
 
         val authenticationResult = auth.createUserWithEmailAndPassword(request.body.emailAddress, request.body.password)
 
-        return FirebaseResponse(authenticationResult, null)
+        return NetworkResponse(authenticationResult, null)
     }
 
-    internal fun signOut() = auth.signOut()
+    override fun signOut() = auth.signOut()
 
-    internal fun deleteUser() = auth.currentUser?.delete()
+    override fun deleteUser(): NetworkResponse<Task<*>, Throwable> {
+        return NetworkResponse(auth.currentUser?.delete(), null)
+    }
 
 
-    private fun validateCredentials(credentials: UserCredentials) : FirebaseResponse<ValidationStatus, Throwable> {
-        lateinit var response: FirebaseResponse<ValidationStatus, Throwable>
+    private fun validateCredentials(credentials: UserCredentials) : NetworkResponse<ValidationStatus, Throwable> {
+        var response: NetworkResponse<ValidationStatus, Throwable>
 
         UserValidator.validateFirstOrLastName(credentials.firstName).also { response = onReject(it) }
         UserValidator.validateFirstOrLastName(credentials.lastName).also { response = onReject(it) }
@@ -47,10 +49,10 @@ class FirebaseAuthAPI(private var auth: FirebaseAuth = Firebase.auth) {
         return response
     }
 
-    private fun onReject(result: ValidationResult) : FirebaseResponse<ValidationStatus, Throwable> {
+    private fun onReject(result: ValidationResult) : NetworkResponse<ValidationStatus, Throwable> {
         return when (result.status) {
-            ValidationStatus.PASS -> FirebaseResponse(ValidationStatus.PASS, null)
-            ValidationStatus.REJECT -> FirebaseResponse(ValidationStatus.REJECT, Throwable(result.message))
+            ValidationStatus.PASS -> NetworkResponse(ValidationStatus.PASS, null)
+            ValidationStatus.REJECT -> NetworkResponse(ValidationStatus.REJECT, Throwable(result.message))
         }
     }
 }
