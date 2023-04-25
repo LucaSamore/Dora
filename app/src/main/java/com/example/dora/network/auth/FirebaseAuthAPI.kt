@@ -1,15 +1,15 @@
 package com.example.dora.network.auth
 
-import com.example.dora.common.ValidationResult
-import com.example.dora.common.ValidationStatus
-import com.example.dora.common.Validator
 import com.example.dora.network.FirebaseRequest
 import com.example.dora.network.FirebaseResponse
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.android.gms.tasks.Task
+import com.example.dora.common.validation.UserValidator
+import com.example.dora.common.validation.ValidationResult
+import com.example.dora.common.validation.ValidationStatus
 
 // TODO:
 // 1. Validate credentials (X)
@@ -33,16 +33,16 @@ class FirebaseAuthAPI(private var auth: FirebaseAuth = Firebase.auth) {
 
     internal fun signOut() = auth.signOut()
 
-    internal fun deleteUser() = auth.currentUser!!.delete()
+    internal fun deleteUser() = auth.currentUser?.delete()
 
 
     private fun validateCredentials(credentials: UserCredentials) : FirebaseResponse<ValidationStatus, Throwable> {
         lateinit var response: FirebaseResponse<ValidationStatus, Throwable>
 
-        Validator.validateFirstOrLastName(credentials.firstName).also { response = onReject(it) }
-        Validator.validateFirstOrLastName(credentials.lastName).also { response = onReject(it) }
-        Validator.validateEmailAddress(credentials.emailAddress).also { response = onReject(it) }
-        Validator.validatePassword(credentials.password).also { response = onReject(it) }
+        UserValidator.validateFirstOrLastName(credentials.firstName).also { response = onReject(it) }
+        UserValidator.validateFirstOrLastName(credentials.lastName).also { response = onReject(it) }
+        UserValidator.validateEmailAddress(credentials.emailAddress).also { response = onReject(it) }
+        UserValidator.validatePassword(credentials.password).also { response = onReject(it) }
 
         return response
     }

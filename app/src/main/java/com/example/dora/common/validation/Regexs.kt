@@ -1,4 +1,4 @@
-package com.example.dora.common
+package com.example.dora.common.validation
 
 object Regexs {
     val emailAddress = ("^[\\\\w!#\$%&amp;'*+/=?`{|}~^-]+(?:\\\\.[\\\\w!" +

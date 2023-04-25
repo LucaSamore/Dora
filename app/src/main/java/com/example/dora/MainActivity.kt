@@ -55,9 +55,9 @@ class MainActivity : ComponentActivity() {
                     ) {
                         var name by rememberSaveable { mutableStateOf("") }
                         Button(onClick = {
-                            val res = firebaseAuth.signUpWithEmailAndPassword(
+                            firebaseAuth.signUpWithEmailAndPassword(
                                 FirebaseRequest(UserCredentials(
-                                    "Luca",
+                                    "L",
                                     "Samore",
                                     "test@gmail.com",
                                     "Test123!",
@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
                                 if (task.isSuccessful) {
                                     name = Firebase.auth.currentUser?.email!!
                                 } else {
-                                    name = "Andata male fratello"
+                                    name = task.exception?.message!!
                                 }
                             }
                         }) {
