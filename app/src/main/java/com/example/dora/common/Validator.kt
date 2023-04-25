@@ -38,7 +38,7 @@ object Validator {
         return validate(
             password,
             { p -> p.isNotEmpty() },
-            { p -> p.matches(Regexs.password)}
+            // { p -> p.matches(Regexs.password)}
         ).also {
             if (it.status == ValidationStatus.REJECT) {
                 it.message = "Password is not valid"

@@ -5,6 +5,6 @@ data class UserCredentials(
     val lastName: String,
     val emailAddress: String,
     val password: String,
-    val location: String?,
-    val profilePicture: String?,
+    val location: String? = null,
+    val profilePicture: String? = null,
 )

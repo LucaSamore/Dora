@@ -1,5 +1,6 @@
 package com.example.dora
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,8 +18,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.dora.network.FirebaseRequest
 import com.example.dora.network.auth.FirebaseAuthAPI
+import com.example.dora.network.auth.UserCredentials
 import com.example.dora.ui.theme.DoraTheme
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -41,6 +45,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val context = LocalContext.current as Activity
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -50,15 +55,37 @@ class MainActivity : ComponentActivity() {
                     ) {
                         var name by rememberSaveable { mutableStateOf("") }
                         Button(onClick = {
-                            firebaseAuth.signUpWithEmailAndPassword(
-                                "hello123@gmail.com",
-                                "bellaCiao123!"
-                            )
-                            name = Firebase.auth.currentUser?.email!!
+                            val res = firebaseAuth.signUpWithEmailAndPassword(
+                                FirebaseRequest(UserCredentials(
+                                    "Luca",
+                                    "Samore",
+                                    "test@gmail.com",
+                                    "Test123!",
+                                ))
+                            ).data?.addOnCompleteListener(context) { task ->
+                                if (task.isSuccessful) {
+                                    name = Firebase.auth.currentUser?.email!!
+                                } else {
+                                    name = "Andata male fratello"
+                                }
+                            }
                         }) {
                             Text(text = "Test register")
                         }
-                        Text(text = name + " ciao" )
+
+                        Button(onClick = {
+                            firebaseAuth.signOut()
+                        }) {
+                            Text(text = "Test logout")
+                        }
+
+                        Button(onClick = {
+                            firebaseAuth.deleteUser()
+                        }) {
+                            Text(text = "Test delete")
+                        }
+
+                        Text(text = "Hello $name")
                     }
                 }
             }
