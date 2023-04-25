@@ -45,4 +45,16 @@ object Validator {
             }
         }
     }
+
+    internal fun validateFirstOrLastName(firstOrLastName: String): ValidationResult {
+        return validate(
+            firstOrLastName,
+            { f -> f.isNotEmpty() },
+            { f -> f.length in 2..100 }
+        ).also {
+            if (it.status == ValidationStatus.REJECT) {
+                it.message = "First name or last name is not valid"
+            }
+        }
+    }
 }
