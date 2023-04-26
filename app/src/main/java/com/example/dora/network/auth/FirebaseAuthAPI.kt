@@ -49,9 +49,7 @@ class FirebaseAuthAPI(private var auth: FirebaseAuth = Firebase.auth) : Authenti
 
     override fun signOut() = auth.signOut()
 
-    override fun deleteUser(): NetworkResponse<Task<*>, Throwable> {
-        return NetworkResponse(auth.currentUser?.delete(), null)
-    }
+    override fun deleteUser(): NetworkResponse<Task<*>, Throwable> = NetworkResponse(auth.currentUser?.delete(), null)
 
     private fun validateCredentials(credentials: Credentials) : NetworkResponse<ValidationStatus, Throwable> {
         return when (credentials) {
