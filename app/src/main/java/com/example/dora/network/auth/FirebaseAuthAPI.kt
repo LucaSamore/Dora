@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.Task
 import com.example.dora.common.validation.ValidationResult
 import com.example.dora.common.validation.ValidationStatus
 import com.example.dora.network.api.AuthenticationAPI
+import com.google.firebase.auth.FirebaseUser
 
 class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : AuthenticationAPI<Credentials, Task<*>, Throwable> {
 
@@ -40,6 +41,8 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : Authenti
     override fun signOut() = auth.signOut()
 
     override fun deleteUser(): NetworkResponse<Task<*>, Throwable> = NetworkResponse(auth.currentUser?.delete(), null)
+
+    fun getUser() : FirebaseUser? = auth.currentUser
 
     private fun validateCredentials(credentials: Credentials) : NetworkResponse<ValidationStatus, Throwable> {
         return when (credentials) {

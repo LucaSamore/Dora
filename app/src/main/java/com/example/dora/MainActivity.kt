@@ -96,10 +96,10 @@ class MainActivity : ComponentActivity() {
                                         "Test123!",
                                 ))
                             ).data?.addOnCompleteListener(context) {task ->
-                                if (task.isSuccessful) {
-                                    name = Firebase.auth.currentUser?.uid!!
+                                name = if (task.isSuccessful) {
+                                    Firebase.auth.currentUser?.uid!!
                                 } else {
-                                    name = task.exception?.message!!
+                                    task.exception?.message!!
                                 }
                             }
                         }) {
