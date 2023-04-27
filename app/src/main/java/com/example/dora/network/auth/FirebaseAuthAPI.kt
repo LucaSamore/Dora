@@ -11,15 +11,6 @@ import com.example.dora.common.validation.ValidationResult
 import com.example.dora.common.validation.ValidationStatus
 import com.example.dora.network.api.AuthenticationAPI
 
-// TODO:
-// 1. Validate credentials (X)
-// 2. Handle errors during validation and registration (/)
-// 2. Register user (X)
-// 3. Save user to firestore
-// 4. Login (X)
-// 5. Validate login credentials (X)
-
-
 class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : AuthenticationAPI<Credentials, Task<*>, Throwable> {
 
     override fun signUpWithEmailAndPassword(request: NetworkRequest<Credentials>) : NetworkResponse<Task<*>, Throwable> {
@@ -28,8 +19,6 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : Authenti
         if (validationResult.data!! == ValidationStatus.REJECT) {
             return NetworkResponse(null, validationResult.error)
         }
-
-        // TODO: Store new account to firestore
 
         val authenticationResult = auth.createUserWithEmailAndPassword(request.body.emailAddress, request.body.password)
 

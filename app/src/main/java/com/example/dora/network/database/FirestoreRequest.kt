@@ -1,8 +1,8 @@
 package com.example.dora.network.database
 
-data class FirestoreRequest<T: Any> (
-    val data: T,
+data class FirestoreRequest(
+    val data: Any,
     val collection: String,
-    val document: String?,
+    val document: String? = null,
     val offline: Boolean = false
 )
