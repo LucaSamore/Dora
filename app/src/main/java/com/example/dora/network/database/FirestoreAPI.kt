@@ -35,7 +35,12 @@ class FirestoreAPI(private val db: FirebaseFirestore = Firebase.firestore) : Rem
     }
 
     override fun delete(request: NetworkRequest<FirestoreRequest>): NetworkResponse<Task<*>, Throwable> {
-        TODO("Not yet implemented")
+        val queryResult = db
+            .collection(request.body.collection)
+            .document(request.body.document!!)
+            .delete()
+
+        return NetworkResponse(queryResult, null)
     }
 
     override fun findOne(request: NetworkRequest<FirestoreRequest>): NetworkResponse<Task<*>, Throwable> {
