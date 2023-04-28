@@ -1,4 +1,4 @@
-package com.example.dora.network.auth
+package com.example.dora.common.auth
 
 sealed class Credentials(val emailAddress: String, val password: String) {
     class Login(

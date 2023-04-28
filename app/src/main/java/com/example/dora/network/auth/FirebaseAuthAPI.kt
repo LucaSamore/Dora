@@ -1,5 +1,6 @@
 package com.example.dora.network.auth
 
+import com.example.dora.common.auth.Credentials
 import com.example.dora.common.validation.UserValidator
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.NetworkResponse

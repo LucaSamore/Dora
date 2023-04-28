@@ -13,5 +13,4 @@ interface AuthenticationAPI<I, O, E : Throwable> {
     fun signOut()
 
     fun deleteUser() : NetworkResponse<O, E>
-
 }

@@ -22,7 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.auth.FirebaseAuthAPI
-import com.example.dora.network.auth.Credentials
+import com.example.dora.common.auth.Credentials
 import com.example.dora.network.database.FirestoreAPI
 import com.example.dora.network.database.FirestoreRequest
 import com.example.dora.ui.theme.DoraTheme
@@ -58,7 +58,8 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         var name by rememberSaveable { mutableStateOf("") }
-                        val request: NetworkRequest<Credentials> = NetworkRequest(Credentials.Register(
+                        val request: NetworkRequest<Credentials> = NetworkRequest(
+                            Credentials.Register(
                             "luca.samore@gmail.com",
                             "Test123!",
                             "Luca",
