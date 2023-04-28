@@ -8,7 +8,10 @@ interface AuthenticationAPI<I, O, E : Throwable> {
 
     fun signInWithEmailAndPassword(request: NetworkRequest<I>) : NetworkResponse<O, E>
 
+    fun isUserSignedIn() : Boolean
+
     fun signOut()
 
     fun deleteUser() : NetworkResponse<O, E>
+
 }
