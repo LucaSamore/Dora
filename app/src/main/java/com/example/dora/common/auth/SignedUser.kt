@@ -1,8 +1,8 @@
 package com.example.dora.common.auth
 
 data class SignedUser(
-    val userId: String,
-    val token: String,
-    val firstName: String,
-    val lastName: String,
+    val userId: String? = null,
+    val token: String? = null,
+    val firstName: String? = null,
+    val lastName: String? = null,
 )
