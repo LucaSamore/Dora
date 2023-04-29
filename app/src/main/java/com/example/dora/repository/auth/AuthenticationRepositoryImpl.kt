@@ -33,15 +33,34 @@ class AuthenticationRepositoryImpl(
     }
 
     override suspend fun signUpWithEmailAndPassword(credentials: Credentials.Register): Either<AuthFailed, SignedUser> {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            firebaseAuthAPI
+                .signUpWithEmailAndPassword(NetworkRequest(credentials))
+                .asEither()
+                .let { signUpResult ->
+                    when (signUpResult) {
+                        is Either.Left -> AuthFailed(signUpResult.value.message!!).left()
+                        is Either.Right -> onAuthenticationComplete(signUpResult.value!!).let {
+                            when (it) {
+                                is Either.Left -> AuthFailed(it.value.message).left()
+                                is Either.Right -> it.value.right()
+                            }
+                        }
+                    }
+                }
+        }
     }
 
     override suspend fun signOut() {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            firebaseAuthAPI.signOut()
+        }
     }
 
     override suspend fun isUserSignedIn(): Boolean {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            firebaseAuthAPI.isUserSignedIn()
+        }
     }
 
     private fun onAuthenticationComplete(authTask: Task<*>) : Either<AuthFailed, SignedUser> {
