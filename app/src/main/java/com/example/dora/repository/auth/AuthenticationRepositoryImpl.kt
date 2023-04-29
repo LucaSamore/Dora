@@ -9,6 +9,7 @@ import com.example.dora.common.auth.Credentials
 import com.example.dora.common.auth.SignedUser
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.auth.FirebaseAuthAPI
+import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,22 +20,15 @@ class AuthenticationRepositoryImpl(
 
     override suspend fun signInWithEmailAndPassword(credentials: Credentials.Login): Either<AuthFailed, SignedUser> {
         return withContext(Dispatchers.IO) {
-            lateinit var result: Either<AuthFailed, SignedUser>
             firebaseAuthAPI
                 .signInWithEmailAndPassword(NetworkRequest(credentials))
                 .asEither()
                 .let {
                     when (it) {
-                        is Either.Left -> result = AuthFailed(it.value.message!!).left()
-                        is Either.Right -> it.value?.addOnCompleteListener(context as Activity) { task ->
-                            result = when (task.isSuccessful) {
-                                true -> SignedUser().right() // TODO: happy path
-                                false -> AuthFailed(task.exception?.message!!).left()
-                            }
-                        }
+                        is Either.Left -> AuthFailed(it.value.message!!).left()
+                        is Either.Right -> onAuthenticationComplete(it.value!!)
                     }
                 }
-            return@withContext result
         }
     }
 
@@ -48,5 +42,16 @@ class AuthenticationRepositoryImpl(
 
     override suspend fun isUserSignedIn(): Boolean {
         TODO("Not yet implemented")
+    }
+
+    private fun onAuthenticationComplete(authTask: Task<*>) : Either<AuthFailed, SignedUser> {
+        lateinit var result: Either<AuthFailed, SignedUser>
+        authTask.addOnCompleteListener(context as Activity) { task ->
+            result = when (task.isSuccessful) {
+                true -> SignedUser().right() // TODO
+                false -> AuthFailed(task.exception?.message!!).left()
+            }
+        }
+        return  result
     }
 }
