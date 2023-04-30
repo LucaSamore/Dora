@@ -2,6 +2,10 @@ package com.example.dora.common.validation
 
 import android.util.Log
 
+enum class ValidationStatus { PASS, REJECT }
+
+class ValidationResult(var status: ValidationStatus, var message: String?)
+
 private const val TAG = "Validator"
 
 interface Validator {

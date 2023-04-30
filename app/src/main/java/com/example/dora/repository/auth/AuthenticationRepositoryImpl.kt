@@ -43,7 +43,7 @@ class AuthenticationRepositoryImpl(
                         is Either.Right -> onAuthenticationComplete(signUpResult.value!!).let {
                             when (it) {
                                 is Either.Left -> AuthFailed(it.value.message).left()
-                                is Either.Right -> it.value.right()
+                                is Either.Right -> it.value.right() // TODO: store user to firestore
                             }
                         }
                     }
@@ -52,7 +52,7 @@ class AuthenticationRepositoryImpl(
     }
 
     override suspend fun signOut() {
-        return withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             firebaseAuthAPI.signOut()
         }
     }
