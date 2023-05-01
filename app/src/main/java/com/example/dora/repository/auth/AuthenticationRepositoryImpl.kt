@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class AuthenticationRepositoryImpl(
-    private val context: Context,
     private val firebaseAuthAPI: FirebaseAuthAPI = FirebaseAuthAPI()
 ) : AuthenticationRepository {
 
@@ -65,7 +64,7 @@ class AuthenticationRepositoryImpl(
 
     private fun onAuthenticationComplete(authTask: Task<*>) : Either<AuthFailed, SignedUser> {
         lateinit var result: Either<AuthFailed, SignedUser>
-        authTask.addOnCompleteListener(context as Activity) { task ->
+        authTask.addOnCompleteListener { task ->
             result = when (task.isSuccessful) {
                 true -> SignedUser().right() // TODO
                 false -> AuthFailed(task.exception?.message!!).left()

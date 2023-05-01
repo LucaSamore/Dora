@@ -1,26 +1,31 @@
 package com.example.dora
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.initialize
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@RunWith(AndroidJUnit4::class)
 class TestFirebaseAuthentication {
 
-    // TODO: Fix this test
+    private lateinit var auth: FirebaseAuth
 
     @Before
     fun beforeTests() {
-        FirebaseApp.initializeApp(InstrumentationRegistry.getInstrumentation().targetContext)
-        Firebase.auth.useEmulator("10.0.2.2", 9099)
+        Firebase.initialize(InstrumentationRegistry.getInstrumentation().targetContext)
+        auth = Firebase.auth
+        // auth.useEmulator("10.0.2.2", 9099)
     }
 
     @Test
     fun testSignUpWithEmailAndPassword() {
-        Firebase.auth
+        println("AYOO")
+        auth
             .createUserWithEmailAndPassword("test@gmail.com", "Test123!")
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
