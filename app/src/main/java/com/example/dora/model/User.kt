@@ -16,4 +16,8 @@ data class User(
     val location: String?,
     val profilePicture: String?,
     val createdAt: String = nowWithPattern("yyyy-MM-dd HH:mm:ss")
-)
+) {
+    companion object {
+        const val collection = "users"
+    }
+}

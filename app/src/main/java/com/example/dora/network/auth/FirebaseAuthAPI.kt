@@ -11,14 +11,9 @@ import com.google.android.gms.tasks.Task
 import com.example.dora.common.validation.ValidationResult
 import com.example.dora.common.validation.ValidationStatus
 import com.example.dora.network.api.AuthenticationAPI
+import com.google.firebase.auth.FirebaseUser
 
-class FirebaseAuthAPI(
-    private val auth: FirebaseAuth = Firebase.auth
-) : AuthenticationAPI<Credentials, Task<*>, Throwable> {
-
-    init {
-        auth.useEmulator("10.0.2.2", 9099)
-    }
+class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : AuthenticationAPI<Credentials, Task<*>, Throwable> {
 
     override fun signUpWithEmailAndPassword(request: NetworkRequest<Credentials>) : NetworkResponse<Task<*>, Throwable> {
         val validationResult = validateCredentials(request.body)
@@ -49,6 +44,8 @@ class FirebaseAuthAPI(
     override fun isUserSignedIn(): Boolean = auth.currentUser != null
 
     override fun signOut() = auth.signOut()
+
+    fun getFirebaseUser() : FirebaseUser? = auth.currentUser
 
     override fun deleteUser(): NetworkResponse<Task<*>, Throwable> =
         NetworkResponse(auth.currentUser?.delete(), null)

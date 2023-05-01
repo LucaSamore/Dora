@@ -34,5 +34,6 @@ class TestFirebaseAuthentication {
                     println("Account not created")
                 }
             }
+        Thread.sleep(5_000) // Naive solution for now
     }
 }
