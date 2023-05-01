@@ -24,9 +24,8 @@ class TestFirebaseAuthentication {
 
     @Test
     fun testSignUpWithEmailAndPassword() {
-        println("AYOO")
         auth
-            .createUserWithEmailAndPassword("test@gmail.com", "Test123!")
+            .createUserWithEmailAndPassword("luca.samore@gmail.com", "Test123!")
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     println(Firebase.auth.currentUser?.email)
