@@ -12,7 +12,13 @@ import com.example.dora.common.validation.ValidationResult
 import com.example.dora.common.validation.ValidationStatus
 import com.example.dora.network.api.AuthenticationAPI
 
-class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : AuthenticationAPI<Credentials, Task<*>, Throwable> {
+class FirebaseAuthAPI(
+    private val auth: FirebaseAuth = Firebase.auth
+) : AuthenticationAPI<Credentials, Task<*>, Throwable> {
+
+    init {
+        auth.useEmulator("10.0.2.2", 9099)
+    }
 
     override fun signUpWithEmailAndPassword(request: NetworkRequest<Credentials>) : NetworkResponse<Task<*>, Throwable> {
         val validationResult = validateCredentials(request.body)
