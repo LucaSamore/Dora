@@ -27,6 +27,7 @@ object UserValidator : Validator {
     }
 
     internal fun validatePassword(password: String): ValidationResult {
+        // because regular expressions are overrated
         return validate(
             password,
             { p -> p.isNotEmpty() },

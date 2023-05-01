@@ -1,12 +1,8 @@
 package com.example.dora.common.validation
 
-import android.util.Log
-
 enum class ValidationStatus { PASS, REJECT }
 
 class ValidationResult(var status: ValidationStatus, var message: String?)
-
-private const val TAG = "Validator"
 
 interface Validator {
     fun <T> validate(subject: T, vararg rules: (subject:  T) -> Boolean) : ValidationResult {
@@ -15,7 +11,6 @@ interface Validator {
         for (rule in rules) {
             if (!rule(subject)) {
                 validationResult.status = ValidationStatus.REJECT
-                Log.i(TAG, "Rejected")
                 break
             }
         }
