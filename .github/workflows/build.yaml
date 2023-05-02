@@ -49,6 +49,9 @@ jobs:
         run: echo $DATA > /home/runner/work/Dora/Dora/app/google-services.json
 
       - name: Run android tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
         run: firebase emulators:exec --only firestore,auth --project $${{ secrets.PROJECT_ID }} './gradlew connectedAndroidTest'
 
       - name: Run local tests
