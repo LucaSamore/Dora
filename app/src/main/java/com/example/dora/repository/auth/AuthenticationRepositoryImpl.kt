@@ -24,11 +24,11 @@ class AuthenticationRepositoryImpl(
     override suspend fun signInWithEmailAndPassword(credentials: Credentials.Login): Either<ErrorMessage, AuthResult> {
         return withContext(Dispatchers.IO) {
             firebaseAuthAPI
-                .signInWithEmailAndPassword(NetworkRequest(credentials))
-                .asEither()
+                .signInWithEmailAndPassword(NetworkRequest.of(credentials))
+                .toEither()
                 .let {
                     when (it) {
-                        is Either.Left -> ErrorMessage(it.value.message!!).left()
+                        is Either.Left -> onValidationError(it.value).left()
                         is Either.Right -> onAuthenticationComplete(it.value!!)
                     }
                 }
@@ -38,22 +38,15 @@ class AuthenticationRepositoryImpl(
     override suspend fun signUpWithEmailAndPassword(credentials: Credentials.Register): Either<ErrorMessage, AuthResult> {
         return withContext(Dispatchers.IO) {
             firebaseAuthAPI
-                .signUpWithEmailAndPassword(NetworkRequest(credentials))
-                .asEither()
-                .let { signUpResult ->
-                    when (signUpResult) {
-                        is Either.Left -> ErrorMessage(signUpResult.value.message!!).left()
-                        is Either.Right -> onAuthenticationComplete(signUpResult.value!!).let {
-                            when (it) {
-                                is Either.Left -> ErrorMessage(it.value.message).left()
-                                is Either.Right -> {
-                                    if (!storeUserOnFirestore(credentials)) {
-                                        ErrorMessage("Could not store user to firebase").left()
-                                    }
-                                    it.value.right()
-                                }
-                            }
-                        }
+                .signUpWithEmailAndPassword(NetworkRequest.of(credentials))
+                .toEither()
+                .let {
+                    when (it) {
+                        is Either.Left -> onValidationError(it.value).left()
+                        is Either.Right -> onAccountCreated(
+                            onAuthenticationComplete(it.value!!),
+                            credentials
+                        )
                     }
                 }
         }
@@ -84,6 +77,8 @@ class AuthenticationRepositoryImpl(
         }
     }
 
+    private fun onValidationError(error: Throwable) : ErrorMessage = ErrorMessage(error.message!!)
+
     private suspend fun onAuthenticationComplete(authTask: Task<AuthResult>) : Either<ErrorMessage, AuthResult> {
         return authTask.addOnCompleteListener { task ->
             when (task.isSuccessful) {
@@ -93,9 +88,19 @@ class AuthenticationRepositoryImpl(
         }.await().right()
     }
 
-    private fun storeUserOnFirestore(credentials: Credentials.Register) : Boolean {
-        var result = false
+    private suspend fun onAccountCreated(taskResult: Either<ErrorMessage, AuthResult>, credentials: Credentials.Register) : Either<ErrorMessage, AuthResult> {
+        return when (taskResult) {
+            is Either.Left -> taskResult.value.left()
+            is Either.Right -> {
+                when (val accountCreationResult = storeUserOnFirestore(credentials)) {
+                    is Either.Left -> accountCreationResult.value.left()
+                    is Either.Right -> taskResult.value.right()
+                }
+            }
+        }
+    }
 
+    private suspend fun storeUserOnFirestore(credentials: Credentials.Register) : Either<ErrorMessage, Any?> {
         val user = User(
             uid = firebaseAuthAPI.getFirebaseUser()?.uid!!,
             firstName = credentials.firstName,
@@ -106,16 +111,20 @@ class AuthenticationRepositoryImpl(
             profilePicture = credentials.profilePicture
         )
 
-        firestoreAPI.insert(
+        val request = NetworkRequest.of(
             FirestoreRequest(
                 data = user,
                 collection = User.collection,
                 document = user.uid,
-            ).asNetworkRequest()
-        ).data?.addOnCompleteListener { task ->
-            result = task.isSuccessful
-        }
+            )
+        )
 
-        return result
+        return firestoreAPI.insert(request).data?.addOnCompleteListener {
+            when (it.isSuccessful) {
+                true -> it.result.right()
+                false -> ErrorMessage(it.exception?.message!!).left()
+            }
+        }?.await().right()
     }
+
 }
