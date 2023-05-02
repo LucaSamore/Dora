@@ -40,12 +40,6 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x ./gradlew
 
-      - name: Android emulator runner
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          script: ./gradlew connectedCheck
-
       - name: Create Google Services file
         run: cat /home/runner/work/Dora/Dora/app/google-services.json | base64
 
@@ -53,6 +47,12 @@ jobs:
         env:
           DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $DATA > /home/runner/work/Dora/Dora/app/google-services.json
+
+      - name: Android emulator runner
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew connectedCheck
 
       - name: Run android tests
         run: firebase emulators:exec --only firestore,auth --project $${{ secrets.PROJECT_ID }} './gradlew connectedAndroidTest'
