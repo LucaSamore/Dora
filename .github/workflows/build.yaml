@@ -46,7 +46,7 @@ jobs:
         run: npm install -g firebase-tools
 
       - name: Run emulators and tests
-        run: firebase emulators:exec './gradlew connectedAndroidTest'
+        run: firebase emulators:exec --token ${{ secrets.FIREBASE_TOKEN }} './gradlew connectedAndroidTest'
 
       - name: Build all build type and flavor permutations
         run: ./gradlew assemble
