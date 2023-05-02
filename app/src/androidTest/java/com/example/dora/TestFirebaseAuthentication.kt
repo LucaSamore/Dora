@@ -23,7 +23,7 @@ class TestFirebaseAuthentication {
     fun beforeTests() {
         Firebase.initialize(InstrumentationRegistry.getInstrumentation().targetContext)
         auth = Firebase.auth
-        auth.useEmulator("10.0.2.2", 9099)
+        auth.useEmulator("localhost", 9099)
     }
 
     @Test
