@@ -37,13 +37,14 @@ jobs:
           tools-version: 11.9.0
           firebase_token: ${{ secrets.FIREBASE_TOKEN }}
 
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+
       - name: Android emulator runner
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 31
-
-      - name: Make Gradle executable
-        run: chmod +x ./gradlew
+          script: ./gradlew connectedCheck
 
       - name: Create Google Services file
         run: cat /home/runner/work/Dora/Dora/app/google-services.json | base64
