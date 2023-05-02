@@ -6,6 +6,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,21 +21,22 @@ class TestFirebaseAuthentication {
     fun beforeTests() {
         Firebase.initialize(InstrumentationRegistry.getInstrumentation().targetContext)
         auth = Firebase.auth
-        // auth.useEmulator("10.0.2.2", 9099)
+        auth.useEmulator("10.0.2.2", 9099)
     }
 
     @Test
     fun testSignUpWithEmailAndPassword() {
-        auth
-            .createUserWithEmailAndPassword("luca.samore@gmail.com", "Test123!")
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    println(Firebase.auth.currentUser?.email)
-                    println("Account created successfully")
-                } else {
-                    println("Account not created")
-                }
-            }
-        Thread.sleep(5_000) // Naive solution for now
+        runBlocking {
+            auth
+                .createUserWithEmailAndPassword("test@gmail.com", "Test123!")
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        println(Firebase.auth.currentUser?.email)
+                        println("Account created successfully")
+                    } else {
+                        println("Account not created")
+                    }
+                }.await()
+        }
     }
 }

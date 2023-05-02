@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                             scope.launch {
                                 val either = authenticationRepository.signUpWithEmailAndPassword(request.body)
                                 name = when (either) {
-                                    is Either.Right -> either.value.uid
+                                    is Either.Right -> either.value.user?.uid!!
                                     is Either.Left -> either.value.message
                                 }
                             }
@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
                                 )
 
                                 name = when (either) {
-                                    is Either.Right -> either.value.uid
+                                    is Either.Right -> either.value.user?.uid!!
                                     is Either.Left -> either.value.message
                                 }
                             }

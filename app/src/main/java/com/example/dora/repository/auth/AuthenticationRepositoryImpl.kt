@@ -1,19 +1,18 @@
 package com.example.dora.repository.auth
 
-import android.app.Activity
-import android.content.Context
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.example.dora.common.auth.Credentials
-import com.example.dora.common.auth.SignedUser
 import com.example.dora.model.User
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.auth.FirebaseAuthAPI
 import com.example.dora.network.database.FirestoreAPI
 import com.example.dora.network.database.FirestoreRequest
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class AuthenticationRepositoryImpl(
@@ -21,7 +20,7 @@ class AuthenticationRepositoryImpl(
     private val firestoreAPI: FirestoreAPI = FirestoreAPI()
 ) : AuthenticationRepository {
 
-    override suspend fun signInWithEmailAndPassword(credentials: Credentials.Login): Either<AuthFailed, SignedUser> {
+    override suspend fun signInWithEmailAndPassword(credentials: Credentials.Login): Either<AuthFailed, AuthResult> {
         return withContext(Dispatchers.IO) {
             firebaseAuthAPI
                 .signInWithEmailAndPassword(NetworkRequest(credentials))
@@ -35,7 +34,7 @@ class AuthenticationRepositoryImpl(
         }
     }
 
-    override suspend fun signUpWithEmailAndPassword(credentials: Credentials.Register): Either<AuthFailed, SignedUser> {
+    override suspend fun signUpWithEmailAndPassword(credentials: Credentials.Register): Either<AuthFailed, AuthResult> {
         return withContext(Dispatchers.IO) {
             firebaseAuthAPI
                 .signUpWithEmailAndPassword(NetworkRequest(credentials))
@@ -71,16 +70,13 @@ class AuthenticationRepositoryImpl(
         }
     }
 
-    private fun onAuthenticationComplete(authTask: Task<*>) : Either<AuthFailed, SignedUser> {
-        lateinit var result: Either<AuthFailed, SignedUser>
-        authTask.addOnCompleteListener { task ->
-            result = when (task.isSuccessful) {
-                true -> SignedUser(uid = firebaseAuthAPI.getFirebaseUser()?.uid!!).right()
+    private suspend fun onAuthenticationComplete(authTask: Task<AuthResult>) : Either<AuthFailed, AuthResult> {
+        return authTask.addOnCompleteListener { task ->
+            when (task.isSuccessful) {
+                true -> task.result.right()
                 false -> AuthFailed(task.exception?.message!!).left()
             }
-        }
-        Thread.sleep(1_000)
-        return result
+        }.await().right()
     }
 
     private fun storeUserOnFirestore(credentials: Credentials.Register) : Boolean {

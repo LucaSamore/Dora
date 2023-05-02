@@ -11,11 +11,12 @@ import com.google.android.gms.tasks.Task
 import com.example.dora.common.validation.ValidationResult
 import com.example.dora.common.validation.ValidationStatus
 import com.example.dora.network.api.AuthenticationAPI
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 
-class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : AuthenticationAPI<Credentials, Task<*>, Throwable> {
+class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : AuthenticationAPI<Credentials, Task<AuthResult>, Throwable> {
 
-    override fun signUpWithEmailAndPassword(request: NetworkRequest<Credentials>) : NetworkResponse<Task<*>, Throwable> {
+    override fun signUpWithEmailAndPassword(request: NetworkRequest<Credentials>) : NetworkResponse<Task<AuthResult>, Throwable> {
         val validationResult = validateCredentials(request.body)
 
         if (validationResult.data!! == ValidationStatus.REJECT) {
@@ -28,7 +29,7 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : Authenti
         return NetworkResponse(authenticationResult, null)
     }
 
-    override fun signInWithEmailAndPassword(request: NetworkRequest<Credentials>): NetworkResponse<Task<*>, Throwable> {
+    override fun signInWithEmailAndPassword(request: NetworkRequest<Credentials>): NetworkResponse<Task<AuthResult>, Throwable> {
         val validationResult = validateCredentials(request.body)
 
         if (validationResult.data!! == ValidationStatus.REJECT) {
@@ -47,8 +48,8 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : Authenti
 
     fun getFirebaseUser() : FirebaseUser? = auth.currentUser
 
-    override fun deleteUser(): NetworkResponse<Task<*>, Throwable> =
-        NetworkResponse(auth.currentUser?.delete(), null)
+    override fun deleteUser(): NetworkResponse<Task<AuthResult>, Throwable> = TODO()
+        // NetworkResponse(auth.currentUser?.delete(), null)
 
     private fun validateCredentials(credentials: Credentials) : NetworkResponse<ValidationStatus, Throwable> {
         return when (credentials) {

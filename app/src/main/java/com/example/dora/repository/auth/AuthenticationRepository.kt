@@ -2,15 +2,15 @@ package com.example.dora.repository.auth
 
 import arrow.core.Either
 import com.example.dora.common.auth.Credentials
-import com.example.dora.common.auth.SignedUser
+import com.google.firebase.auth.AuthResult
 
 @JvmInline
 value class AuthFailed(val message: String)
 
 interface AuthenticationRepository {
-    suspend fun signInWithEmailAndPassword(credentials: Credentials.Login) : Either<AuthFailed, SignedUser>
+    suspend fun signInWithEmailAndPassword(credentials: Credentials.Login) : Either<AuthFailed, AuthResult>
 
-    suspend fun signUpWithEmailAndPassword(credentials: Credentials.Register) : Either<AuthFailed, SignedUser>
+    suspend fun signUpWithEmailAndPassword(credentials: Credentials.Register) : Either<AuthFailed, AuthResult>
 
     suspend fun signOut()
 
