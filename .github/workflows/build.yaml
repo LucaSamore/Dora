@@ -37,6 +37,11 @@ jobs:
           tools-version: 11.9.0
           firebase_token: ${{ secrets.FIREBASE_TOKEN }}
 
+      - name: Android emulator runner
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+
       - name: Make Gradle executable
         run: chmod +x ./gradlew
 
@@ -49,9 +54,6 @@ jobs:
         run: echo $DATA > /home/runner/work/Dora/Dora/app/google-services.json
 
       - name: Run android tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 31
         run: firebase emulators:exec --only firestore,auth --project $${{ secrets.PROJECT_ID }} './gradlew connectedAndroidTest'
 
       - name: Run local tests
