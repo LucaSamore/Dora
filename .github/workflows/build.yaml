@@ -43,7 +43,7 @@ jobs:
       - name: Android emulator runner
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 31
+          api-level: 29
           script: ./gradlew connectedCheck
 
       - name: Create Google Services file
