@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
                         Button(onClick = {
                             scope.launch {
                                 val either = authenticationRepository.signInWithEmailAndPassword(
-                                    Credentials.Login("test@gmail.com", "Test123!")
+                                    Credentials.Login("luca.samore@gmail.com", "Test123!")
                                 )
 
                                 name = when (either) {
@@ -109,7 +109,10 @@ class MainActivity : ComponentActivity() {
                         }
 
                         Button(onClick = {
-                            firebaseAuth.deleteUser()
+                            scope.launch {
+                                val b = authenticationRepository.deleteUser()
+                                name = if (b.isRight()) "Account deleted" else "Account not deleted"
+                            }
                         }) {
                             Text(text = "Test delete")
                         }

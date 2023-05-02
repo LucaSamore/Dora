@@ -2,6 +2,7 @@ package com.example.dora.network.api
 
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.NetworkResponse
+import com.google.android.gms.tasks.Task
 
 interface AuthenticationAPI<I, O, E : Throwable> {
     fun signUpWithEmailAndPassword(request: NetworkRequest<I>) : NetworkResponse<O, E>
@@ -11,6 +12,4 @@ interface AuthenticationAPI<I, O, E : Throwable> {
     fun isUserSignedIn() : Boolean
 
     fun signOut()
-
-    fun deleteUser() : NetworkResponse<O, E>
 }

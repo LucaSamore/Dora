@@ -3,6 +3,7 @@ package com.example.dora.repository.auth
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import com.example.dora.common.ErrorMessage
 import com.example.dora.common.auth.Credentials
 import com.example.dora.model.User
 import com.example.dora.network.NetworkRequest
@@ -20,34 +21,34 @@ class AuthenticationRepositoryImpl(
     private val firestoreAPI: FirestoreAPI = FirestoreAPI()
 ) : AuthenticationRepository {
 
-    override suspend fun signInWithEmailAndPassword(credentials: Credentials.Login): Either<AuthFailed, AuthResult> {
+    override suspend fun signInWithEmailAndPassword(credentials: Credentials.Login): Either<ErrorMessage, AuthResult> {
         return withContext(Dispatchers.IO) {
             firebaseAuthAPI
                 .signInWithEmailAndPassword(NetworkRequest(credentials))
                 .asEither()
                 .let {
                     when (it) {
-                        is Either.Left -> AuthFailed(it.value.message!!).left()
+                        is Either.Left -> ErrorMessage(it.value.message!!).left()
                         is Either.Right -> onAuthenticationComplete(it.value!!)
                     }
                 }
         }
     }
 
-    override suspend fun signUpWithEmailAndPassword(credentials: Credentials.Register): Either<AuthFailed, AuthResult> {
+    override suspend fun signUpWithEmailAndPassword(credentials: Credentials.Register): Either<ErrorMessage, AuthResult> {
         return withContext(Dispatchers.IO) {
             firebaseAuthAPI
                 .signUpWithEmailAndPassword(NetworkRequest(credentials))
                 .asEither()
                 .let { signUpResult ->
                     when (signUpResult) {
-                        is Either.Left -> AuthFailed(signUpResult.value.message!!).left()
+                        is Either.Left -> ErrorMessage(signUpResult.value.message!!).left()
                         is Either.Right -> onAuthenticationComplete(signUpResult.value!!).let {
                             when (it) {
-                                is Either.Left -> AuthFailed(it.value.message).left()
+                                is Either.Left -> ErrorMessage(it.value.message).left()
                                 is Either.Right -> {
                                     if (!storeUserOnFirestore(credentials)) {
-                                        AuthFailed("Could not store user to firebase").left()
+                                        ErrorMessage("Could not store user to firebase").left()
                                     }
                                     it.value.right()
                                 }
@@ -70,11 +71,24 @@ class AuthenticationRepositoryImpl(
         }
     }
 
-    private suspend fun onAuthenticationComplete(authTask: Task<AuthResult>) : Either<AuthFailed, AuthResult> {
+    override suspend fun deleteUser(): Either<ErrorMessage, Void> {
+        return withContext(Dispatchers.IO) {
+            firebaseAuthAPI
+                .deleteUser()
+                .addOnCompleteListener {
+                    when (it.isSuccessful) {
+                        true -> it.result.right()
+                        false -> ErrorMessage(it.exception?.message!!).left()
+                    }
+                }.await().right()
+        }
+    }
+
+    private suspend fun onAuthenticationComplete(authTask: Task<AuthResult>) : Either<ErrorMessage, AuthResult> {
         return authTask.addOnCompleteListener { task ->
             when (task.isSuccessful) {
                 true -> task.result.right()
-                false -> AuthFailed(task.exception?.message!!).left()
+                false -> ErrorMessage(task.exception?.message!!).left()
             }
         }.await().right()
     }
