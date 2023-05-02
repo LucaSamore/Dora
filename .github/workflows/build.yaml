@@ -1,8 +1,8 @@
-name: Build
+name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, feature/user_authentication]
   pull_request:
     branches: [main, develop]
 
@@ -23,6 +23,11 @@ jobs:
           distribution: 'zulu'
           java-version: 11
 
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
@@ -36,6 +41,14 @@ jobs:
         env:
           DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $DATA > /home/runner/work/Dora/Dora/app/google-services.json
+
+      - name: Install Firebase tools
+        run: npm install -g firebase-tools
+
+      - run: npm ci
+
+      - name: Run emulators
+        run: firebase emulators:exec --only firestore,authentication,storage
 
       - name: Build all build type and flavor permutations
         run: ./gradlew assemble
