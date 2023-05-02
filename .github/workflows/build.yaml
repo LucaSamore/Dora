@@ -45,8 +45,6 @@ jobs:
       - name: Install Firebase tools
         run: npm install -g firebase-tools
 
-      - run: npm ci
-
       - name: Run emulators
         run: firebase emulators:exec --only firestore,authentication,storage
 
