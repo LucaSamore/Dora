@@ -49,14 +49,11 @@ jobs:
           DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $DATA > google-services.json
 
-      - name: Android emulator runner
+      - name: Run instrumented tests on android emulator runner
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 27
-          script: ./gradlew connectedCheck
-
-      - name: Run android tests
-        run: firebase emulators:exec --only firestore,auth --project $${{ secrets.PROJECT_ID }} './gradlew connectedAndroidTest'
+          api-level: 29
+          script: firebase emulators:exec --only firestore,auth --project $${{ secrets.PROJECT_ID }} './gradlew connectedAndroidTest'
 
       - name: Run local tests
         run: ./gradlew test
