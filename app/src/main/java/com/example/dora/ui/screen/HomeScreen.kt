@@ -8,11 +8,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.example.dora.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(
+    homeViewModel: HomeViewModel,
     onSignOut: () -> Unit
 ) {
     Column(
@@ -24,11 +24,12 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.padding(vertical = 12.dp))
 
-        Text(text = Firebase.auth.currentUser?.email!!)
-
-        Spacer(modifier = Modifier.padding(vertical = 12.dp))
-
-        Button(onClick = { onSignOut() }) {
+        Button(
+            onClick = {
+                homeViewModel.signOut()
+                onSignOut()
+            }
+        ) {
             Text(text = "Sign Out")
         }
     }

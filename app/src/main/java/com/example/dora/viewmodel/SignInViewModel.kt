@@ -7,8 +7,6 @@ import com.example.dora.common.auth.Credentials
 import com.example.dora.repository.auth.AuthenticationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,15 +14,19 @@ class SignInViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
 
-    fun signIn(emailAddress: String, password: String) {
+    fun signIn(emailAddress: String, password: String) : Boolean {
+        // TODO: Make it better
+        var res = false
         viewModelScope.launch {
             val signInResult = authenticationRepository
                 .signInWithEmailAndPassword(Credentials.Login(emailAddress, password))
 
-            when (signInResult) {
+            res = when (signInResult) {
                 is Either.Left -> false
                 is Either.Right -> true
             }
         }
+        return res
     }
+
 }

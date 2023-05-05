@@ -11,13 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.dora.ui.navigation.NavigationGraph
 import com.example.dora.ui.theme.DoraTheme
+import com.example.dora.viewmodel.HomeViewModel
 import com.example.dora.viewmodel.SignInViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val signInViewModel : SignInViewModel by viewModels()
+    private val signInViewModel: SignInViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +33,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavigationGraph(
                         navController = rememberNavController(),
-                        signInViewModel = signInViewModel
+                        signInViewModel = signInViewModel,
+                        homeViewModel = homeViewModel,
                     )
                 }
             }
