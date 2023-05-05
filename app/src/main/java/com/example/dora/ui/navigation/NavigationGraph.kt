@@ -12,7 +12,7 @@ import com.example.dora.ui.screen.SignInScreen
 fun NavigationGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier
-){
+) {
     NavHost(
         navController = navController,
         startDestination = DoraScreen.Login.name,

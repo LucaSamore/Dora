@@ -8,6 +8,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun HomeScreen(
@@ -19,6 +21,10 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Home Screen")
+
+        Spacer(modifier = Modifier.padding(vertical = 12.dp))
+
+        // Text(text = Firebase.auth.currentUser?.email!!)
 
         Spacer(modifier = Modifier.padding(vertical = 12.dp))
 

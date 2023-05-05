@@ -19,6 +19,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.dora.viewmodel.SignInViewModel
 
 @Composable
 fun SignInScreen(
@@ -50,6 +52,8 @@ fun SignInForm(onSignIn: () -> Unit) {
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
     var emailAddressError by rememberSaveable { mutableStateOf("") }
     var passwordError by rememberSaveable { mutableStateOf("") }
+
+    // val signInViewModel : SignInViewModel = viewModel()
 
     Column(
         modifier = Modifier
@@ -106,7 +110,10 @@ fun SignInForm(onSignIn: () -> Unit) {
 
         Button(
             modifier = Modifier.size(TextFieldDefaults.MinWidth, 48.dp),
-            onClick = { onSignIn() }
+            onClick = {
+                // signInViewModel.signIn(emailAddress, password)
+                onSignIn()
+            }
         ) {
             Text("Sign In")
         }
