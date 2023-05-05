@@ -7,11 +7,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.dora.ui.screen.HomeScreen
 import com.example.dora.ui.screen.SignInScreen
+import com.example.dora.viewmodel.SignInViewModel
 
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    signInViewModel: SignInViewModel
 ) {
     NavHost(
         navController = navController,
@@ -26,6 +28,7 @@ fun NavigationGraph(
 
         composable(route = DoraScreen.Login.name) {
             SignInScreen(
+                signInViewModel = signInViewModel,
                 onSignIn = { navController.navigate(DoraScreen.Home.name) },
                 onSignUp = { navController.navigate(DoraScreen.Home.name) }
             )

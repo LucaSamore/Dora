@@ -24,7 +24,7 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.padding(vertical = 12.dp))
 
-        // Text(text = Firebase.auth.currentUser?.email!!)
+        Text(text = Firebase.auth.currentUser?.email!!)
 
         Spacer(modifier = Modifier.padding(vertical = 12.dp))
 

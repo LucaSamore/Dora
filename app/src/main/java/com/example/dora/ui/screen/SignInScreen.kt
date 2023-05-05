@@ -19,11 +19,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dora.viewmodel.SignInViewModel
 
 @Composable
 fun SignInScreen(
+    signInViewModel: SignInViewModel,
     onSignIn: () -> Unit,
     onSignUp: () -> Unit
 ) {
@@ -33,7 +33,9 @@ fun SignInScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Dora", style = MaterialTheme.typography.titleLarge)
-        SignInForm(onSignIn)
+
+        SignInForm(signInViewModel, onSignIn)
+
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -46,14 +48,15 @@ fun SignInScreen(
 }
 
 @Composable
-fun SignInForm(onSignIn: () -> Unit) {
+fun SignInForm(
+    signInViewModel: SignInViewModel,
+    onSignIn: () -> Unit
+) {
     var emailAddress by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
     var emailAddressError by rememberSaveable { mutableStateOf("") }
     var passwordError by rememberSaveable { mutableStateOf("") }
-
-    // val signInViewModel : SignInViewModel = viewModel()
 
     Column(
         modifier = Modifier
@@ -111,7 +114,7 @@ fun SignInForm(onSignIn: () -> Unit) {
         Button(
             modifier = Modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
-                // signInViewModel.signIn(emailAddress, password)
+                signInViewModel.signIn(emailAddress, password)
                 onSignIn()
             }
         ) {
