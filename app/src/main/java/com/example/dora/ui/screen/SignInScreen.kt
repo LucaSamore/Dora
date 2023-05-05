@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -44,6 +45,8 @@ fun SignInForm() {
     var emailAddress by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
+    var emailAddressError by rememberSaveable { mutableStateOf("") }
+    var passwordError by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -56,6 +59,12 @@ fun SignInForm() {
 
         Spacer(modifier = Modifier.padding(12.dp))
 
+        Text(
+            text = emailAddressError,
+            modifier = Modifier.size(TextFieldDefaults.MinWidth, 16.dp),
+            textAlign = TextAlign.Left
+        )
+
         OutlinedTextField(
             value = emailAddress,
             onValueChange = { emailAddress = it },
@@ -64,6 +73,12 @@ fun SignInForm() {
         )
 
         Spacer(modifier = Modifier.padding(6.dp))
+
+        Text(
+            text = passwordError,
+            modifier = Modifier.size(TextFieldDefaults.MinWidth, 16.dp),
+            textAlign = TextAlign.Left
+        )
 
         OutlinedTextField(
             value = password,
@@ -84,7 +99,7 @@ fun SignInForm() {
             }
         )
 
-        Spacer(modifier = Modifier.padding(12.dp))
+        Spacer(modifier = Modifier.padding(16.dp))
 
         Button(
             modifier = Modifier.size(TextFieldDefaults.MinWidth, 48.dp),
