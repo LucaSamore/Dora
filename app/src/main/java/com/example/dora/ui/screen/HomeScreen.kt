@@ -10,7 +10,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onSignOut: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -20,7 +22,7 @@ fun HomeScreen() {
 
         Spacer(modifier = Modifier.padding(vertical = 12.dp))
 
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = { onSignOut() }) {
             Text(text = "Sign Out")
         }
     }
@@ -29,5 +31,5 @@ fun HomeScreen() {
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    // HomeScreen()
 }

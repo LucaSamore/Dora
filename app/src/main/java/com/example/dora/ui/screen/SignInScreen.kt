@@ -21,19 +21,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SignInScreen() {
+fun SignInScreen(
+    onSignIn: () -> Unit,
+    onSignUp: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Dora", style = MaterialTheme.typography.titleLarge)
-        SignInForm()
+        SignInForm(onSignIn)
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "Don’t have an account yet?")
-            TextButton(onClick = { /*TODO*/ }) {
+            TextButton(onClick = { onSignUp() }) {
                 Text(text = "Sign Up")
             }
         }
@@ -41,7 +44,7 @@ fun SignInScreen() {
 }
 
 @Composable
-fun SignInForm() {
+fun SignInForm(onSignIn: () -> Unit) {
     var emailAddress by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
@@ -103,7 +106,7 @@ fun SignInForm() {
 
         Button(
             modifier = Modifier.size(TextFieldDefaults.MinWidth, 48.dp),
-            onClick = { /* Do something! */ }
+            onClick = { onSignIn() }
         ) {
             Text("Sign In")
         }
@@ -113,5 +116,5 @@ fun SignInForm() {
 @Preview(showBackground = true)
 @Composable
 fun SignInScreenPreview() {
-    SignInScreen()
+    // SignInScreen()
 }
