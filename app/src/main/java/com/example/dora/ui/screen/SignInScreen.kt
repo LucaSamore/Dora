@@ -18,6 +18,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import arrow.core.Either
 import com.example.dora.viewmodel.SignInViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignInScreen(
@@ -57,7 +60,7 @@ fun SignInForm(
     var passwordError by rememberSaveable { mutableStateOf("") }
 
     // only for debugging
-    var result by rememberSaveable { mutableStateOf("") }
+    var result by rememberSaveable { mutableStateOf("Nothing yet") }
 
     Column(
         modifier = Modifier
@@ -115,17 +118,18 @@ fun SignInForm(
         Button(
             modifier = Modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
-                signInViewModel.signIn(emailAddress, password)
-
-                result = when (val signInResult = signInViewModel.signInResult) {
-                    is Either.Left -> signInResult.value.message
-                    is Either.Right -> signInResult.value.user?.email!!
-                    else -> { "Result is null" }
+                GlobalScope.launch(Dispatchers.Main) {
+                    when (val signInResult = signInViewModel.signIn(emailAddress, password)) {
+                        is Either.Left -> result = signInResult.value.message
+                        is Either.Right -> onSignIn()
+                    }
                 }
             }
         ) {
             Text("Sign In")
         }
+
+        Spacer(modifier = Modifier.padding(16.dp))
 
         Text(text = result)
     }

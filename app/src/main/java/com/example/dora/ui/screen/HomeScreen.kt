@@ -24,6 +24,8 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.padding(vertical = 12.dp))
 
+        Spacer(modifier = Modifier.padding(vertical = 12.dp))
+
         Button(
             onClick = {
                 homeViewModel.signOut()
