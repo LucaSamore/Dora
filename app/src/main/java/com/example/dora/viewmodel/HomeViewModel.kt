@@ -13,4 +13,6 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun signOut() = viewModelScope.launch { authenticationRepository.signOut() }
+
+
 }

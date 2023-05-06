@@ -20,7 +20,7 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Home Screen")
+        Text(text = "Home screen")
 
         Spacer(modifier = Modifier.padding(vertical = 12.dp))
 

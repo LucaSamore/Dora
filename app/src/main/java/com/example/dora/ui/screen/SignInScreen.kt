@@ -6,12 +6,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -19,6 +16,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import arrow.core.Either
 import com.example.dora.viewmodel.SignInViewModel
 
 @Composable
@@ -57,6 +55,9 @@ fun SignInForm(
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
     var emailAddressError by rememberSaveable { mutableStateOf("") }
     var passwordError by rememberSaveable { mutableStateOf("") }
+
+    // only for debugging
+    var result by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -115,11 +116,18 @@ fun SignInForm(
             modifier = Modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
                 signInViewModel.signIn(emailAddress, password)
-                onSignIn()
+
+                result = when (val signInResult = signInViewModel.signInResult) {
+                    is Either.Left -> signInResult.value.message
+                    is Either.Right -> signInResult.value.user?.email!!
+                    else -> { "Result is null" }
+                }
             }
         ) {
             Text("Sign In")
         }
+
+        Text(text = result)
     }
 }
 
