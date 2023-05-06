@@ -65,6 +65,7 @@ class AuthenticationRepositoryImpl(
     }
 
     override suspend fun deleteUser(): Either<ErrorMessage, Void> {
+        // TODO: Fix this method similarly to onAuthenticationComplete
         return withContext(Dispatchers.IO) {
             firebaseAuthAPI
                 .deleteUser()
@@ -80,12 +81,11 @@ class AuthenticationRepositoryImpl(
     private fun onValidationError(error: Throwable) : ErrorMessage = ErrorMessage(error.message!!)
 
     private suspend fun onAuthenticationComplete(authTask: Task<AuthResult>) : Either<ErrorMessage, AuthResult> {
-        return authTask.addOnCompleteListener { task ->
-            when (task.isSuccessful) {
-                true -> task.result.right()
-                false -> ErrorMessage(task.exception?.message!!).left()
-            }
-        }.await().right()
+        return try {
+            authTask.await().right()
+        } catch (e: Exception) {
+            ErrorMessage(e.message!!).left()
+        }
     }
 
     private suspend fun onAccountCreated(taskResult: Either<ErrorMessage, AuthResult>, credentials: Credentials.Register) : Either<ErrorMessage, AuthResult> {
@@ -119,6 +119,7 @@ class AuthenticationRepositoryImpl(
             )
         )
 
+        // TODO: Fix this method similarly to onAuthenticationComplete
         return firestoreAPI.insert(request).data?.addOnCompleteListener {
             when (it.isSuccessful) {
                 true -> it.result.right()
