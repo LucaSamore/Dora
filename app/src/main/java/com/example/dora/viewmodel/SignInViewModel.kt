@@ -6,6 +6,8 @@ import arrow.core.Either
 import com.example.dora.common.auth.Credentials
 import com.example.dora.repository.auth.AuthenticationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,18 +17,16 @@ class SignInViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun signIn(emailAddress: String, password: String) : Boolean {
-        // TODO: Make it better
-        var res = false
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val signInResult = authenticationRepository
                 .signInWithEmailAndPassword(Credentials.Login(emailAddress, password))
 
-            res = when (signInResult) {
+            when (signInResult.single()) {
                 is Either.Left -> false
                 is Either.Right -> true
             }
         }
-        return res
+        return true
     }
 
 }

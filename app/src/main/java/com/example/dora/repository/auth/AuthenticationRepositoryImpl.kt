@@ -13,6 +13,8 @@ import com.example.dora.network.database.FirestoreRequest
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
@@ -21,18 +23,18 @@ class AuthenticationRepositoryImpl(
     private val firestoreAPI: FirestoreAPI = FirestoreAPI()
 ) : AuthenticationRepository {
 
-    override suspend fun signInWithEmailAndPassword(credentials: Credentials.Login): Either<ErrorMessage, AuthResult> {
-        return withContext(Dispatchers.IO) {
-            firebaseAuthAPI
-                .signInWithEmailAndPassword(NetworkRequest.of(credentials))
-                .toEither()
-                .let {
-                    when (it) {
-                        is Either.Left -> onValidationError(it.value).left()
-                        is Either.Right -> onAuthenticationComplete(it.value!!)
-                    }
+    override suspend fun signInWithEmailAndPassword(
+        credentials: Credentials.Login
+    ): Flow<Either<ErrorMessage, AuthResult>> = flow {
+        firebaseAuthAPI
+            .signInWithEmailAndPassword(NetworkRequest.of(credentials))
+            .toEither()
+            .let {
+                when (it) {
+                    is Either.Left -> emit(onValidationError(it.value).left())
+                    is Either.Right -> emit(onAuthenticationComplete(it.value!!))
                 }
-        }
+            }
     }
 
     override suspend fun signUpWithEmailAndPassword(credentials: Credentials.Register): Either<ErrorMessage, AuthResult> {

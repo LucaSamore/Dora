@@ -114,9 +114,8 @@ fun SignInForm(
         Button(
             modifier = Modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
-                if (signInViewModel.signIn(emailAddress, password)) {
-                    onSignIn()
-                }
+                signInViewModel.signIn(emailAddress, password)
+                onSignIn()
             }
         ) {
             Text("Sign In")
