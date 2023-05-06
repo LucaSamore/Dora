@@ -2,7 +2,17 @@ package com.example.dora.common.validation
 
 enum class ValidationStatus { PASS, REJECT }
 
-class ValidationResult(var status: ValidationStatus, var message: String?)
+class ValidationResult(
+    var status: ValidationStatus,
+    var message: String?
+) {
+    fun bindErrorMessageIfRejected(errorMessage: String) : ValidationResult {
+        if (status == ValidationStatus.REJECT) {
+            message = errorMessage
+        }
+        return this
+    }
+}
 
 interface Validator {
     fun <T> validate(subject: T, vararg rules: (subject:  T) -> Boolean) : ValidationResult {
@@ -18,10 +28,5 @@ interface Validator {
         return validationResult
     }
 
-    fun bindErrorMessageIfRejected(validationResult: ValidationResult, message: String): ValidationResult {
-        if (validationResult.status == ValidationStatus.REJECT) {
-            validationResult.message = message
-        }
-        return validationResult
-    }
+
 }

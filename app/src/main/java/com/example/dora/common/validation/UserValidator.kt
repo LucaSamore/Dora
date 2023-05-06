@@ -11,9 +11,7 @@ object UserValidator : Validator {
             firstOrLastName,
             { f -> f.isNotEmpty() },
             { f -> f.length in 2..100 }
-        ).also {
-            bindErrorMessageIfRejected(it, "First name or last name is not valid")
-        }
+        ).bindErrorMessageIfRejected("First name or last name is not valid")
     }
 
     internal fun validateEmailAddress(emailAddress: String): ValidationResult {
@@ -21,13 +19,10 @@ object UserValidator : Validator {
             emailAddress,
             { e -> e.isNotEmpty() },
             { e -> EmailValidator.getInstance().isValid(e) }
-        ).also {
-            bindErrorMessageIfRejected(it, "Email address is not valid")
-        }
+        ).bindErrorMessageIfRejected("Email address is not valid")
     }
 
     internal fun validatePassword(password: String): ValidationResult {
-        // because regular expressions are overrated
         return validate(
             password,
             { p -> p.isNotEmpty() },
@@ -36,12 +31,6 @@ object UserValidator : Validator {
             { p -> p.filter { it.isLetter() }.firstOrNull { it.isUpperCase() } != null },
             { p -> p.filter { it.isLetter() }.firstOrNull { it.isLowerCase() } != null },
             { p -> p.firstOrNull { !it.isLetterOrDigit() } != null }
-        ).also {
-            bindErrorMessageIfRejected(
-                it,
-                "Password must be at least $PASSWORD_MIN_LENGTH characters " +
-                        "including an uppercase, a lowercase, a number and a special character"
-            )
-        }
+        ).bindErrorMessageIfRejected("Password not valid")
     }
 }

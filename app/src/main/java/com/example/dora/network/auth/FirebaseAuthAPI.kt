@@ -58,13 +58,15 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : Authenti
     }
 
     private fun validateLoginCredentials(credentials: Credentials.Login) : NetworkResponse<ValidationStatus, Throwable> {
-        // TODO: Fix this method
+        // TODO: Make it better
 
         var response: NetworkResponse<ValidationStatus, Throwable>
 
         UserValidator.validateEmailAddress(credentials.emailAddress).also { response = onReject(it) }
 
-        if (response.data == ValidationStatus.REJECT) return response
+        if (response.data == ValidationStatus.REJECT) {
+            return response
+        }
 
         UserValidator.validatePassword(credentials.password).also { response = onReject(it) }
 
@@ -72,13 +74,28 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : Authenti
     }
 
     private fun validateRegisterCredentials(credentials: Credentials.Register) : NetworkResponse<ValidationStatus, Throwable> {
-        // TODO: Fix this method
+        // TODO: Make it better
 
         var response: NetworkResponse<ValidationStatus, Throwable>
 
         UserValidator.validateFirstOrLastName(credentials.firstName).also { response = onReject(it) }
+
+        if (response.data == ValidationStatus.REJECT) {
+            return response
+        }
+
         UserValidator.validateFirstOrLastName(credentials.lastName).also { response = onReject(it) }
+
+        if (response.data == ValidationStatus.REJECT) {
+            return response
+        }
+
         UserValidator.validateEmailAddress(credentials.emailAddress).also { response = onReject(it) }
+
+        if (response.data == ValidationStatus.REJECT) {
+            return response
+        }
+
         UserValidator.validatePassword(credentials.password).also { response = onReject(it) }
 
         return response
