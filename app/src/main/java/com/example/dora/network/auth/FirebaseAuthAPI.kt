@@ -8,7 +8,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.android.gms.tasks.Task
-import com.example.dora.common.validation.ValidationResult
 import com.example.dora.common.validation.ValidationStatus
 import com.example.dora.network.api.AuthenticationAPI
 import com.google.firebase.auth.AuthResult
@@ -58,53 +57,47 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : Authenti
     }
 
     private fun validateLoginCredentials(credentials: Credentials.Login) : NetworkResponse<ValidationStatus, Throwable> {
-        // TODO: Make it better
-
-        var response: NetworkResponse<ValidationStatus, Throwable>
-
-        UserValidator.validateEmailAddress(credentials.emailAddress).also { response = onReject(it) }
-
-        if (response.data == ValidationStatus.REJECT) {
-            return response
+        UserValidator.validateEmailAddress(credentials.emailAddress).also {
+            if (it.status == ValidationStatus.REJECT) {
+                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
+            }
         }
 
-        UserValidator.validatePassword(credentials.password).also { response = onReject(it) }
+        UserValidator.validatePassword(credentials.password).also {
+            if (it.status == ValidationStatus.REJECT) {
+                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
+            }
+        }
 
-        return response
+        return NetworkResponse(ValidationStatus.PASS, null)
     }
 
     private fun validateRegisterCredentials(credentials: Credentials.Register) : NetworkResponse<ValidationStatus, Throwable> {
-        // TODO: Make it better
-
-        var response: NetworkResponse<ValidationStatus, Throwable>
-
-        UserValidator.validateFirstOrLastName(credentials.firstName).also { response = onReject(it) }
-
-        if (response.data == ValidationStatus.REJECT) {
-            return response
+        UserValidator.validateFirstOrLastName(credentials.firstName).also {
+            if (it.status == ValidationStatus.REJECT) {
+                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
+            }
         }
 
-        UserValidator.validateFirstOrLastName(credentials.lastName).also { response = onReject(it) }
-
-        if (response.data == ValidationStatus.REJECT) {
-            return response
+        UserValidator.validateFirstOrLastName(credentials.lastName).also {
+            if (it.status == ValidationStatus.REJECT) {
+                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
+            }
         }
 
-        UserValidator.validateEmailAddress(credentials.emailAddress).also { response = onReject(it) }
-
-        if (response.data == ValidationStatus.REJECT) {
-            return response
+        UserValidator.validateEmailAddress(credentials.emailAddress).also {
+            if (it.status == ValidationStatus.REJECT) {
+                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
+            }
         }
 
-        UserValidator.validatePassword(credentials.password).also { response = onReject(it) }
-
-        return response
-    }
-
-    private fun onReject(result: ValidationResult) : NetworkResponse<ValidationStatus, Throwable> {
-        return when (result.status) {
-            ValidationStatus.PASS -> NetworkResponse(ValidationStatus.PASS, null)
-            ValidationStatus.REJECT -> NetworkResponse(ValidationStatus.REJECT, Throwable(result.message))
+        UserValidator.validatePassword(credentials.password).also {
+            if (it.status == ValidationStatus.REJECT) {
+                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
+            }
         }
+
+        return NetworkResponse(ValidationStatus.PASS, null)
     }
 }
+

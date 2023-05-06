@@ -27,6 +27,4 @@ interface Validator {
 
         return validationResult
     }
-
-
 }
