@@ -33,9 +33,9 @@ object UserValidator : Validator {
             { p -> p.isNotEmpty() },
             { p -> p.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH },
             { p -> p.firstOrNull { it.isDigit() } != null },
-            { p -> p.filter { it.isLetter() }.firstOrNull { it.isUpperCase() } != null},
-            { p -> p.filter { it.isLetter() }.firstOrNull { it.isLowerCase() } != null},
-            { p -> p.firstOrNull { !it.isLetterOrDigit() } != null}
+            { p -> p.filter { it.isLetter() }.firstOrNull { it.isUpperCase() } != null },
+            { p -> p.filter { it.isLetter() }.firstOrNull { it.isLowerCase() } != null },
+            { p -> p.firstOrNull { !it.isLetterOrDigit() } != null }
         ).also {
             bindErrorMessageIfRejected(
                 it,
