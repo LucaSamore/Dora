@@ -13,12 +13,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import arrow.core.Either
 import com.example.dora.viewmodel.SignUpViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
@@ -56,9 +61,7 @@ fun SignUpForm(
     var emailAddress by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
-
-    // only for debugging
-    var result by rememberSaveable { mutableStateOf("Nothing yet") }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -70,6 +73,10 @@ fun SignUpForm(
         Text(text = "Sign Up", style = MaterialTheme.typography.titleMedium)
 
         Spacer(modifier = Modifier.padding(12.dp))
+
+        Text(text = errorMessage, color = Color.Red)
+
+        Spacer(modifier = Modifier.padding(6.dp))
 
         OutlinedTextField(
             value = firstName,
@@ -121,14 +128,17 @@ fun SignUpForm(
 
         Button(
             modifier = Modifier.size(TextFieldDefaults.MinWidth, 48.dp),
-            onClick = { /* TODO */}
+            onClick = {
+                GlobalScope.launch(Dispatchers.Main) {
+                    when (val signUpResult = signUpViewModel.signUp(firstName, lastName, emailAddress, password)) {
+                        is Either.Left -> errorMessage = signUpResult.value.message
+                        is Either.Right -> onSignUp()
+                    }
+                }
+            }
         ) {
             Text("Sign Up")
         }
-
-        Spacer(modifier = Modifier.padding(16.dp))
-
-        Text(text = result)
     }
 }
 

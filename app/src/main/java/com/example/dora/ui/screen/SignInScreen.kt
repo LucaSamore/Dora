@@ -11,10 +11,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import arrow.core.Either
 import com.example.dora.viewmodel.SignInViewModel
@@ -56,9 +56,7 @@ fun SignInForm(
     var emailAddress by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
-
-    // only for debugging
-    var result by rememberSaveable { mutableStateOf("Nothing yet") }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -70,6 +68,10 @@ fun SignInForm(
         Text(text = "Sign In", style = MaterialTheme.typography.titleMedium)
 
         Spacer(modifier = Modifier.padding(12.dp))
+
+        Text(text = errorMessage, color = Color.Red)
+
+        Spacer(modifier = Modifier.padding(6.dp))
 
         OutlinedTextField(
             value = emailAddress,
@@ -106,7 +108,7 @@ fun SignInForm(
             onClick = {
                 GlobalScope.launch(Dispatchers.Main) {
                     when (val signInResult = signInViewModel.signIn(emailAddress, password)) {
-                        is Either.Left -> result = signInResult.value.message
+                        is Either.Left -> errorMessage = signInResult.value.message
                         is Either.Right -> onSignIn()
                     }
                 }
@@ -114,10 +116,6 @@ fun SignInForm(
         ) {
             Text("Sign In")
         }
-
-        Spacer(modifier = Modifier.padding(16.dp))
-
-        Text(text = result)
     }
 }
 
