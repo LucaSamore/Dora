@@ -77,6 +77,7 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.navigation:navigation-compose:$nav_version"
+
     implementation platform('com.google.firebase:firebase-bom:31.5.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
@@ -85,7 +86,11 @@ dependencies {
     implementation "com.google.dagger:hilt-android:2.44"
     kapt "com.google.dagger:hilt-compiler:2.44"
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+
     implementation 'commons-validator:commons-validator:1.7'
+    // https://github.com/patrickfav/bcrypt
+    implementation group: 'at.favre.lib', name: 'bcrypt', version: '0.10.2'
+
     implementation 'io.arrow-kt:arrow-core:1.2.0-RC'
     implementation 'io.arrow-kt:arrow-fx-coroutines:1.2.0-RC'
 

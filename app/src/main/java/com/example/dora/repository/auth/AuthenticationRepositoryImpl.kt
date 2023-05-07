@@ -3,6 +3,7 @@ package com.example.dora.repository.auth
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.dora.common.ErrorMessage
 import com.example.dora.common.auth.Credentials
 import com.example.dora.model.User
@@ -100,7 +101,7 @@ class AuthenticationRepositoryImpl(
             firstName = credentials.firstName,
             lastName = credentials.lastName,
             emailAddress = credentials.emailAddress,
-            password = credentials.password,
+            password = BCrypt.withDefaults().hashToString(12, credentials.password.toCharArray()),
             location = credentials.location,
             profilePicture = credentials.profilePicture
         )
