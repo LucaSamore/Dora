@@ -96,23 +96,8 @@ class AuthenticationRepositoryImpl(
     }
 
     private suspend fun storeUserOnFirestore(credentials: Credentials.Register) : Either<ErrorMessage, Any?> {
-        val user = User(
-            uid = firebaseAuthAPI.getFirebaseUser()?.uid!!,
-            firstName = credentials.firstName,
-            lastName = credentials.lastName,
-            emailAddress = credentials.emailAddress,
-            password = BCrypt.withDefaults().hashToString(12, credentials.password.toCharArray()),
-            location = credentials.location,
-            profilePicture = credentials.profilePicture
-        )
-
-        val request = NetworkRequest.of(
-            FirestoreRequest(
-                data = user,
-                collection = User.collection,
-                document = user.uid,
-            )
-        )
+        val user = createAccount(credentials)
+        val request = createFirestoreRequest(user)
 
         return try {
             firestoreAPI.insert(request).data?.await().right()
@@ -120,4 +105,23 @@ class AuthenticationRepositoryImpl(
             ErrorMessage(e.message!!).left()
         }
     }
+
+    private fun createAccount(credentials: Credentials.Register) : User = User(
+        uid = firebaseAuthAPI.getFirebaseUser()?.uid!!,
+        firstName = credentials.firstName,
+        lastName = credentials.lastName,
+        emailAddress = credentials.emailAddress,
+        password = BCrypt.withDefaults().hashToString(12, credentials.password.toCharArray()),
+        location = credentials.location,
+        profilePicture = credentials.profilePicture
+    )
+
+    private fun createFirestoreRequest(user: User) : NetworkRequest<FirestoreRequest> =
+        NetworkRequest.of(
+            FirestoreRequest(
+                data = user,
+                collection = User.collection,
+                document = user.uid,
+            ),
+        )
 }
