@@ -13,11 +13,12 @@ import com.example.dora.ui.screen.SignUpScreen
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
+    startDestination: String,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navController,
-        startDestination = DoraScreen.SignIn.name,
+        startDestination = startDestination,
         modifier = modifier
     ) {
         composable(route = DoraScreen.Home.name) {
