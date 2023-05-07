@@ -23,14 +23,22 @@ fun NavigationGraph(
         composable(route = DoraScreen.Home.name) {
             HomeScreen(
                 homeViewModel = hiltViewModel(),
-                onSignOut = { navController.navigate(DoraScreen.SignIn.name) }
+                onSignOut = {
+                    navController.navigate(DoraScreen.SignIn.name) {
+                        popUpTo(DoraScreen.Home.name) { inclusive = true }
+                    }
+                },
             )
         }
 
         composable(route = DoraScreen.SignIn.name) {
             SignInScreen(
                 signInViewModel = hiltViewModel(),
-                onSignIn = { navController.navigate(DoraScreen.Home.name) },
+                onSignIn = {
+                    navController.navigate(DoraScreen.Home.name) {
+                        popUpTo(DoraScreen.SignIn.name) { inclusive = true }
+                    }
+                },
                 onSignUp = { navController.navigate(DoraScreen.SignUp.name) }
             )
         }
@@ -38,7 +46,10 @@ fun NavigationGraph(
         composable(route = DoraScreen.SignUp.name) {
             SignUpScreen(
                 signUpViewModel = hiltViewModel(),
-                onSignUp = { navController.navigate(DoraScreen.Home.name) },
+                onSignUp = {
+                    navController.backQueue.clear()
+                    navController.navigate(DoraScreen.Home.name)
+                },
                 onBackToSignIn = { navController.navigate(DoraScreen.SignIn.name) }
             )
         }
