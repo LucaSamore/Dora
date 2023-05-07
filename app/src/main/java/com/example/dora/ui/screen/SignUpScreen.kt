@@ -6,27 +6,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import arrow.core.Either
-import com.example.dora.viewmodel.SignInViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.example.dora.viewmodel.SignUpViewModel
 
 @Composable
-fun SignInScreen(
-    signInViewModel: SignInViewModel,
-    onSignIn: () -> Unit,
-    onSignUp: () -> Unit
+fun SignUpScreen(
+    signUpViewModel: SignUpViewModel,
+    onSignUp: () -> Unit,
+    onBackToSignIn: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -35,24 +33,26 @@ fun SignInScreen(
     ) {
         Text(text = "Dora", style = MaterialTheme.typography.titleLarge)
 
-        SignInForm(signInViewModel, onSignIn)
+        SignUpForm(signUpViewModel, onSignUp)
 
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Don’t have an account yet?")
-            TextButton(onClick = { onSignUp() }) {
-                Text(text = "Sign Up")
+            Text(text = "Already have an account?")
+            TextButton(onClick = { onBackToSignIn() }) {
+                Text(text = "Sign In")
             }
         }
     }
 }
 
 @Composable
-fun SignInForm(
-    signInViewModel: SignInViewModel,
-    onSignIn: () -> Unit
+fun SignUpForm(
+    signUpViewModel: SignUpViewModel,
+    onSignUp: () -> Unit
 ) {
+    var firstName by rememberSaveable { mutableStateOf("") }
+    var lastName by rememberSaveable { mutableStateOf("") }
     var emailAddress by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
@@ -67,9 +67,27 @@ fun SignInForm(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Sign In", style = MaterialTheme.typography.titleMedium)
+        Text(text = "Sign Up", style = MaterialTheme.typography.titleMedium)
 
         Spacer(modifier = Modifier.padding(12.dp))
+
+        OutlinedTextField(
+            value = firstName,
+            onValueChange = { firstName = it },
+            label = { Text("First name") },
+            placeholder = { Text("Mario") },
+        )
+
+        Spacer(modifier = Modifier.padding(6.dp))
+
+        OutlinedTextField(
+            value = lastName,
+            onValueChange = { lastName = it },
+            label = { Text("Last name") },
+            placeholder = { Text("Rossi") },
+        )
+
+        Spacer(modifier = Modifier.padding(6.dp))
 
         OutlinedTextField(
             value = emailAddress,
@@ -87,7 +105,7 @@ fun SignInForm(
             label = { Text("Password") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation =
-                if(passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
+            if(passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
             trailingIcon = {
                 IconButton(onClick = { passwordHidden = !passwordHidden }) {
                     val visibilityIcon =
@@ -103,16 +121,9 @@ fun SignInForm(
 
         Button(
             modifier = Modifier.size(TextFieldDefaults.MinWidth, 48.dp),
-            onClick = {
-                GlobalScope.launch(Dispatchers.Main) {
-                    when (val signInResult = signInViewModel.signIn(emailAddress, password)) {
-                        is Either.Left -> result = signInResult.value.message
-                        is Either.Right -> onSignIn()
-                    }
-                }
-            }
+            onClick = { /* TODO */}
         ) {
-            Text("Sign In")
+            Text("Sign Up")
         }
 
         Spacer(modifier = Modifier.padding(16.dp))
@@ -123,6 +134,6 @@ fun SignInForm(
 
 @Preview(showBackground = true)
 @Composable
-fun SignInScreenPreview() {
-    // SignInScreen()
+fun SignUpScreenPreview() {
+    // SignUpScreen()
 }
