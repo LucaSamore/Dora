@@ -16,4 +16,3 @@ val DoraPink100 = Color(0xfffedbd0)
 val DoraPink300 = Color(0xfffff0ea)
 val DoraPink500 = Color(0xfffbb8ac)
 val DoraPink900 = Color(0xff442c2e)
-

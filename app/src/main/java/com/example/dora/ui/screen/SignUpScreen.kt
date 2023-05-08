@@ -36,23 +36,15 @@ fun SignUpScreen(
 
         SignUpForm(signUpViewModel, onSignUp, modifier)
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Already have an account?")
-            TextButton(onClick = { onBackToSignIn() }) {
-                Text(text = "Sign In")
-            }
+            TextButton(onClick = { onBackToSignIn() }) { Text(text = "Sign In") }
         }
     }
 }
 
 @Composable
-fun SignUpForm(
-    signUpViewModel: SignUpViewModel,
-    onSignUp: () -> Unit,
-    modifier: Modifier
-) {
+fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier: Modifier) {
     var firstName by rememberSaveable { mutableStateOf("") }
     var lastName by rememberSaveable { mutableStateOf("") }
     var emailAddress by rememberSaveable { mutableStateOf("") }
@@ -62,9 +54,7 @@ fun SignUpForm(
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 48.dp, bottom = 24.dp),
+        modifier = modifier.fillMaxWidth().padding(top = 48.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -110,7 +100,7 @@ fun SignUpForm(
             label = { Text("Password") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation =
-            if(passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
+                if (passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
             trailingIcon = {
                 IconButton(onClick = { passwordHidden = !passwordHidden }) {
                     val visibilityIcon =
@@ -128,7 +118,10 @@ fun SignUpForm(
             modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
                 scope.launch {
-                    when (val signUpResult = signUpViewModel.signUp(firstName, lastName, emailAddress, password)) {
+                    when (
+                        val signUpResult =
+                            signUpViewModel.signUp(firstName, lastName, emailAddress, password)
+                    ) {
                         is Either.Left -> errorMessage = signUpResult.value.message
                         is Either.Right -> onSignUp()
                     }

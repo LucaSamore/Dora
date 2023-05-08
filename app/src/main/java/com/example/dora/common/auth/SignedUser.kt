@@ -6,7 +6,6 @@ data class SignedUser(
     val uid: String,
 ) {
     companion object {
-        fun fromAuthResult(authResult: AuthResult) : SignedUser =
-            SignedUser(authResult.user?.uid!!)
+        fun fromAuthResult(authResult: AuthResult): SignedUser = SignedUser(authResult.user?.uid!!)
     }
 }

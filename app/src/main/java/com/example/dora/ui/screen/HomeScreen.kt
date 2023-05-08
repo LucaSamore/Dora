@@ -14,11 +14,7 @@ import com.example.dora.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen(
-    homeViewModel: HomeViewModel,
-    onSignOut: () -> Unit,
-    modifier: Modifier
-) {
+fun HomeScreen(homeViewModel: HomeViewModel, onSignOut: () -> Unit, modifier: Modifier) {
     var error by rememberSaveable { mutableStateOf("Nothing yet") }
     val scope = rememberCoroutineScope()
 

@@ -15,9 +15,7 @@ object RepositoryModule {
     @FirebaseRepository
     @Singleton
     @Provides
-    fun providesAuthenticationRepository() : AuthenticationRepository = FirebaseAuthRepository()
+    fun providesAuthenticationRepository(): AuthenticationRepository = FirebaseAuthRepository()
 }
 
-@Retention(AnnotationRetention.BINARY)
-@Qualifier
-annotation class FirebaseRepository
+@Retention(AnnotationRetention.BINARY) @Qualifier annotation class FirebaseRepository

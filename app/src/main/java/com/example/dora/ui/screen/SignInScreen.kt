@@ -8,13 +8,13 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import arrow.core.Either
 import com.example.dora.viewmodel.SignInViewModel
@@ -36,23 +36,15 @@ fun SignInScreen(
 
         SignInForm(signInViewModel, onSignIn, modifier)
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Don’t have an account yet?")
-            TextButton(onClick = { onSignUp() }) {
-                Text(text = "Sign Up")
-            }
+            TextButton(onClick = { onSignUp() }) { Text(text = "Sign Up") }
         }
     }
 }
 
 @Composable
-fun SignInForm(
-    signInViewModel: SignInViewModel,
-    onSignIn: () -> Unit,
-    modifier: Modifier
-) {
+fun SignInForm(signInViewModel: SignInViewModel, onSignIn: () -> Unit, modifier: Modifier) {
     var emailAddress by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
@@ -60,9 +52,7 @@ fun SignInForm(
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 48.dp, bottom = 24.dp),
+        modifier = modifier.fillMaxWidth().padding(top = 48.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -90,7 +80,7 @@ fun SignInForm(
             label = { Text("Password") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation =
-                if(passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
+                if (passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
             trailingIcon = {
                 IconButton(onClick = { passwordHidden = !passwordHidden }) {
                     val visibilityIcon =

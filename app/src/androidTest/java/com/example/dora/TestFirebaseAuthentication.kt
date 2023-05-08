@@ -36,7 +36,8 @@ class TestFirebaseAuthentication {
                 } else {
                     Log.i("register", "Account creation failed")
                 }
-            }.await()
+            }
+            .await()
         assert(auth.currentUser != null)
         auth.signOut()
         assert(auth.currentUser == null)
@@ -52,19 +53,23 @@ class TestFirebaseAuthentication {
                 } else {
                     Log.i("login", "Login failed")
                 }
-            }.await()
+            }
+            .await()
         assert(auth.currentUser != null)
     }
 
     @Test
     fun testDeleteAccount() = runBlocking {
-        auth.currentUser?.delete()?.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Log.i("delete", "Account deleted successfully")
-            } else {
-                Log.i("delete", "Account deletion failed")
+        auth.currentUser
+            ?.delete()
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.i("delete", "Account deleted successfully")
+                } else {
+                    Log.i("delete", "Account deletion failed")
+                }
             }
-        }?.await()
+            ?.await()
         assert(auth.currentUser == null)
     }
 
@@ -74,5 +79,4 @@ class TestFirebaseAuthentication {
             auth.currentUser?.delete()?.await()
         }
     }
-
 }

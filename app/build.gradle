@@ -4,6 +4,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'com.ncorti.ktfmt.gradle' version '0.12.0'
 }
 
 android {
@@ -110,4 +111,9 @@ dependencies {
 // Allow references to generated code
 kapt {
     correctErrorTypes true
+}
+
+ktfmt {
+    // KotlinLang style - 4 space indentation - From kotlinlang.org/docs/coding-conventions.html
+    kotlinLangStyle()
 }

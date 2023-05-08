@@ -27,75 +27,77 @@ class FirebaseAuthRepository(
 
     override suspend fun signInWithEmailAndPassword(
         credentials: Credentials.Login
-    ): Either<ErrorMessage, SignedUser> = withContext(ioDispatcher) {
-        firebaseAuthAPI
-            .signInWithEmailAndPassword(NetworkRequest.of(credentials))
-            .toEither()
-            .let {
-                when (it) {
-                    is Either.Left -> onValidationError(it.value).left()
-                    is Either.Right -> onAuthenticationComplete(it.value!!)
+    ): Either<ErrorMessage, SignedUser> =
+        withContext(ioDispatcher) {
+            firebaseAuthAPI
+                .signInWithEmailAndPassword(NetworkRequest.of(credentials))
+                .toEither()
+                .let {
+                    when (it) {
+                        is Either.Left -> onValidationError(it.value).left()
+                        is Either.Right -> onAuthenticationComplete(it.value!!)
+                    }
                 }
-            }
-    }
+        }
 
     override suspend fun signUpWithEmailAndPassword(
         credentials: Credentials.Register
-    ): Either<ErrorMessage, SignedUser> = withContext(ioDispatcher) {
-        firebaseAuthAPI
-            .signUpWithEmailAndPassword(NetworkRequest.of(credentials))
-            .toEither()
-            .let {
-                when (it) {
-                    is Either.Left -> onValidationError(it.value).left()
-                    is Either.Right -> onAccountCreated(
-                        onAuthenticationComplete(it.value!!),
-                        credentials
-                    )
+    ): Either<ErrorMessage, SignedUser> =
+        withContext(ioDispatcher) {
+            firebaseAuthAPI
+                .signUpWithEmailAndPassword(NetworkRequest.of(credentials))
+                .toEither()
+                .let {
+                    when (it) {
+                        is Either.Left -> onValidationError(it.value).left()
+                        is Either.Right ->
+                            onAccountCreated(onAuthenticationComplete(it.value!!), credentials)
+                    }
                 }
-            }
-    }
+        }
 
     override suspend fun signOut() {
-        withContext(ioDispatcher) {
-            firebaseAuthAPI.signOut()
+        withContext(ioDispatcher) { firebaseAuthAPI.signOut() }
+    }
+
+    override suspend fun isUserSignedIn(): Boolean =
+        withContext(ioDispatcher) { firebaseAuthAPI.isUserSignedIn() }
+
+    override suspend fun deleteUser(): Either<ErrorMessage, Void> =
+        try {
+            firebaseAuthAPI.deleteUser().await().right()
+        } catch (e: Exception) {
+            ErrorMessage(e.message!!).left()
         }
-    }
 
-    override suspend fun isUserSignedIn(): Boolean = withContext(ioDispatcher) {
-        firebaseAuthAPI.isUserSignedIn()
-    }
-
-    override suspend fun deleteUser(): Either<ErrorMessage, Void> = try {
-        firebaseAuthAPI.deleteUser().await().right()
-    } catch (e: Exception) {
-        ErrorMessage(e.message!!).left()
-    }
-
-    private fun onValidationError(error: Throwable) : ErrorMessage = ErrorMessage(error.message!!)
+    private fun onValidationError(error: Throwable): ErrorMessage = ErrorMessage(error.message!!)
 
     private suspend fun onAuthenticationComplete(
         authTask: Task<AuthResult>
-    ) : Either<ErrorMessage, SignedUser> = try {
-        SignedUser.fromAuthResult(authTask.await()).right()
-    } catch (e: Exception) {
-        ErrorMessage(e.message!!).left()
-    }
+    ): Either<ErrorMessage, SignedUser> =
+        try {
+            SignedUser.fromAuthResult(authTask.await()).right()
+        } catch (e: Exception) {
+            ErrorMessage(e.message!!).left()
+        }
 
     private suspend fun onAccountCreated(
         taskResult: Either<ErrorMessage, SignedUser>,
         credentials: Credentials.Register
-    ) : Either<ErrorMessage, SignedUser> = when (taskResult) {
-        is Either.Left -> taskResult.value.left()
-        is Either.Right -> {
-            when (val accountCreationResult = storeUserOnFirestore(credentials)) {
-                is Either.Left -> accountCreationResult.value.left()
-                is Either.Right -> taskResult.value.right()
+    ): Either<ErrorMessage, SignedUser> =
+        when (taskResult) {
+            is Either.Left -> taskResult.value.left()
+            is Either.Right -> {
+                when (val accountCreationResult = storeUserOnFirestore(credentials)) {
+                    is Either.Left -> accountCreationResult.value.left()
+                    is Either.Right -> taskResult.value.right()
+                }
             }
         }
-    }
 
-    private suspend fun storeUserOnFirestore(credentials: Credentials.Register) : Either<ErrorMessage, Any?> {
+    private suspend fun storeUserOnFirestore(
+        credentials: Credentials.Register
+    ): Either<ErrorMessage, Any?> {
         val user = createAccount(credentials)
         val request = createFirestoreRequest(user)
 
@@ -106,26 +108,25 @@ class FirebaseAuthRepository(
         }
     }
 
-    private fun createAccount(credentials: Credentials.Register) : User {
+    private fun createAccount(credentials: Credentials.Register): User {
         return User(
             uid = firebaseAuthAPI.getFirebaseUser()?.uid!!,
             firstName = credentials.firstName,
             lastName = credentials.lastName,
             emailAddress = credentials.emailAddress,
-            password = BCrypt
-                .withDefaults()
-                .hashToString(12, credentials.password.toCharArray()),
+            password = BCrypt.withDefaults().hashToString(12, credentials.password.toCharArray()),
             location = credentials.location,
             profilePicture = credentials.profilePicture
         )
     }
 
-    private fun createFirestoreRequest(user: User) : NetworkRequest<FirestoreRequest> {
-        val firestoreRequest = FirestoreRequest(
-            data = user,
-            collection = User.collection,
-            document = user.uid,
-        )
+    private fun createFirestoreRequest(user: User): NetworkRequest<FirestoreRequest> {
+        val firestoreRequest =
+            FirestoreRequest(
+                data = user,
+                collection = User.collection,
+                document = user.uid,
+            )
         return NetworkRequest.of(firestoreRequest)
     }
 }

@@ -3,9 +3,8 @@ package com.example.dora.model
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-fun nowWithPattern(pattern: String): String = LocalDateTime
-    .now()
-    .format(DateTimeFormatter.ofPattern(pattern))
+fun nowWithPattern(pattern: String): String =
+    LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern))
 
 data class User(
     val uid: String,

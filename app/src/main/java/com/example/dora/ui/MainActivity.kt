@@ -37,8 +37,8 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NavigationGraph(
                             navController = rememberNavController(),
-                            startDestination = if (isUserSignedIn) DoraScreen.Home.name else
-                                DoraScreen.SignIn.name
+                            startDestination =
+                                if (isUserSignedIn) DoraScreen.Home.name else DoraScreen.SignIn.name
                         )
                     }
                 }

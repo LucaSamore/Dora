@@ -8,14 +8,15 @@ import com.example.dora.di.FirebaseRepository
 import com.example.dora.di.IoDispatcher
 import com.example.dora.repository.auth.AuthenticationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel
+@Inject
+constructor(
     @FirebaseRepository private val authenticationRepository: AuthenticationRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {

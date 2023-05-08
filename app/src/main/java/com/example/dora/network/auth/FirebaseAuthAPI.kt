@@ -2,20 +2,23 @@ package com.example.dora.network.auth
 
 import com.example.dora.common.auth.Credentials
 import com.example.dora.common.validation.UserValidator
+import com.example.dora.common.validation.ValidationStatus
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.NetworkResponse
+import com.example.dora.network.api.AuthenticationAPI
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.android.gms.tasks.Task
-import com.example.dora.common.validation.ValidationStatus
-import com.example.dora.network.api.AuthenticationAPI
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseUser
 
-class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : AuthenticationAPI<Credentials, Task<AuthResult>, Throwable> {
+class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
+    AuthenticationAPI<Credentials, Task<AuthResult>, Throwable> {
 
-    override fun signUpWithEmailAndPassword(request: NetworkRequest<Credentials>) : NetworkResponse<Task<AuthResult>, Throwable> {
+    override fun signUpWithEmailAndPassword(
+        request: NetworkRequest<Credentials>
+    ): NetworkResponse<Task<AuthResult>, Throwable> {
         val validationResult = validateCredentials(request.body)
 
         if (validationResult.data!! == ValidationStatus.REJECT) {
@@ -28,7 +31,9 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : Authenti
         return NetworkResponse(authenticationResult, null)
     }
 
-    override fun signInWithEmailAndPassword(request: NetworkRequest<Credentials>): NetworkResponse<Task<AuthResult>, Throwable> {
+    override fun signInWithEmailAndPassword(
+        request: NetworkRequest<Credentials>
+    ): NetworkResponse<Task<AuthResult>, Throwable> {
         val validationResult = validateCredentials(request.body)
 
         if (validationResult.data!! == ValidationStatus.REJECT) {
@@ -45,18 +50,22 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : Authenti
 
     override fun signOut() = auth.signOut()
 
-    fun deleteUser() : Task<Void> = auth.currentUser?.delete()!!
+    fun deleteUser(): Task<Void> = auth.currentUser?.delete()!!
 
-    fun getFirebaseUser() : FirebaseUser? = auth.currentUser
+    fun getFirebaseUser(): FirebaseUser? = auth.currentUser
 
-    private fun validateCredentials(credentials: Credentials) : NetworkResponse<ValidationStatus, Throwable> {
+    private fun validateCredentials(
+        credentials: Credentials
+    ): NetworkResponse<ValidationStatus, Throwable> {
         return when (credentials) {
             is Credentials.Login -> validateLoginCredentials(credentials)
             is Credentials.Register -> validateRegisterCredentials(credentials)
         }
     }
 
-    private fun validateLoginCredentials(credentials: Credentials.Login) : NetworkResponse<ValidationStatus, Throwable> {
+    private fun validateLoginCredentials(
+        credentials: Credentials.Login
+    ): NetworkResponse<ValidationStatus, Throwable> {
         UserValidator.validateEmailAddress(credentials.emailAddress).also {
             if (it.status == ValidationStatus.REJECT) {
                 return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
@@ -72,7 +81,9 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : Authenti
         return NetworkResponse(ValidationStatus.PASS, null)
     }
 
-    private fun validateRegisterCredentials(credentials: Credentials.Register) : NetworkResponse<ValidationStatus, Throwable> {
+    private fun validateRegisterCredentials(
+        credentials: Credentials.Register
+    ): NetworkResponse<ValidationStatus, Throwable> {
         UserValidator.validateFirstOrLastName(credentials.firstName).also {
             if (it.status == ValidationStatus.REJECT) {
                 return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
@@ -100,4 +111,3 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) : Authenti
         return NetworkResponse(ValidationStatus.PASS, null)
     }
 }
-

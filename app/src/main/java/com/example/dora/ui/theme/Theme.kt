@@ -16,43 +16,45 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = DoraPink100,
-    secondary = DoraPink50,
-    tertiary = Pink80,
-    background = DoraPink100,
-    surface = DoraPink10,
-    error = Color(0xffc5032b),
-    onPrimary = DoraPink900,
-    onSecondary = DoraPink900,
-    onBackground = DoraPink900,
-    onSurface = DoraPink900,
-    onError = DoraPink10
-)
+private val DarkColorScheme =
+    darkColorScheme(
+        primary = DoraPink100,
+        secondary = DoraPink50,
+        tertiary = Pink80,
+        background = DoraPink100,
+        surface = DoraPink10,
+        error = Color(0xffc5032b),
+        onPrimary = DoraPink900,
+        onSecondary = DoraPink900,
+        onBackground = DoraPink900,
+        onSurface = DoraPink900,
+        onError = DoraPink10
+    )
 
-private val LightColorScheme = lightColorScheme(
-    primary = DoraPink100,
-    onPrimary = DoraPink900,
-    secondary = DoraPink50,
-    tertiary = Pink40,
-    background = DoraPink100,
-    surface = DoraPink10,
-    error = Color(0xffc5032b),
-    onSecondary = DoraPink900,
-    onBackground = DoraPink900,
-    onSurface = DoraPink900,
-    onError = DoraPink10
+private val LightColorScheme =
+    lightColorScheme(
+        primary = DoraPink100,
+        onPrimary = DoraPink900,
+        secondary = DoraPink50,
+        tertiary = Pink40,
+        background = DoraPink100,
+        surface = DoraPink10,
+        error = Color(0xffc5032b),
+        onSecondary = DoraPink900,
+        onBackground = DoraPink900,
+        onSurface = DoraPink900,
+        onError = DoraPink10
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
-)
+        /* Other default colors to override
+        background = Color(0xFFFFFBFE),
+        surface = Color(0xFFFFFBFE),
+        onPrimary = Color.White,
+        onSecondary = Color.White,
+        onTertiary = Color.White,
+        onBackground = Color(0xFF1C1B1F),
+        onSurface = Color(0xFF1C1B1F),
+        */
+    )
 
 @Composable
 fun DoraTheme(
@@ -61,14 +63,15 @@ fun DoraTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    val colorScheme =
+        when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                val context = LocalContext.current
+                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
+            darkTheme -> DarkColorScheme
+            else -> LightColorScheme
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -77,9 +80,5 @@ fun DoraTheme(
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
 }
