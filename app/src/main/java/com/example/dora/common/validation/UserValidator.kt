@@ -10,23 +10,53 @@ object UserValidator : Validator {
 
     internal fun validateFirstOrLastName(firstOrLastName: String): ValidationResult = validate(
         firstOrLastName,
-        { f -> f.isNotEmpty() },
-        { f -> f.length in NAME_MIN_LENGTH..NAME_MAX_LENGTH }
-    ).bindErrorMessageIfRejected("First name or last name is not valid")
+        { f -> Pair(
+            f.isNotEmpty(),
+            "First name or last name is required"
+        ) },
+        { f -> Pair(
+            f.length in NAME_MIN_LENGTH..NAME_MAX_LENGTH,
+            "First name or last name is too short"
+        ) }
+    )
 
     internal fun validateEmailAddress(emailAddress: String): ValidationResult = validate(
         emailAddress,
-        { e -> e.isNotEmpty() },
-        { e -> EmailValidator.getInstance().isValid(e) }
-    ).bindErrorMessageIfRejected("Email address is not valid")
+        { e -> Pair(
+            e.isNotEmpty(),
+            "Email address is required"
+        ) },
+        { e -> Pair(
+            EmailValidator.getInstance().isValid(e),
+            "Email address is not valid"
+        ) }
+    )
 
     internal fun validatePassword(password: String): ValidationResult = validate(
         password,
-        { p -> p.isNotEmpty() },
-        { p -> p.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH },
-        { p -> p.firstOrNull { it.isDigit() } != null },
-        { p -> p.filter { it.isLetter() }.firstOrNull { it.isUpperCase() } != null },
-        { p -> p.filter { it.isLetter() }.firstOrNull { it.isLowerCase() } != null },
-        { p -> p.firstOrNull { !it.isLetterOrDigit() } != null }
-    ).bindErrorMessageIfRejected("Password is not valid")
+        { p -> Pair(
+            p.isNotEmpty(),
+            "Password is required"
+        ) },
+        { p -> Pair(
+            p.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH,
+            "Password must be at least $PASSWORD_MIN_LENGTH characters"
+        ) },
+        { p -> Pair(
+            p.firstOrNull { it.isDigit() } != null,
+            "Password must contain at least a number"
+        ) },
+        { p -> Pair(
+            p.filter { it.isLetter() }.firstOrNull { it.isUpperCase() } != null,
+            "Password must contain at least one uppercase letter"
+        ) },
+        { p -> Pair(
+            p.filter { it.isLetter() }.firstOrNull { it.isLowerCase() } != null,
+            "Password must contain at least one lowercase letter"
+        ) },
+        { p -> Pair(
+            p.firstOrNull { !it.isLetterOrDigit() } != null,
+            "Password must contain at least one letter and one number"
+        ) }
+    )
 }
