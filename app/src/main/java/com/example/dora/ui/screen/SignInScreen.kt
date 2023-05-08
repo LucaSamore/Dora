@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import arrow.core.Either
 import com.example.dora.viewmodel.SignInViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,6 +58,7 @@ fun SignInForm(
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = modifier
@@ -108,7 +108,7 @@ fun SignInForm(
         Button(
             modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
-                GlobalScope.launch(Dispatchers.Main) {
+                scope.launch(Dispatchers.Main) {
                     when (val signInResult = signInViewModel.signIn(emailAddress, password)) {
                         is Either.Left -> errorMessage = signInResult.value.message
                         is Either.Right -> onSignIn()

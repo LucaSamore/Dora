@@ -6,11 +6,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import arrow.core.Either
 import com.example.dora.viewmodel.SignUpViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -64,6 +60,7 @@ fun SignUpForm(
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = modifier
@@ -131,7 +128,7 @@ fun SignUpForm(
         Button(
             modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
-                GlobalScope.launch(Dispatchers.Main) {
+                scope.launch(Dispatchers.Main) {
                     when (val signUpResult = signUpViewModel.signUp(firstName, lastName, emailAddress, password)) {
                         is Either.Left -> errorMessage = signUpResult.value.message
                         is Either.Right -> onSignUp()
