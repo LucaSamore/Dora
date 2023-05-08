@@ -29,6 +29,7 @@ fun NavigationGraph(
                         popUpTo(DoraScreen.Home.name) { inclusive = true }
                     }
                 },
+                modifier = modifier
             )
         }
 
@@ -40,7 +41,8 @@ fun NavigationGraph(
                         popUpTo(DoraScreen.SignIn.name) { inclusive = true }
                     }
                 },
-                onSignUp = { navController.navigate(DoraScreen.SignUp.name) }
+                onSignUp = { navController.navigate(DoraScreen.SignUp.name) },
+                modifier = modifier
             )
         }
 
@@ -51,7 +53,8 @@ fun NavigationGraph(
                     navController.backQueue.clear()
                     navController.navigate(DoraScreen.Home.name)
                 },
-                onBackToSignIn = { navController.navigate(DoraScreen.SignIn.name) }
+                onBackToSignIn = { navController.navigate(DoraScreen.SignIn.name) },
+                modifier = modifier
             )
         }
     }

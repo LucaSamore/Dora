@@ -26,16 +26,17 @@ import kotlinx.coroutines.launch
 fun SignInScreen(
     signInViewModel: SignInViewModel,
     onSignIn: () -> Unit,
-    onSignUp: () -> Unit
+    onSignUp: () -> Unit,
+    modifier: Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Dora", style = MaterialTheme.typography.titleLarge)
 
-        SignInForm(signInViewModel, onSignIn)
+        SignInForm(signInViewModel, onSignIn, modifier)
 
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -51,7 +52,8 @@ fun SignInScreen(
 @Composable
 fun SignInForm(
     signInViewModel: SignInViewModel,
-    onSignIn: () -> Unit
+    onSignIn: () -> Unit,
+    modifier: Modifier
 ) {
     var emailAddress by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -59,7 +61,7 @@ fun SignInForm(
     var errorMessage by rememberSaveable { mutableStateOf("") }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 48.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.Center,
@@ -67,11 +69,11 @@ fun SignInForm(
     ) {
         Text(text = "Sign In", style = MaterialTheme.typography.titleMedium)
 
-        Spacer(modifier = Modifier.padding(12.dp))
+        Spacer(modifier = modifier.padding(12.dp))
 
         Text(text = errorMessage, color = Color.Red)
 
-        Spacer(modifier = Modifier.padding(6.dp))
+        Spacer(modifier = modifier.padding(6.dp))
 
         OutlinedTextField(
             value = emailAddress,
@@ -80,7 +82,7 @@ fun SignInForm(
             placeholder = { Text("example@gmail.com") },
         )
 
-        Spacer(modifier = Modifier.padding(6.dp))
+        Spacer(modifier = modifier.padding(6.dp))
 
         OutlinedTextField(
             value = password,
@@ -101,10 +103,10 @@ fun SignInForm(
             }
         )
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = modifier.padding(16.dp))
 
         Button(
-            modifier = Modifier.size(TextFieldDefaults.MinWidth, 48.dp),
+            modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
                 GlobalScope.launch(Dispatchers.Main) {
                     when (val signInResult = signInViewModel.signIn(emailAddress, password)) {

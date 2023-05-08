@@ -29,16 +29,17 @@ import kotlinx.coroutines.launch
 fun SignUpScreen(
     signUpViewModel: SignUpViewModel,
     onSignUp: () -> Unit,
-    onBackToSignIn: () -> Unit
+    onBackToSignIn: () -> Unit,
+    modifier: Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Dora", style = MaterialTheme.typography.titleLarge)
 
-        SignUpForm(signUpViewModel, onSignUp)
+        SignUpForm(signUpViewModel, onSignUp, modifier)
 
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -54,7 +55,8 @@ fun SignUpScreen(
 @Composable
 fun SignUpForm(
     signUpViewModel: SignUpViewModel,
-    onSignUp: () -> Unit
+    onSignUp: () -> Unit,
+    modifier: Modifier
 ) {
     var firstName by rememberSaveable { mutableStateOf("") }
     var lastName by rememberSaveable { mutableStateOf("") }
@@ -64,7 +66,7 @@ fun SignUpForm(
     var errorMessage by rememberSaveable { mutableStateOf("") }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 48.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.Center,
@@ -72,11 +74,11 @@ fun SignUpForm(
     ) {
         Text(text = "Sign Up", style = MaterialTheme.typography.titleMedium)
 
-        Spacer(modifier = Modifier.padding(12.dp))
+        Spacer(modifier = modifier.padding(12.dp))
 
         Text(text = errorMessage, color = Color.Red)
 
-        Spacer(modifier = Modifier.padding(6.dp))
+        Spacer(modifier = modifier.padding(6.dp))
 
         OutlinedTextField(
             value = firstName,
@@ -85,7 +87,7 @@ fun SignUpForm(
             placeholder = { Text("Mario") },
         )
 
-        Spacer(modifier = Modifier.padding(6.dp))
+        Spacer(modifier = modifier.padding(6.dp))
 
         OutlinedTextField(
             value = lastName,
@@ -94,7 +96,7 @@ fun SignUpForm(
             placeholder = { Text("Rossi") },
         )
 
-        Spacer(modifier = Modifier.padding(6.dp))
+        Spacer(modifier = modifier.padding(6.dp))
 
         OutlinedTextField(
             value = emailAddress,
@@ -103,7 +105,7 @@ fun SignUpForm(
             placeholder = { Text("example@gmail.com") },
         )
 
-        Spacer(modifier = Modifier.padding(6.dp))
+        Spacer(modifier = modifier.padding(6.dp))
 
         OutlinedTextField(
             value = password,
@@ -124,10 +126,10 @@ fun SignUpForm(
             }
         )
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = modifier.padding(16.dp))
 
         Button(
-            modifier = Modifier.size(TextFieldDefaults.MinWidth, 48.dp),
+            modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
                 GlobalScope.launch(Dispatchers.Main) {
                     when (val signUpResult = signUpViewModel.signUp(firstName, lastName, emailAddress, password)) {

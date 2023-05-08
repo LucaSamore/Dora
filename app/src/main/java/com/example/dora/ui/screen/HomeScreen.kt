@@ -21,18 +21,19 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    modifier: Modifier
 ) {
     var error by rememberSaveable { mutableStateOf("Nothing yet") }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Home screen")
 
-        Spacer(modifier = Modifier.padding(vertical = 12.dp))
+        Spacer(modifier = modifier.padding(vertical = 12.dp))
 
         Button(
             onClick = {
@@ -43,7 +44,7 @@ fun HomeScreen(
             Text(text = "Sign Out")
         }
 
-        Spacer(modifier = Modifier.padding(vertical = 12.dp))
+        Spacer(modifier = modifier.padding(vertical = 12.dp))
 
         Button(
             onClick = {
@@ -58,7 +59,7 @@ fun HomeScreen(
             Text(text = "Delete account")
         }
 
-        Spacer(modifier = Modifier.padding(vertical = 12.dp))
+        Spacer(modifier = modifier.padding(vertical = 12.dp))
 
         Text(text = error)
     }
