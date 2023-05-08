@@ -3,12 +3,12 @@ package com.example.dora.repository.auth
 import arrow.core.Either
 import com.example.dora.common.ErrorMessage
 import com.example.dora.common.auth.Credentials
-import com.google.firebase.auth.AuthResult
+import com.example.dora.common.auth.SignedUser
 
 interface AuthenticationRepository {
-    suspend fun signInWithEmailAndPassword(credentials: Credentials.Login) : Either<ErrorMessage, AuthResult>
+    suspend fun signInWithEmailAndPassword(credentials: Credentials.Login) : Either<ErrorMessage, SignedUser>
 
-    suspend fun signUpWithEmailAndPassword(credentials: Credentials.Register) : Either<ErrorMessage, AuthResult>
+    suspend fun signUpWithEmailAndPassword(credentials: Credentials.Register) : Either<ErrorMessage, SignedUser>
 
     suspend fun signOut()
 

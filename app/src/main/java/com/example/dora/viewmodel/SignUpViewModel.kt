@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.example.dora.common.ErrorMessage
 import com.example.dora.common.auth.Credentials
+import com.example.dora.common.auth.SignedUser
 import com.example.dora.di.IoDispatcher
 import com.example.dora.repository.auth.AuthenticationRepository
-import com.google.firebase.auth.AuthResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -23,7 +23,7 @@ class SignUpViewModel @Inject constructor(
         lastName: String,
         emailAddress: String,
         password: String
-    ): Either<ErrorMessage, AuthResult> =
+    ): Either<ErrorMessage, SignedUser> =
         withContext(viewModelScope.coroutineContext + ioDispatcher) {
             authenticationRepository.signUpWithEmailAndPassword(
                 Credentials.Register(
