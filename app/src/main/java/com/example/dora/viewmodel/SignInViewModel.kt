@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.example.dora.common.ErrorMessage
 import com.example.dora.common.auth.Credentials
+import com.example.dora.di.IoDispatcher
 import com.example.dora.repository.auth.AuthenticationRepository
 import com.google.firebase.auth.AuthResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
-    private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     suspend fun signIn(emailAddress: String, password: String): Either<ErrorMessage, AuthResult> =
         withContext(viewModelScope.coroutineContext + ioDispatcher) {
