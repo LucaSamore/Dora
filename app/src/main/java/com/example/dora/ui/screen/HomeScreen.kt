@@ -11,7 +11,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import arrow.core.Either
 import com.example.dora.viewmodel.HomeViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -45,7 +44,7 @@ fun HomeScreen(
 
         Button(
             onClick = {
-                scope.launch(Dispatchers.Main) {
+                scope.launch {
                     when (val result = homeViewModel.deleteAccount()) {
                         is Either.Left -> error = result.value.message
                         is Either.Right -> onSignOut()

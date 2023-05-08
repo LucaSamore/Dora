@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import arrow.core.Either
 import com.example.dora.viewmodel.SignUpViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -128,7 +127,7 @@ fun SignUpForm(
         Button(
             modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
-                scope.launch(Dispatchers.Main) {
+                scope.launch {
                     when (val signUpResult = signUpViewModel.signUp(firstName, lastName, emailAddress, password)) {
                         is Either.Left -> errorMessage = signUpResult.value.message
                         is Either.Right -> onSignUp()

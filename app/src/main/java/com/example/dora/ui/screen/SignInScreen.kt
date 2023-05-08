@@ -18,7 +18,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import arrow.core.Either
 import com.example.dora.viewmodel.SignInViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -108,7 +107,7 @@ fun SignInForm(
         Button(
             modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
-                scope.launch(Dispatchers.Main) {
+                scope.launch {
                     when (val signInResult = signInViewModel.signIn(emailAddress, password)) {
                         is Either.Left -> errorMessage = signInResult.value.message
                         is Either.Right -> onSignIn()
