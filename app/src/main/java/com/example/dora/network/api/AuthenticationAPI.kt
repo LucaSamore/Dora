@@ -2,7 +2,6 @@ package com.example.dora.network.api
 
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.NetworkResponse
-import com.google.android.gms.tasks.Task
 
 interface AuthenticationAPI<I, O, E : Throwable> {
     fun signUpWithEmailAndPassword(request: NetworkRequest<I>) : NetworkResponse<O, E>
