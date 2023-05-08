@@ -6,13 +6,18 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
-
+    @FirebaseRepository
     @Singleton
     @Provides
-    fun provideAuthenticationRepository() : AuthenticationRepository = FirebaseAuthRepository()
+    fun providesAuthenticationRepository() : AuthenticationRepository = FirebaseAuthRepository()
 }
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class FirebaseRepository
