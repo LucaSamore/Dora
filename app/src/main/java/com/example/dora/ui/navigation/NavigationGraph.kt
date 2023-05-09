@@ -29,7 +29,7 @@ fun NavigationGraph(
                         popUpTo(DoraScreen.Home.name) { inclusive = true }
                     }
                 },
-                modifier = modifier
+                modifier = modifier,
             )
         }
 
