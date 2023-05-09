@@ -95,6 +95,8 @@ dependencies {
     implementation 'io.arrow-kt:arrow-core:1.2.0-RC'
     implementation 'io.arrow-kt:arrow-fx-coroutines:1.2.0-RC'
 
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
     testImplementation 'junit:junit:4.13.2'
     testImplementation "io.mockk:mockk:${mockkVersion}"
 

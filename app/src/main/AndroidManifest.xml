@@ -4,6 +4,8 @@
 
     <!-- Remember to remove android:usesCleartextTraffic="true" -->
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:name=".DoraApp"
         android:usesCleartextTraffic="true"
