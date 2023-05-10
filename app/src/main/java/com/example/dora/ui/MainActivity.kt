@@ -12,14 +12,17 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.*
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.example.dora.common.Location
+import com.example.dora.ui.composable.AlertDialogComposable
+import com.example.dora.ui.composable.SnackBarComposable
 import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.ui.navigation.NavigationGraph
 import com.example.dora.ui.theme.DoraTheme
@@ -36,9 +39,10 @@ class MainActivity : ComponentActivity() {
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationPermissionRequest: ActivityResultLauncher<String>
     private var requestingLocationUpdates = false
-    private val mainActivityViewModel: MainActivityViewModel by viewModels()
-
+    private var showSnackBar = mutableStateOf(false)
+    private var showAlertDialog = mutableStateOf(false)
     private val location = mutableStateOf(Location())
+    private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +54,8 @@ class MainActivity : ComponentActivity() {
         ) { isGranted ->
             if (isGranted) {
                 startLocationUpdates()
+            } else {
+                showSnackBar.value = true
             }
         }
 
@@ -75,18 +81,32 @@ class MainActivity : ComponentActivity() {
 
             setContent {
                 DoraTheme {
-                    // A surface container using the 'background' color from the theme
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        NavigationGraph(
-                            navController = rememberNavController(),
-                            startDestination =
-                                if (isUserSignedIn) DoraScreen.Home.name else DoraScreen.SignIn.name,
-                            location = location,
-                            startLocationUpdates = ::startLocationUpdates,
+                        val snackbarHostState = remember { SnackbarHostState() }
+                        val context = LocalContext.current
+
+                        Scaffold(
+                            snackbarHost = { SnackbarHost(snackbarHostState) },
+                            content = {
+                                NavigationGraph(
+                                    navController = rememberNavController(),
+                                    startDestination =
+                                    if (isUserSignedIn) DoraScreen.Home.name else DoraScreen.SignIn.name,
+                                    location = location,
+                                    startLocationUpdates = ::startLocationUpdates,
+                                )
+                            }
                         )
+
+                        if (showSnackBar.value) {
+                            SnackBarComposable(snackbarHostState, context, showSnackBar)
+                        }
+                        if (showAlertDialog.value) {
+                            AlertDialogComposable(context, showAlertDialog)
+                        }
                     }
                 }
             }
@@ -107,10 +127,10 @@ class MainActivity : ComponentActivity() {
                         Looper.getMainLooper()
                     )
                 } else {
-                    // showAlertDialog.value = true
+                    showAlertDialog.value = true
                 }
             }
-            shouldShowRequestPermissionRationale(permission) -> { /* showSnackBar.value = true */ }
+            shouldShowRequestPermissionRationale(permission) -> showSnackBar.value = true
             else -> locationPermissionRequest.launch(permission)
         }
     }
