@@ -1,11 +1,13 @@
 package com.example.dora.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.dora.common.Location
 import com.example.dora.ui.screen.HomeScreen
 import com.example.dora.ui.screen.SignInScreen
 import com.example.dora.ui.screen.SignUpScreen
@@ -15,6 +17,8 @@ fun NavigationGraph(
     navController: NavHostController,
     startDestination: String,
     modifier: Modifier = Modifier,
+    location: MutableState<Location>,
+    startLocationUpdates: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -30,6 +34,8 @@ fun NavigationGraph(
                     }
                 },
                 modifier = modifier,
+                location = location,
+                startLocationUpdates = startLocationUpdates,
             )
         }
 
@@ -42,7 +48,7 @@ fun NavigationGraph(
                     }
                 },
                 onSignUp = { navController.navigate(DoraScreen.SignUp.name) },
-                modifier = modifier
+                modifier = modifier,
             )
         }
 
@@ -54,7 +60,7 @@ fun NavigationGraph(
                     navController.navigate(DoraScreen.Home.name)
                 },
                 onBackToSignIn = { navController.navigate(DoraScreen.SignIn.name) },
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }

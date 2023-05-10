@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import arrow.core.Either
+import com.example.dora.common.Location
 import com.example.dora.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
@@ -17,9 +18,13 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     homeViewModel: HomeViewModel,
     onSignOut: () -> Unit, modifier: Modifier,
+    location: MutableState<Location>,
+    startLocationUpdates: () -> Unit
 ) {
     var error by rememberSaveable { mutableStateOf("Nothing yet") }
     val scope = rememberCoroutineScope()
+
+    startLocationUpdates()
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -52,6 +57,16 @@ fun HomeScreen(
             }
         ) {
             Text(text = "Delete account")
+        }
+
+        Spacer(modifier = modifier.padding(vertical = 12.dp))
+
+        Button(
+            onClick = {
+                error = location.value.toString()
+            }
+        ) {
+            Text(text = "Get location")
         }
 
         Spacer(modifier = modifier.padding(vertical = 12.dp))

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -20,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
+import com.example.dora.common.Location
 import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.ui.navigation.NavigationGraph
 import com.example.dora.ui.theme.DoraTheme
@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
     private var requestingLocationUpdates = false
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
-    private val location = mutableStateOf(Pair(0.toDouble(), 0.toDouble()))
+    private val location = mutableStateOf(Location())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
                 super.onLocationResult(p0)
-                location.value = Pair(
+                location.value = Location(
                     p0.locations.last().latitude,
                     p0.locations.last().longitude
                 )
@@ -80,12 +80,12 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        startLocationUpdates()
-                        Log.i("Location", location.value.toString())
                         NavigationGraph(
                             navController = rememberNavController(),
                             startDestination =
                                 if (isUserSignedIn) DoraScreen.Home.name else DoraScreen.SignIn.name,
+                            location = location,
+                            startLocationUpdates = ::startLocationUpdates,
                         )
                     }
                 }
@@ -98,11 +98,7 @@ class MainActivity : ComponentActivity() {
         val permission = Manifest.permission.ACCESS_COARSE_LOCATION
 
         when {
-            //permission already granted
-            ContextCompat.checkSelfPermission(
-                this,
-                permission
-            ) == PackageManager.PERMISSION_GRANTED -> {
+            ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED -> {
                 val gpsEnabled = checkGPS()
                 if (gpsEnabled) {
                     fusedLocationProviderClient.requestLocationUpdates(
@@ -113,18 +109,9 @@ class MainActivity : ComponentActivity() {
                 } else {
                     // showAlertDialog.value = true
                 }
-
             }
-            //permission already denied
-            shouldShowRequestPermissionRationale(permission) -> {
-                // showSnackBar.value = true
-            }
-            else -> {
-                //first time: ask for permissions
-                locationPermissionRequest.launch(
-                    permission
-                )
-            }
+            shouldShowRequestPermissionRationale(permission) -> { /* showSnackBar.value = true */ }
+            else -> locationPermissionRequest.launch(permission)
         }
     }
 
