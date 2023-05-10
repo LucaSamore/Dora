@@ -33,7 +33,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
@@ -46,35 +45,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-
-        locationPermissionRequest = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted ->
-            if (isGranted) {
-                startLocationUpdates()
-            } else {
-                showSnackBar.value = true
-            }
-        }
-
-        locationRequest =
-            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).apply {
-                setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
-            }.build()
-
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(p0: LocationResult) {
-                super.onLocationResult(p0)
-                location.value = Location(
-                    p0.locations.last().latitude,
-                    p0.locations.last().longitude
-                )
-                stopLocationUpdates()
-                requestingLocationUpdates = false
-            }
-        }
+        fusedLocationProviderClient = createFusedLocationProviderClient()
+        locationPermissionRequest = createLocationPermissionRequest()
+        locationRequest = createLocationRequest()
+        locationCallback = createLocationCallback()
 
         lifecycleScope.launch {
             val isUserSignedIn = mainActivityViewModel.isUserSignedIn()
@@ -88,17 +62,10 @@ class MainActivity : ComponentActivity() {
                         val snackbarHostState = remember { SnackbarHostState() }
                         val context = LocalContext.current
 
-                        Scaffold(
-                            snackbarHost = { SnackbarHost(snackbarHostState) },
-                            content = {
-                                NavigationGraph(
-                                    navController = rememberNavController(),
-                                    startDestination =
-                                    if (isUserSignedIn) DoraScreen.Home.name else DoraScreen.SignIn.name,
-                                    location = location,
-                                    startLocationUpdates = ::startLocationUpdates,
-                                )
-                            }
+                        DoraApplication(
+                            startDestination = if (isUserSignedIn) DoraScreen.Home.name else DoraScreen.SignIn.name,
+                            location = location,
+                            startLocationUpdates = ::startLocationUpdates
                         )
 
                         if (showSnackBar.value) {
@@ -143,6 +110,34 @@ class MainActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         stopLocationUpdates()
+    }
+
+    private fun createFusedLocationProviderClient() = LocationServices.getFusedLocationProviderClient(this)
+
+    private fun createLocationPermissionRequest() = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            startLocationUpdates()
+        } else {
+            showSnackBar.value = true
+        }
+    }
+
+    private fun createLocationRequest() = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).apply {
+        setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
+    }.build()
+
+    private fun createLocationCallback() = object : LocationCallback() {
+        override fun onLocationResult(p0: LocationResult) {
+            super.onLocationResult(p0)
+            location.value = Location(
+                p0.locations.last().latitude,
+                p0.locations.last().longitude
+            )
+            stopLocationUpdates()
+            requestingLocationUpdates = false
+        }
     }
 
     private fun stopLocationUpdates() {

@@ -37,6 +37,7 @@ internal fun AlertDialogComposable(
         },
         dismissButton = {
             TextButton(
+                // TODO: Fix onClick
                 onClick = { showAlertDialog.value = false  }
             ) {
                 Text("Dismiss")
