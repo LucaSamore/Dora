@@ -1,7 +1,9 @@
 package com.example.dora.ui.screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -17,6 +19,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import arrow.core.Either
+import com.example.dora.ui.composable.TakePhoto
 import com.example.dora.viewmodel.SignUpViewModel
 import kotlinx.coroutines.launch
 
@@ -54,11 +57,18 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = modifier.fillMaxWidth().padding(top = 48.dp, bottom = 24.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(top = 48.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Sign Up", style = MaterialTheme.typography.titleMedium)
+
+        Spacer(modifier = modifier.padding(12.dp))
+
+        TakePhoto()
 
         Spacer(modifier = modifier.padding(12.dp))
 
