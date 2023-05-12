@@ -8,6 +8,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.dora.common.ErrorMessage
 import com.example.dora.common.auth.Credentials
 import com.example.dora.common.auth.SignedUser
+import com.example.dora.datastore.UserDatastore
 import com.example.dora.model.User
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.auth.FirebaseAuthAPI
@@ -21,12 +22,14 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class FirebaseAuthRepository(
+class FirebaseAuthRepository @Inject constructor(
     private val firebaseAuthAPI: FirebaseAuthAPI = FirebaseAuthAPI(),
     private val firestoreAPI: FirestoreAPI = FirestoreAPI(),
     private val firebaseStorageAPI: FirebaseStorageAPI = FirebaseStorageAPI(),
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val userDatastore: UserDatastore,
 ) : AuthenticationRepository {
 
     override suspend fun signInWithEmailAndPassword(
@@ -85,12 +88,13 @@ class FirebaseAuthRepository(
 
     private suspend fun onAuthenticationComplete(
         authTask: Task<AuthResult>
-    ): Either<ErrorMessage, SignedUser> =
-        try {
-            SignedUser.fromAuthResult(authTask.await()).right()
-        } catch (e: Exception) {
-            ErrorMessage(e.message!!).left()
-        }
+    ): Either<ErrorMessage, SignedUser> = try {
+        val user = SignedUser.fromAuthResult(authTask.await())
+        userDatastore.saveUserIdToDataStore(user.uid)
+        user.right()
+    } catch (e: Exception) {
+        ErrorMessage(e.message!!).left()
+    }
 
     private suspend fun onAccountCreated(
         taskResult: Either<ErrorMessage, SignedUser>,
@@ -122,6 +126,7 @@ class FirebaseAuthRepository(
             if (storeResult.isLeft()) {
                 return storeResult.map { it.left() }
             }
+            userDatastore.saveProfilePictureFileNameToDataStore(user.profilePicture.lastPathSegment!!)
         }
 
         return try {

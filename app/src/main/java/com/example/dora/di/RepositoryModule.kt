@@ -1,5 +1,6 @@
 package com.example.dora.di
 
+import com.example.dora.datastore.UserDatastore
 import com.example.dora.repository.auth.AuthenticationRepository
 import com.example.dora.repository.auth.FirebaseAuthRepository
 import com.example.dora.repository.user.UserRepository
@@ -17,7 +18,7 @@ object RepositoryModule {
     @FirebaseRepository
     @Singleton
     @Provides
-    fun providesAuthenticationRepository(): AuthenticationRepository = FirebaseAuthRepository()
+    fun providesAuthenticationRepository(userDatastore: UserDatastore): AuthenticationRepository = FirebaseAuthRepository(userDatastore = userDatastore)
 
     @FirebaseRepository
     @Singleton
