@@ -64,10 +64,12 @@ class FirebaseAuthRepository(
         withContext(ioDispatcher) { firebaseAuthAPI.isUserSignedIn() }
 
     override suspend fun deleteUser(): Either<ErrorMessage, Void> =
-        try {
-            firebaseAuthAPI.deleteUser().await().right()
-        } catch (e: Exception) {
-            ErrorMessage(e.message!!).left()
+        withContext(ioDispatcher) {
+            try {
+                firebaseAuthAPI.deleteUser().await().right()
+            } catch (e: Exception) {
+                ErrorMessage(e.message!!).left()
+            }
         }
 
     private fun onValidationError(error: Throwable): ErrorMessage = ErrorMessage(error.message!!)

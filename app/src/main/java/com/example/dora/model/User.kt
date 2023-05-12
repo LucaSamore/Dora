@@ -1,5 +1,6 @@
 package com.example.dora.model
 
+import com.example.dora.common.Location
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -12,7 +13,7 @@ data class User(
     val lastName: String,
     val emailAddress: String,
     val password: String,
-    val location: String?,
+    val location: Location?,
     val profilePicture: String?,
     val createdAt: String = nowWithPattern("yyyy-MM-dd HH:mm:ss")
 ) {
