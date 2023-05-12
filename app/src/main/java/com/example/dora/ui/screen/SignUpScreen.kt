@@ -184,7 +184,7 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
                 scope.launch {
                     when (
                         val signUpResult =
-                            signUpViewModel.signUp(firstName, lastName, emailAddress, password)
+                            signUpViewModel.signUp(firstName, lastName, emailAddress, password, capturedImageUri)
                     ) {
                         is Either.Left -> errorMessage = signUpResult.value.message
                         is Either.Right -> onSignUp()

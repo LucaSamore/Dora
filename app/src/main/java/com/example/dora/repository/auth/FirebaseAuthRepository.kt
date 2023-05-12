@@ -108,6 +108,8 @@ class FirebaseAuthRepository(
         val user = createAccount(credentials)
         val request = createFirestoreRequest(user)
 
+        // TODO: Store profile picture to firebase storage, if present
+
         return try {
             firestoreAPI.insert(request).data?.await().right()
         } catch (e: Exception) {

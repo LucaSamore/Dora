@@ -1,5 +1,6 @@
 package com.example.dora.model
 
+import android.net.Uri
 import com.example.dora.common.Location
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -14,7 +15,7 @@ data class User(
     val emailAddress: String,
     val password: String,
     val location: Location? = null,
-    val profilePicture: String? = null,
+    val profilePicture: Uri = Uri.EMPTY,
     val createdAt: String = nowWithPattern("yyyy-MM-dd HH:mm:ss")
 ) {
     companion object {

@@ -1,5 +1,6 @@
 package com.example.dora.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -25,7 +26,8 @@ constructor(
         firstName: String,
         lastName: String,
         emailAddress: String,
-        password: String
+        password: String,
+        profilePicture: Uri,
     ): Either<ErrorMessage, SignedUser> =
         withContext(viewModelScope.coroutineContext + ioDispatcher) {
             authenticationRepository.signUpWithEmailAndPassword(
@@ -33,7 +35,8 @@ constructor(
                     firstName = firstName,
                     lastName = lastName,
                     emailAddress = emailAddress,
-                    password = password
+                    password = password,
+                    profilePicture = profilePicture,
                 )
             )
         }
