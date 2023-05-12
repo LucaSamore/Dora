@@ -13,8 +13,8 @@ data class User(
     val lastName: String,
     val emailAddress: String,
     val password: String,
-    val location: Location?,
-    val profilePicture: String?,
+    val location: Location? = null,
+    val profilePicture: String? = null,
     val createdAt: String = nowWithPattern("yyyy-MM-dd HH:mm:ss")
 ) {
     companion object {

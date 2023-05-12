@@ -56,6 +56,11 @@ class FirebaseAuthRepository(
                 }
         }
 
+    override suspend fun getCurrentUser(): SignedUser? {
+        val user = firebaseAuthAPI.getFirebaseUser() ?: return null
+        return SignedUser(user.uid)
+    }
+
     override suspend fun signOut() {
         withContext(ioDispatcher) { firebaseAuthAPI.signOut() }
     }
@@ -117,7 +122,6 @@ class FirebaseAuthRepository(
             lastName = credentials.lastName,
             emailAddress = credentials.emailAddress,
             password = BCrypt.withDefaults().hashToString(12, credentials.password.toCharArray()),
-            location = credentials.location,
             profilePicture = credentials.profilePicture
         )
     }
