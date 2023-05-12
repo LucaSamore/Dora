@@ -9,6 +9,8 @@ import com.example.dora.model.User
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.database.FirestoreAPI
 import com.example.dora.network.database.FirestoreRequest
+import com.example.dora.network.storage.FirebaseStorageAPI
+import com.example.dora.network.storage.FirebaseStorageRequest
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -16,6 +18,7 @@ import kotlinx.coroutines.withContext
 
 class UserRepositoryImpl(
     private val firestoreAPI: FirestoreAPI = FirestoreAPI(),
+    private val firebaseStorageAPI: FirebaseStorageAPI = FirebaseStorageAPI(),
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : UserRepository {
 
@@ -42,4 +45,8 @@ class UserRepositoryImpl(
                 ErrorMessage(e.message!!).left()
             }
         }
+
+    override suspend fun getProfilePicture(userId: String): Either<ErrorMessage, Any?> {
+        TODO()
+    }
 }
