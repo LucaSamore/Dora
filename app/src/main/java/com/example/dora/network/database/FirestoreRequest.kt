@@ -4,5 +4,6 @@ data class FirestoreRequest(
     val data: Any,
     val collection: String,
     val document: String? = null,
-    val offline: Boolean = false
+    val updates: Map<String, Any>? = null,
+    val offline: Boolean = false,
 )

@@ -32,7 +32,11 @@ class FirestoreAPI(private val db: FirebaseFirestore = Firebase.firestore) :
     override fun update(
         request: NetworkRequest<FirestoreRequest>
     ): NetworkResponse<Task<*>, Throwable> {
-        TODO("Not yet implemented")
+        val queryResult = db
+            .collection(request.body.collection)
+            .document(request.body.document!!)
+            .update(request.body.updates!!)
+        return NetworkResponse(queryResult, null)
     }
 
     override fun delete(
