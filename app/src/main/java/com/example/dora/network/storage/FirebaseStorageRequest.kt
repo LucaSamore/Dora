@@ -6,11 +6,11 @@ data class FirebaseStorageRequest(
     val fileUri: Uri = Uri.EMPTY,
     val reference: String,
 ) {
-    fun fullReference() : String = "$reference/${fileUri.lastPathSegment}"
+    fun fullReference(): String = "$reference/${fileUri.lastPathSegment}"
 }
 
 /*
     Reference:
-    userId/profilePicture/<path-to-file>
+    userId/profile/<path-to-file>
     userId/businesses/businessId/<path-to-file>
 */

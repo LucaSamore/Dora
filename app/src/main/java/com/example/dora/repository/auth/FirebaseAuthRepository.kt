@@ -1,5 +1,6 @@
 package com.example.dora.repository.auth
 
+import android.net.Uri
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
@@ -12,6 +13,8 @@ import com.example.dora.network.NetworkRequest
 import com.example.dora.network.auth.FirebaseAuthAPI
 import com.example.dora.network.database.FirestoreAPI
 import com.example.dora.network.database.FirestoreRequest
+import com.example.dora.network.storage.FirebaseStorageAPI
+import com.example.dora.network.storage.FirebaseStorageRequest
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,6 +25,7 @@ import kotlinx.coroutines.withContext
 class FirebaseAuthRepository(
     private val firebaseAuthAPI: FirebaseAuthAPI = FirebaseAuthAPI(),
     private val firestoreAPI: FirestoreAPI = FirestoreAPI(),
+    private val firebaseStorageAPI: FirebaseStorageAPI = FirebaseStorageAPI(),
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : AuthenticationRepository {
 
@@ -95,7 +99,10 @@ class FirebaseAuthRepository(
         when (taskResult) {
             is Either.Left -> taskResult.value.left()
             is Either.Right -> {
-                when (val accountCreationResult = storeUserOnFirestore(credentials)) {
+                when (
+                    val accountCreationResult =
+                        storeUserOnFirestore(credentials, taskResult.value.uid)
+                ) {
                     is Either.Left -> accountCreationResult.value.left()
                     is Either.Right -> taskResult.value.right()
                 }
@@ -103,12 +110,19 @@ class FirebaseAuthRepository(
         }
 
     private suspend fun storeUserOnFirestore(
-        credentials: Credentials.Register
+        credentials: Credentials.Register,
+        signedUserId: String,
     ): Either<ErrorMessage, Any?> {
         val user = createAccount(credentials)
         val request = createFirestoreRequest(user)
 
-        // TODO: Store profile picture to firebase storage, if present
+        if (user.profilePicture != Uri.EMPTY) {
+            val storeResult =
+                storeUserProfilePictureToFirebaseStorage(user.profilePicture, signedUserId)
+            if (storeResult.isLeft()) {
+                return storeResult.map { it.left() }
+            }
+        }
 
         return try {
             firestoreAPI.insert(request).data?.await().right()
@@ -136,5 +150,22 @@ class FirebaseAuthRepository(
                 document = user.uid,
             )
         return NetworkRequest.of(firestoreRequest)
+    }
+
+    private suspend fun storeUserProfilePictureToFirebaseStorage(
+        file: Uri,
+        signedUserId: String
+    ): Either<ErrorMessage, Any?> {
+        return try {
+            firebaseStorageAPI
+                .uploadFile(
+                    NetworkRequest.of(FirebaseStorageRequest(file, "$signedUserId/profile"))
+                )
+                .data
+                ?.await()
+                .right()
+        } catch (e: Exception) {
+            ErrorMessage(e.message!!).left()
+        }
     }
 }
