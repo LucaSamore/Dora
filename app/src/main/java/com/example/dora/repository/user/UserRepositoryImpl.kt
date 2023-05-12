@@ -19,14 +19,25 @@ class UserRepositoryImpl(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : UserRepository {
 
-    override suspend fun updateLocation(userId: String, location: Location) : Either<ErrorMessage, Any?> =
+    override suspend fun updateLocation(
+        userId: String,
+        location: Location
+    ): Either<ErrorMessage, Any?> =
         withContext(ioDispatcher) {
             try {
-                firestoreAPI.update(NetworkRequest.of(FirestoreRequest(
-                    collection = User.collection,
-                    document = userId,
-                    updates = mapOf("location" to location),
-                ))).data?.await().right()
+                firestoreAPI
+                    .update(
+                        NetworkRequest.of(
+                            FirestoreRequest(
+                                collection = User.collection,
+                                document = userId,
+                                updates = mapOf("location" to location),
+                            )
+                        )
+                    )
+                    .data
+                    ?.await()
+                    .right()
             } catch (e: Exception) {
                 ErrorMessage(e.message!!).left()
             }

@@ -19,12 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.compose.rememberNavController
 import com.example.dora.common.Location
 import com.example.dora.ui.composable.AlertDialogComposable
 import com.example.dora.ui.composable.SnackBarComposable
 import com.example.dora.ui.navigation.DoraScreen
-import com.example.dora.ui.navigation.NavigationGraph
 import com.example.dora.ui.theme.DoraTheme
 import com.example.dora.viewmodel.MainActivityViewModel
 import com.google.android.gms.location.*
@@ -63,7 +61,9 @@ class MainActivity : ComponentActivity() {
                         val context = LocalContext.current
 
                         DoraApplication(
-                            startDestination = if (isUserSignedIn) DoraScreen.Home.name else DoraScreen.SignIn.name,
+                            startDestination =
+                                if (isUserSignedIn) DoraScreen.Home.name
+                                else DoraScreen.SignIn.name,
                             location = location,
                             startLocationUpdates = ::startLocationUpdates
                         )
@@ -85,7 +85,8 @@ class MainActivity : ComponentActivity() {
         val permission = Manifest.permission.ACCESS_COARSE_LOCATION
 
         when {
-            ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED -> {
+            ContextCompat.checkSelfPermission(this, permission) ==
+                PackageManager.PERMISSION_GRANTED -> {
                 val gpsEnabled = checkGPS()
                 if (gpsEnabled) {
                     fusedLocationProviderClient.requestLocationUpdates(
@@ -112,33 +113,33 @@ class MainActivity : ComponentActivity() {
         stopLocationUpdates()
     }
 
-    private fun createFusedLocationProviderClient() = LocationServices.getFusedLocationProviderClient(this)
+    private fun createFusedLocationProviderClient() =
+        LocationServices.getFusedLocationProviderClient(this)
 
-    private fun createLocationPermissionRequest() = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            startLocationUpdates()
-        } else {
-            showSnackBar.value = true
+    private fun createLocationPermissionRequest() =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                startLocationUpdates()
+            } else {
+                showSnackBar.value = true
+            }
         }
-    }
 
-    private fun createLocationRequest() = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).apply {
-        setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
-    }.build()
+    private fun createLocationRequest() =
+        LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
+            .apply { setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL) }
+            .build()
 
-    private fun createLocationCallback() = object : LocationCallback() {
-        override fun onLocationResult(p0: LocationResult) {
-            super.onLocationResult(p0)
-            location.value = Location(
-                p0.locations.last().latitude,
-                p0.locations.last().longitude
-            )
-            stopLocationUpdates()
-            requestingLocationUpdates = false
+    private fun createLocationCallback() =
+        object : LocationCallback() {
+            override fun onLocationResult(p0: LocationResult) {
+                super.onLocationResult(p0)
+                location.value =
+                    Location(p0.locations.last().latitude, p0.locations.last().longitude)
+                stopLocationUpdates()
+                requestingLocationUpdates = false
+            }
         }
-    }
 
     private fun stopLocationUpdates() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)

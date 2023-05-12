@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
-    onSignOut: () -> Unit, modifier: Modifier,
+    onSignOut: () -> Unit,
+    modifier: Modifier,
     location: MutableState<Location>,
     startLocationUpdates: () -> Unit
 ) {
@@ -25,6 +26,8 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
 
     startLocationUpdates()
+
+    homeViewModel.updateLocation(location.value)
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -61,13 +64,7 @@ fun HomeScreen(
 
         Spacer(modifier = modifier.padding(vertical = 12.dp))
 
-        Button(
-            onClick = {
-                error = location.value.toString()
-            }
-        ) {
-            Text(text = "Get location")
-        }
+        Button(onClick = { error = location.value.toString() }) { Text(text = "Get location") }
 
         Spacer(modifier = modifier.padding(vertical = 12.dp))
 

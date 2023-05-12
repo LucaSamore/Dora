@@ -2,10 +2,10 @@ package com.example.dora.ui.composable
 
 import android.content.Context
 import android.content.Intent
+import android.provider.Settings
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.material3.*
-import android.provider.Settings
 
 @Composable
 internal fun AlertDialogComposable(
@@ -13,15 +13,9 @@ internal fun AlertDialogComposable(
     showAlertDialog: MutableState<Boolean>
 ) {
     AlertDialog(
-        onDismissRequest = {
-            showAlertDialog.value = false
-        },
-        title = {
-            Text(text = "GPS disabled")
-        },
-        text = {
-            Text(text = "GPS is turned off but is needed to get the coordinates")
-        },
+        onDismissRequest = { showAlertDialog.value = false },
+        title = { Text(text = "GPS disabled") },
+        text = { Text(text = "GPS is turned off but is needed to get the coordinates") },
         confirmButton = {
             TextButton(
                 onClick = {
@@ -38,7 +32,7 @@ internal fun AlertDialogComposable(
         dismissButton = {
             TextButton(
                 // TODO: Fix onClick
-                onClick = { showAlertDialog.value = false  }
+                onClick = { showAlertDialog.value = false }
             ) {
                 Text("Dismiss")
             }

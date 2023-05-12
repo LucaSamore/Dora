@@ -14,9 +14,9 @@ interface AuthenticationRepository {
         credentials: Credentials.Register
     ): Either<ErrorMessage, SignedUser>
 
-    suspend fun getCurrentUser(): SignedUser?
-
     suspend fun signOut()
+
+    suspend fun getCurrentUser(): SignedUser?
 
     suspend fun isUserSignedIn(): Boolean
 

@@ -26,9 +26,12 @@ constructor(
 
     fun signOut() = viewModelScope.launch { authenticationRepository.signOut() }
 
-    fun updateLocation(userId: String, location: Location) {
+    fun updateLocation(location: Location) {
         viewModelScope.launch {
-            userRepository.updateLocation(userId, location)
+            userRepository.updateLocation(
+                authenticationRepository.getCurrentUser()?.uid!!,
+                location
+            )
         }
     }
 
