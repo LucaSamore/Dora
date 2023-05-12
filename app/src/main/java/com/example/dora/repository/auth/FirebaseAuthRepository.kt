@@ -18,17 +18,18 @@ import com.example.dora.network.storage.FirebaseStorageAPI
 import com.example.dora.network.storage.FirebaseStorageRequest
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class FirebaseAuthRepository @Inject constructor(
-    private val firebaseAuthAPI: FirebaseAuthAPI = FirebaseAuthAPI(),
-    private val firestoreAPI: FirestoreAPI = FirestoreAPI(),
-    private val firebaseStorageAPI: FirebaseStorageAPI = FirebaseStorageAPI(),
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+class FirebaseAuthRepository
+@Inject
+constructor(
+    private val firebaseAuthAPI: FirebaseAuthAPI,
+    private val firestoreAPI: FirestoreAPI,
+    private val firebaseStorageAPI: FirebaseStorageAPI,
+    private val ioDispatcher: CoroutineDispatcher,
     private val userDatastore: UserDatastore,
 ) : AuthenticationRepository {
 
@@ -88,13 +89,14 @@ class FirebaseAuthRepository @Inject constructor(
 
     private suspend fun onAuthenticationComplete(
         authTask: Task<AuthResult>
-    ): Either<ErrorMessage, SignedUser> = try {
-        val user = SignedUser.fromAuthResult(authTask.await())
-        userDatastore.saveUserIdToDataStore(user.uid)
-        user.right()
-    } catch (e: Exception) {
-        ErrorMessage(e.message!!).left()
-    }
+    ): Either<ErrorMessage, SignedUser> =
+        try {
+            val user = SignedUser.fromAuthResult(authTask.await())
+            userDatastore.saveUserIdToDataStore(user.uid)
+            user.right()
+        } catch (e: Exception) {
+            ErrorMessage(e.message!!).left()
+        }
 
     private suspend fun onAccountCreated(
         taskResult: Either<ErrorMessage, SignedUser>,
@@ -126,7 +128,9 @@ class FirebaseAuthRepository @Inject constructor(
             if (storeResult.isLeft()) {
                 return storeResult.map { it.left() }
             }
-            userDatastore.saveProfilePictureFileNameToDataStore(user.profilePicture.lastPathSegment!!)
+            userDatastore.saveProfilePictureFileNameToDataStore(
+                user.profilePicture.lastPathSegment!!
+            )
         }
 
         return try {

@@ -5,21 +5,24 @@ import arrow.core.left
 import arrow.core.right
 import com.example.dora.common.ErrorMessage
 import com.example.dora.common.Location
+import com.example.dora.datastore.UserDatastore
 import com.example.dora.model.User
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.database.FirestoreAPI
 import com.example.dora.network.database.FirestoreRequest
 import com.example.dora.network.storage.FirebaseStorageAPI
-import com.example.dora.network.storage.FirebaseStorageRequest
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class UserRepositoryImpl(
-    private val firestoreAPI: FirestoreAPI = FirestoreAPI(),
-    private val firebaseStorageAPI: FirebaseStorageAPI = FirebaseStorageAPI(),
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+class UserRepositoryImpl
+@Inject
+constructor(
+    private val firestoreAPI: FirestoreAPI,
+    private val firebaseStorageAPI: FirebaseStorageAPI,
+    private val ioDispatcher: CoroutineDispatcher,
+    private val userDatastore: UserDatastore
 ) : UserRepository {
 
     override suspend fun updateLocation(

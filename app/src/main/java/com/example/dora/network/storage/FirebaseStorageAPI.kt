@@ -23,7 +23,9 @@ class FirebaseStorageAPI(storage: FirebaseStorage = Firebase.storage) :
         return NetworkResponse(uploadTask, null)
     }
 
-    override fun downloadFile(request: NetworkRequest<FirebaseStorageRequest>): NetworkResponse<Task<*>, Throwable> {
+    override fun downloadFile(
+        request: NetworkRequest<FirebaseStorageRequest>
+    ): NetworkResponse<Task<*>, Throwable> {
         val reference = storageReference.child(request.body.fullReference())
         return NetworkResponse(reference.getBytes(TEN_MEGABYTES), null)
     }

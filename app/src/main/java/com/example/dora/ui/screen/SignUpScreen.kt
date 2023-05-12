@@ -44,9 +44,7 @@ fun SignUpScreen(
     modifier: Modifier
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -93,9 +91,7 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
         }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 48.dp, bottom = 24.dp),
+        modifier = modifier.fillMaxWidth().padding(top = 48.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -118,9 +114,7 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
         ) {
-            TextButton(onClick = { /*TODO*/ }) {
-                Text(text = "Get from gallery")
-            }
+            TextButton(onClick = { /*TODO*/}) { Text(text = "Get from gallery") }
 
             TextButton(
                 onClick = {
