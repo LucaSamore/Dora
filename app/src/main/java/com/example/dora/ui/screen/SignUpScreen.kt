@@ -1,5 +1,11 @@
 package com.example.dora.ui.screen
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,14 +19,21 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import arrow.core.Either
-import com.example.dora.ui.composable.TakePhoto
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.dora.ui.util.createImageFile
+import com.example.dora.ui.util.saveImage
 import com.example.dora.viewmodel.SignUpViewModel
+import java.util.*
 import kotlinx.coroutines.launch
 
 @Composable
@@ -31,7 +44,7 @@ fun SignUpScreen(
     modifier: Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -55,12 +68,30 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val file = context.createImageFile()
+    val uri =
+        FileProvider.getUriForFile(
+            Objects.requireNonNull(context),
+            context.packageName + ".provider",
+            file
+        )
+    var capturedImageUri by remember { mutableStateOf<Uri>(Uri.EMPTY) }
+    val cameraLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+            capturedImageUri = uri
+        }
+    val permissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                cameraLauncher.launch(uri)
+            } else {
+                Toast.makeText(context, "Permission was denied", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-            .padding(top = 48.dp, bottom = 24.dp),
+        modifier = modifier.fillMaxWidth().padding(top = 48.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -68,13 +99,36 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
 
         Spacer(modifier = modifier.padding(12.dp))
 
-        TakePhoto()
+        if (capturedImageUri.path?.isNotEmpty() == true) {
+            AsyncImage(
+                model =
+                    ImageRequest.Builder(context).data(capturedImageUri).crossfade(true).build(),
+                contentDescription = "image taken",
+                modifier = Modifier.size(256.dp, 256.dp)
+            )
 
-        Spacer(modifier = modifier.padding(12.dp))
+            saveImage(context.applicationContext.contentResolver, capturedImageUri)
+        }
 
-        Text(text = errorMessage, color = Color.Red)
+        TextButton(
+            onClick = {
+                val permissionCheckResult =
+                    ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                    cameraLauncher.launch(uri)
+                } else {
+                    permissionLauncher.launch(Manifest.permission.CAMERA)
+                }
+            }
+        ) {
+            Text(text = "Take picture")
+        }
 
-        Spacer(modifier = modifier.padding(6.dp))
+        Text(
+            text = errorMessage,
+            color = Color.Red,
+            modifier = modifier.padding(top = 4.dp, bottom = 6.dp)
+        )
 
         OutlinedTextField(
             value = firstName,
