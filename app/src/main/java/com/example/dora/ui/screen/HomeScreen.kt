@@ -7,9 +7,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import arrow.core.Either
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.dora.common.Location
 import com.example.dora.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
@@ -22,6 +25,8 @@ fun HomeScreen(
     location: MutableState<Location>,
     startLocationUpdates: () -> Unit
 ) {
+    val context = LocalContext.current
+    var profilePicture by remember { mutableStateOf<Any?>(null) }
     var error by rememberSaveable { mutableStateOf("Nothing yet") }
     val scope = rememberCoroutineScope()
 
@@ -69,6 +74,17 @@ fun HomeScreen(
         Spacer(modifier = modifier.padding(vertical = 12.dp))
 
         Text(text = error)
+
+        Button(onClick = {
+            TODO()
+        }) { Text(text = "Download profile picture") }
+
+        AsyncImage(
+            model =
+            ImageRequest.Builder(context).data(profilePicture).crossfade(true).build(),
+            contentDescription = "profile picture",
+            modifier = Modifier.size(256.dp, 256.dp)
+        )
     }
 }
 

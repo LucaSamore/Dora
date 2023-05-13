@@ -48,8 +48,4 @@ constructor(
                 ErrorMessage(e.message!!).left()
             }
         }
-
-    override suspend fun getProfilePicture(userId: String): Either<ErrorMessage, Any?> {
-        TODO()
-    }
 }

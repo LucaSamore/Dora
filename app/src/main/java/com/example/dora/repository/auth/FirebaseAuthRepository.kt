@@ -128,9 +128,6 @@ constructor(
             if (storeResult.isLeft()) {
                 return storeResult.map { it.left() }
             }
-            userDatastore.saveProfilePictureFileNameToDataStore(
-                user.profilePicture.lastPathSegment!!
-            )
         }
 
         return try {

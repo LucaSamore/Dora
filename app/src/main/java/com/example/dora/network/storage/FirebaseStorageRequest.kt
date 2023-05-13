@@ -5,6 +5,7 @@ import android.net.Uri
 data class FirebaseStorageRequest(
     val fileUri: Uri = Uri.EMPTY,
     val reference: String,
+    val downloadFileName: String? = null,
 ) {
     fun fullReference(): String = "$reference/${fileUri.lastPathSegment}"
 }

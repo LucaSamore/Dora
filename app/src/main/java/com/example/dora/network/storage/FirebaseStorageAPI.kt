@@ -7,8 +7,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-
-const val TEN_MEGABYTES: Long = 1024 * 1024 * 10
+import java.io.File
 
 class FirebaseStorageAPI(storage: FirebaseStorage = Firebase.storage) :
     StorageAPI<FirebaseStorageRequest, Task<*>, Throwable> {
@@ -26,7 +25,8 @@ class FirebaseStorageAPI(storage: FirebaseStorage = Firebase.storage) :
     override fun downloadFile(
         request: NetworkRequest<FirebaseStorageRequest>
     ): NetworkResponse<Task<*>, Throwable> {
-        val reference = storageReference.child(request.body.fullReference())
-        return NetworkResponse(reference.getBytes(TEN_MEGABYTES), null)
+        val reference = storageReference.child(request.body.reference)
+        val file = File.createTempFile(request.body.downloadFileName!!, "jpg")
+        return NetworkResponse(reference.getFile(file), null)
     }
 }
