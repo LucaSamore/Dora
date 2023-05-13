@@ -1,7 +1,7 @@
 package com.example.dora.ui
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -12,6 +12,7 @@ import com.example.dora.common.Location
 import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.ui.navigation.NavigationGraph
 import androidx.compose.runtime.getValue
+import com.example.dora.ui.composable.NavigationBarFunction
 
 @Composable
 internal fun DoraApplication(
@@ -29,10 +30,13 @@ internal fun DoraApplication(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             if (currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name) {
-                BottomAppBar {
-                    IconButton(onClick = { /* doSomething() */ }) {
-                        Icon(Icons.Filled.Menu, contentDescription = "Localized description")
-                    }
+                NavigationBarFunction()
+            }
+        },
+        floatingActionButton = {
+            if (currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name) {
+                FloatingActionButton(onClick = { /*TODO*/ }) {
+                    Icon(Icons.Filled.Add, "Add business")
                 }
             }
         }
