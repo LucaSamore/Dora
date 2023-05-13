@@ -44,7 +44,9 @@ fun SignUpScreen(
     modifier: Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -76,10 +78,14 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
             context.packageName + ".provider",
             file
         )
-    var capturedImageUri by remember { mutableStateOf<Uri>(Uri.EMPTY) }
+    var imageUri by remember { mutableStateOf<Uri>(Uri.EMPTY) }
     val cameraLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-            capturedImageUri = uri
+            imageUri = uri
+        }
+    val galleryLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+            imageUri = it ?: Uri.EMPTY
         }
     val permissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -91,7 +97,9 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
         }
 
     Column(
-        modifier = modifier.fillMaxWidth().padding(top = 48.dp, bottom = 24.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 48.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -99,22 +107,28 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
 
         Spacer(modifier = modifier.padding(12.dp))
 
-        if (capturedImageUri.path?.isNotEmpty() == true) {
+        if (imageUri.path?.isNotEmpty() == true) {
             AsyncImage(
                 model =
-                    ImageRequest.Builder(context).data(capturedImageUri).crossfade(true).build(),
+                    ImageRequest.Builder(context).data(imageUri).crossfade(true).build(),
                 contentDescription = "image taken",
                 modifier = Modifier.size(256.dp, 256.dp)
             )
 
-            saveImage(context.applicationContext.contentResolver, capturedImageUri)
+            saveImage(context.applicationContext.contentResolver, imageUri)
         }
 
         Row(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
         ) {
-            TextButton(onClick = { /*TODO*/}) { Text(text = "Get from gallery") }
+            TextButton(
+                onClick = {
+                    galleryLauncher.launch("image/*")
+                }
+            ) {
+                Text(text = "Get from gallery")
+            }
 
             TextButton(
                 onClick = {
@@ -196,7 +210,7 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
                                 lastName,
                                 emailAddress,
                                 password,
-                                capturedImageUri
+                                imageUri
                             )
                     ) {
                         is Either.Left -> errorMessage = signUpResult.value.message
