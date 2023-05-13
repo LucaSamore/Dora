@@ -25,7 +25,11 @@ fun NavigationBarFunction(navController: NavHostController) {
             icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
             label = { Text(text = "Home") },
             selected = currentScreen == DoraScreen.Home.name,
-            onClick = { TODO() }
+            onClick = {
+                navController.navigate(DoraScreen.Home.name) {
+                    popUpTo(DoraScreen.Home.name) { inclusive = true }
+                }
+            }
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Person, contentDescription = "Profile") },
