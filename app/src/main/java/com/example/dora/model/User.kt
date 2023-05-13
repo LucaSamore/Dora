@@ -15,7 +15,7 @@ data class User(
     val emailAddress: String,
     val password: String,
     val location: Location? = null,
-    val profilePicture: Uri = Uri.EMPTY,
+    var profilePicture: Uri = Uri.EMPTY,
     val createdAt: String = nowWithPattern("yyyy-MM-dd HH:mm:ss")
 ) {
     companion object {

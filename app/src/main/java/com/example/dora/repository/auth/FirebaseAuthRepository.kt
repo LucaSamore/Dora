@@ -2,6 +2,7 @@ package com.example.dora.repository.auth
 
 import android.net.Uri
 import arrow.core.Either
+import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
 import at.favre.lib.crypto.bcrypt.BCrypt
@@ -120,7 +121,6 @@ constructor(
         signedUserId: String,
     ): Either<ErrorMessage, Any?> {
         val user = createAccount(credentials)
-        val request = createFirestoreRequest(user)
 
         if (user.profilePicture != Uri.EMPTY) {
             val storeResult =
@@ -128,7 +128,10 @@ constructor(
             if (storeResult.isLeft()) {
                 return storeResult.map { it.left() }
             }
+            user.profilePicture = storeResult.getOrElse { Uri.EMPTY }
         }
+
+        val request = createFirestoreRequest(user)
 
         return try {
             firestoreAPI.insert(request).data?.await().right()
@@ -161,14 +164,14 @@ constructor(
     private suspend fun storeUserProfilePictureToFirebaseStorage(
         file: Uri,
         signedUserId: String
-    ): Either<ErrorMessage, Any?> {
+    ): Either<ErrorMessage, Uri> {
         return try {
             firebaseStorageAPI
                 .uploadFile(
                     NetworkRequest.of(FirebaseStorageRequest(file, "$signedUserId/profile"))
                 )
                 .data
-                ?.await()
+                ?.await()!!
                 .right()
         } catch (e: Exception) {
             ErrorMessage(e.message!!).left()

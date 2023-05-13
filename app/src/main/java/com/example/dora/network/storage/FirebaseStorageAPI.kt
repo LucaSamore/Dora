@@ -1,5 +1,6 @@
 package com.example.dora.network.storage
 
+import android.net.Uri
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.NetworkResponse
 import com.example.dora.network.api.StorageAPI
@@ -10,23 +11,34 @@ import com.google.firebase.storage.ktx.storage
 import java.io.File
 
 class FirebaseStorageAPI(storage: FirebaseStorage = Firebase.storage) :
-    StorageAPI<FirebaseStorageRequest, Task<*>, Throwable> {
+    StorageAPI<FirebaseStorageRequest, Task<Uri>, Throwable> {
 
     private val storageReference = storage.reference
 
     override fun uploadFile(
         file: NetworkRequest<FirebaseStorageRequest>
-    ): NetworkResponse<Task<*>, Throwable> {
+    ): NetworkResponse<Task<Uri>, Throwable> {
         val reference = storageReference.child(file.body.fullReference())
         val uploadTask = reference.putFile(file.body.fileUri)
-        return NetworkResponse(uploadTask, null)
+
+        val urlTask = uploadTask.continueWithTask{ task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            reference.downloadUrl
+        }
+
+        return NetworkResponse(urlTask, null)
     }
 
     override fun downloadFile(
         request: NetworkRequest<FirebaseStorageRequest>
-    ): NetworkResponse<Task<*>, Throwable> {
-        val reference = storageReference.child(request.body.reference)
-        val file = File.createTempFile(request.body.downloadFileName!!, "jpg")
-        return NetworkResponse(reference.getFile(file), null)
+    ): NetworkResponse<Task<Uri>, Throwable> {
+//        val reference = storageReference.child(request.body.reference)
+//        val file = File.createTempFile(request.body.downloadFileName!!, "jpg")
+//        return NetworkResponse(reference.getFile(file), null)
+        TODO()
     }
 }
