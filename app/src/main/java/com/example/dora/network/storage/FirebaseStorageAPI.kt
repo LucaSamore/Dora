@@ -8,7 +8,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import java.io.File
 
 class FirebaseStorageAPI(storage: FirebaseStorage = Firebase.storage) :
     StorageAPI<FirebaseStorageRequest, Task<Uri>, Throwable> {
@@ -21,24 +20,14 @@ class FirebaseStorageAPI(storage: FirebaseStorage = Firebase.storage) :
         val reference = storageReference.child(file.body.fullReference())
         val uploadTask = reference.putFile(file.body.fileUri)
 
-        val urlTask = uploadTask.continueWithTask{ task ->
-            if (!task.isSuccessful) {
-                task.exception?.let {
-                    throw it
+        val urlTask =
+            uploadTask.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let { throw it }
                 }
+                reference.downloadUrl
             }
-            reference.downloadUrl
-        }
 
         return NetworkResponse(urlTask, null)
-    }
-
-    override fun downloadFile(
-        request: NetworkRequest<FirebaseStorageRequest>
-    ): NetworkResponse<Task<Uri>, Throwable> {
-//        val reference = storageReference.child(request.body.reference)
-//        val file = File.createTempFile(request.body.downloadFileName!!, "jpg")
-//        return NetworkResponse(reference.getFile(file), null)
-        TODO()
     }
 }

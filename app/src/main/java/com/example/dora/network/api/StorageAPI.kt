@@ -5,6 +5,4 @@ import com.example.dora.network.NetworkResponse
 
 interface StorageAPI<I, O, E : Throwable> {
     fun uploadFile(file: NetworkRequest<I>): NetworkResponse<O, E>
-
-    fun downloadFile(request: NetworkRequest<I>): NetworkResponse<O, E>
 }
