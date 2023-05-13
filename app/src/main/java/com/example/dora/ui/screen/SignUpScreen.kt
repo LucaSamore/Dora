@@ -44,9 +44,7 @@ fun SignUpScreen(
     modifier: Modifier
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -80,9 +78,7 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
         )
     var imageUri by remember { mutableStateOf<Uri>(Uri.EMPTY) }
     val cameraLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-            imageUri = uri
-        }
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { imageUri = uri }
     val galleryLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
             imageUri = it ?: Uri.EMPTY
@@ -97,9 +93,7 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
         }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 48.dp, bottom = 24.dp),
+        modifier = modifier.fillMaxWidth().padding(top = 48.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -109,8 +103,7 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
 
         if (imageUri.path?.isNotEmpty() == true) {
             AsyncImage(
-                model =
-                    ImageRequest.Builder(context).data(imageUri).crossfade(true).build(),
+                model = ImageRequest.Builder(context).data(imageUri).crossfade(true).build(),
                 contentDescription = "image taken",
                 modifier = Modifier.size(256.dp, 256.dp)
             )
@@ -122,11 +115,7 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
         ) {
-            TextButton(
-                onClick = {
-                    galleryLauncher.launch("image/*")
-                }
-            ) {
+            TextButton(onClick = { galleryLauncher.launch("image/*") }) {
                 Text(text = "Get from gallery")
             }
 

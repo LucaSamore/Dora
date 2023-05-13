@@ -5,14 +5,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.dora.common.Location
+import com.example.dora.ui.composable.NavigationBarFunction
 import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.ui.navigation.NavigationGraph
-import androidx.compose.runtime.getValue
-import com.example.dora.ui.composable.NavigationBarFunction
 
 @Composable
 internal fun DoraApplication(
@@ -29,13 +29,17 @@ internal fun DoraApplication(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
-            if (currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name) {
-                NavigationBarFunction()
+            if (
+                currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name
+            ) {
+                NavigationBarFunction(navController)
             }
         },
         floatingActionButton = {
-            if (currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name) {
-                FloatingActionButton(onClick = { /*TODO*/ }) {
+            if (
+                currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name
+            ) {
+                FloatingActionButton(onClick = { /*TODO*/}) {
                     Icon(Icons.Filled.Add, "Add business")
                 }
             }

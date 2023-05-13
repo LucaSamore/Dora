@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.dora.common.Location
 import com.example.dora.ui.screen.HomeScreen
+import com.example.dora.ui.screen.ProfileScreen
 import com.example.dora.ui.screen.SignInScreen
 import com.example.dora.ui.screen.SignUpScreen
 
@@ -63,5 +64,7 @@ fun NavigationGraph(
                 modifier = modifier,
             )
         }
+
+        composable(route = DoraScreen.Profile.name) { ProfileScreen(modifier = modifier) }
     }
 }
