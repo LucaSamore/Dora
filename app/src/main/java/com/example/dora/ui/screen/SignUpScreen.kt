@@ -28,8 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import arrow.core.Either
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import com.example.dora.ui.composable.ProfilePicture
 import com.example.dora.ui.util.createImageFile
 import com.example.dora.ui.util.saveImage
 import com.example.dora.viewmodel.SignUpViewModel
@@ -48,8 +47,6 @@ fun SignUpScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Dora", style = MaterialTheme.typography.titleLarge)
-
         SignUpForm(signUpViewModel, onSignUp, modifier)
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -102,13 +99,10 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
         Spacer(modifier = modifier.padding(12.dp))
 
         if (imageUri.path?.isNotEmpty() == true) {
-            AsyncImage(
-                model = ImageRequest.Builder(context).data(imageUri).crossfade(true).build(),
-                contentDescription = "image taken",
-                modifier = Modifier.size(256.dp, 256.dp)
-            )
-
+            ProfilePicture(image = imageUri, context = context, defaultAvatar = false)
             saveImage(context.applicationContext.contentResolver, imageUri)
+        } else {
+            ProfilePicture(context = context)
         }
 
         Row(
