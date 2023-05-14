@@ -37,7 +37,9 @@ internal fun DoraApplication(
         },
         floatingActionButton = {
             if (
-                currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name
+                currentScreen != DoraScreen.SignIn.name &&
+                    currentScreen != DoraScreen.SignUp.name &&
+                    currentScreen != DoraScreen.Profile.name
             ) {
                 FloatingActionButton(onClick = { /*TODO*/}) {
                     Icon(Icons.Filled.Add, "Add business")

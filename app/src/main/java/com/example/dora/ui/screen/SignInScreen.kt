@@ -36,6 +36,8 @@ fun SignInScreen(
     ) {
         Text(text = "Dora", style = MaterialTheme.typography.titleLarge)
 
+        Spacer(modifier = modifier.padding(12.dp))
+
         SignInForm(signInViewModel, onSignIn, modifier)
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -51,18 +53,17 @@ fun SignInForm(signInViewModel: SignInViewModel, onSignIn: () -> Unit, modifier:
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = modifier.fillMaxWidth().padding(top = 48.dp, bottom = 24.dp),
+        modifier = modifier.padding(top = 24.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Sign In", style = MaterialTheme.typography.titleMedium)
-
-        Spacer(modifier = modifier.padding(12.dp))
-
-        Text(text = errorMessage, color = Color.Red)
+        if (!errorMessageHidden) {
+            Text(text = errorMessage, color = Color.Red)
+        }
 
         Spacer(modifier = modifier.padding(6.dp))
 
@@ -101,7 +102,10 @@ fun SignInForm(signInViewModel: SignInViewModel, onSignIn: () -> Unit, modifier:
             onClick = {
                 scope.launch {
                     when (val signInResult = signInViewModel.signIn(emailAddress, password)) {
-                        is Either.Left -> errorMessage = signInResult.value.message
+                        is Either.Left -> {
+                            errorMessageHidden = false
+                            errorMessage = signInResult.value.message
+                        }
                         is Either.Right -> onSignIn()
                     }
                 }

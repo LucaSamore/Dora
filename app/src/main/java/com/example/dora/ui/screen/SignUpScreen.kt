@@ -30,7 +30,6 @@ import androidx.core.content.FileProvider
 import arrow.core.Either
 import com.example.dora.ui.composable.ProfilePicture
 import com.example.dora.ui.util.createImageFile
-import com.example.dora.ui.util.saveImage
 import com.example.dora.viewmodel.SignUpViewModel
 import java.util.*
 import kotlinx.coroutines.launch
@@ -64,6 +63,7 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val file = context.createImageFile()
@@ -94,16 +94,14 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Sign Up", style = MaterialTheme.typography.titleMedium)
-
-        Spacer(modifier = modifier.padding(12.dp))
-
         if (imageUri.path?.isNotEmpty() == true) {
             ProfilePicture(image = imageUri, context = context, defaultAvatar = false)
-            saveImage(context.applicationContext.contentResolver, imageUri)
+            // saveImage(context.applicationContext.contentResolver, imageUri)
         } else {
             ProfilePicture(context = context)
         }
+
+        Spacer(modifier = modifier.padding(4.dp))
 
         Row(
             modifier = modifier.fillMaxWidth(),
@@ -128,11 +126,15 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
             }
         }
 
-        Text(
-            text = errorMessage,
-            color = Color.Red,
-            modifier = modifier.padding(top = 4.dp, bottom = 6.dp)
-        )
+        Spacer(modifier = modifier.padding(4.dp))
+
+        if (!errorMessageHidden) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = modifier.padding(top = 4.dp, bottom = 6.dp)
+            )
+        }
 
         OutlinedTextField(
             value = firstName,
@@ -196,7 +198,10 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
                                 imageUri
                             )
                     ) {
-                        is Either.Left -> errorMessage = signUpResult.value.message
+                        is Either.Left -> {
+                            errorMessageHidden = false
+                            errorMessage = signUpResult.value.message
+                        }
                         is Either.Right -> onSignUp()
                     }
                 }
