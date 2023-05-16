@@ -30,8 +30,8 @@ class TestFirestoreFetching {
         val docRef = db.collection(User.collection).document("iafllg0hi6ahUkOrbCHoqz0vVzw2")
 
         try {
-            val res = docRef.get().await().toObject(User::class.java)
-            Log.i("user", res?.emailAddress!!)
+            val res = docRef.get().await().data
+            Log.i("user", res?.get("createdAt").toString())
         } catch (e: Exception) {
             println(e.message)
         }

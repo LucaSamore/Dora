@@ -1,5 +1,6 @@
 package com.example.dora.repository.user
 
+import android.net.Uri
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
@@ -13,6 +14,7 @@ import com.example.dora.network.database.FirestoreRequest
 import com.example.dora.network.storage.FirebaseStorageAPI
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
@@ -24,6 +26,32 @@ constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val userDatastore: UserDatastore
 ) : UserRepository {
+    override suspend fun getUser(): Either<ErrorMessage, User> {
+        return withContext(ioDispatcher) {
+            try {
+                val request = FirestoreRequest(
+                    collection = User.collection,
+                    document = userDatastore.userId.first(),
+                )
+                val res = firestoreAPI
+                    .findOne(NetworkRequest.of(request))
+                    .data?.await()?.data
+
+                User(
+                    uid = res?.get("uid") as String,
+                    firstName = res.get("firstName") as String,
+                    lastName = res.get("lastName") as String,
+                    emailAddress = res.get("emailAddress") as String,
+                    password = res.get("password") as String,
+                    location = null,
+                    profilePicture = Uri.parse((res.get("profilePicture") as String)),
+                    createdAt = res.get("createdAt") as String,
+                ).right()
+            } catch (e: Exception) {
+                ErrorMessage(e.message!!).left()
+            }
+        }
+    }
 
     override suspend fun updateLocation(
         userId: String,

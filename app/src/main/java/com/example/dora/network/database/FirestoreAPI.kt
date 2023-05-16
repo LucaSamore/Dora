@@ -4,6 +4,7 @@ import com.example.dora.network.NetworkRequest
 import com.example.dora.network.NetworkResponse
 import com.example.dora.network.api.RemoteDatabaseAPI
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -49,8 +50,10 @@ class FirestoreAPI(private val db: FirebaseFirestore = Firebase.firestore) :
 
     override fun findOne(
         request: NetworkRequest<FirestoreRequest>
-    ): NetworkResponse<Task<*>, Throwable> {
-        TODO("Not yet implemented")
+    ): NetworkResponse<Task<DocumentSnapshot>, Throwable> {
+        val queryResult =
+            db.collection(request.body.collection).document(request.body.document!!).get()
+        return NetworkResponse(queryResult, null)
     }
 
     override fun findMany(
