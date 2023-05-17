@@ -65,6 +65,8 @@ fun NavigationGraph(
             )
         }
 
-        composable(route = DoraScreen.Profile.name) { ProfileScreen(modifier = modifier, profileViewModel = hiltViewModel()) }
+        composable(route = DoraScreen.Profile.name) {
+            ProfileScreen(modifier = modifier, profileViewModel = hiltViewModel())
+        }
     }
 }

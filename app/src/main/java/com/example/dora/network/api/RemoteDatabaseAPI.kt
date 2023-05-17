@@ -2,8 +2,6 @@ package com.example.dora.network.api
 
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.NetworkResponse
-import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentSnapshot
 
 interface RemoteDatabaseAPI<I, O, E : Throwable> {
     fun insert(
@@ -15,7 +13,7 @@ interface RemoteDatabaseAPI<I, O, E : Throwable> {
 
     fun delete(request: NetworkRequest<I>): NetworkResponse<O, E>
 
-    fun findOne(request: NetworkRequest<I>): NetworkResponse<Task<DocumentSnapshot>, E>
+    fun findOne(request: NetworkRequest<I>): NetworkResponse<O, E>
 
     fun findMany(request: NetworkRequest<I>): NetworkResponse<O, E>
 }

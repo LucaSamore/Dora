@@ -22,21 +22,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import arrow.core.Either
-import arrow.core.getOrElse
 import arrow.core.left
 import com.example.dora.common.ErrorMessage
 import com.example.dora.ui.composable.ProfilePicture
 import com.example.dora.viewmodel.ProfileViewModel
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(profileViewModel: ProfileViewModel, modifier: Modifier) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -54,7 +48,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, modifier: Modifier) {
             rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
                 imageUri = it ?: Uri.EMPTY
             }
-        
+
         val user by profileViewModel.user.collectAsState(initial = ErrorMessage("").left())
 
         firstName = user.fold({ e -> e.message }, { u -> u.firstName })

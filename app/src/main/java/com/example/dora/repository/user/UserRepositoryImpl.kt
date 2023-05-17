@@ -29,24 +29,30 @@ constructor(
     override suspend fun getUser(): Either<ErrorMessage, User> {
         return withContext(ioDispatcher) {
             try {
-                val request = FirestoreRequest(
-                    collection = User.collection,
-                    document = userDatastore.userId.first(),
-                )
-                val res = firestoreAPI
-                    .findOne(NetworkRequest.of(request))
-                    .data?.await()?.data
+                val request =
+                    FirestoreRequest(
+                        collection = User.collection,
+                        document = userDatastore.userId.first(),
+                    )
+                val res =
+                    firestoreAPI
+                        .findOne(NetworkRequest.of(request))
+                        .data
+                        ?.findOneTask
+                        ?.await()
+                        ?.data
 
                 User(
-                    uid = res?.get("uid") as String,
-                    firstName = res.get("firstName") as String,
-                    lastName = res.get("lastName") as String,
-                    emailAddress = res.get("emailAddress") as String,
-                    password = res.get("password") as String,
-                    location = null,
-                    profilePicture = Uri.parse((res.get("profilePicture") as String)),
-                    createdAt = res.get("createdAt") as String,
-                ).right()
+                        uid = res?.get("uid") as String,
+                        firstName = res.get("firstName") as String,
+                        lastName = res.get("lastName") as String,
+                        emailAddress = res.get("emailAddress") as String,
+                        password = res.get("password") as String,
+                        location = null,
+                        profilePicture = Uri.parse((res.get("profilePicture") as String)),
+                        createdAt = res.get("createdAt") as String,
+                    )
+                    .right()
             } catch (e: Exception) {
                 ErrorMessage(e.message!!).left()
             }
@@ -70,6 +76,7 @@ constructor(
                         )
                     )
                     .data
+                    ?.updateTask
                     ?.await()
                     .right()
             } catch (e: Exception) {

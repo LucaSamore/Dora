@@ -18,5 +18,7 @@ data class User(
     var profilePicture: Uri = Uri.EMPTY,
     val createdAt: String = nowWithPattern("yyyy-MM-dd HH:mm:ss")
 ) {
-    companion object { const val collection = "users" }
+    companion object {
+        const val collection = "users"
+    }
 }

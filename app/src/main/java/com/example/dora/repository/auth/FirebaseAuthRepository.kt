@@ -134,7 +134,7 @@ constructor(
         val request = createFirestoreRequest(user)
 
         return try {
-            firestoreAPI.insert(request).data?.await().right()
+            firestoreAPI.insert(request).data?.insertTask?.await().right()
         } catch (e: Exception) {
             ErrorMessage(e.message!!).left()
         }
