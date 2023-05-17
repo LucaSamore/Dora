@@ -51,7 +51,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, modifier: Modifier) {
 
         val user by profileViewModel.user.collectAsState(initial = ErrorMessage("").left())
 
-        firstName = user.fold({ e -> e.message }, { u -> u.firstName })
+        firstName = user.fold({ e -> e.message }, { u -> u?.location?.latitude.toString() })
 
         ProfilePicture(context = context)
 

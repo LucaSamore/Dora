@@ -18,5 +18,5 @@ constructor(
     @FirebaseRepository private val userRepository: UserRepository,
 ) : ViewModel() {
 
-    val user: Flow<Either<ErrorMessage, User>> = flow { emit(userRepository.getUser()) }
+    val user: Flow<Either<ErrorMessage, User?>> = flow { emit(userRepository.getUser()) }
 }

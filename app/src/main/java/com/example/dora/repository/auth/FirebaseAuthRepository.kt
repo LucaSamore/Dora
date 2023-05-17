@@ -122,13 +122,16 @@ constructor(
     ): Either<ErrorMessage, Any?> {
         val user = createAccount(credentials)
 
-        if (user.profilePicture != Uri.EMPTY) {
+        if (user.profilePicture != null) {
             val storeResult =
-                storeUserProfilePictureToFirebaseStorage(user.profilePicture, signedUserId)
+                storeUserProfilePictureToFirebaseStorage(
+                    Uri.parse(user.profilePicture),
+                    signedUserId
+                )
             if (storeResult.isLeft()) {
                 return storeResult.map { it.left() }
             }
-            user.profilePicture = storeResult.getOrElse { Uri.EMPTY }
+            user.profilePicture = storeResult.getOrElse { null }.toString()
         }
 
         val request = createFirestoreRequest(user)
@@ -147,7 +150,7 @@ constructor(
             lastName = credentials.lastName,
             emailAddress = credentials.emailAddress,
             password = BCrypt.withDefaults().hashToString(12, credentials.password.toCharArray()),
-            profilePicture = credentials.profilePicture
+            profilePicture = credentials.profilePicture.toString()
         )
     }
 
