@@ -22,37 +22,47 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import arrow.core.left
-import com.example.dora.common.ErrorMessage
 import com.example.dora.model.User
+import com.example.dora.ui.composable.ErrorAlertDialog
 import com.example.dora.ui.composable.ProfilePicture
 import com.example.dora.viewmodel.ProfileViewModel
 
 @Composable
-fun ProfileScreen(profileViewModel: ProfileViewModel, modifier: Modifier) {
+fun ProfileScreen(profileViewModel: ProfileViewModel, modifier: Modifier, onError: () -> Unit) {
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var errorMessage by rememberSaveable { mutableStateOf("") }
-        val eitherUser by profileViewModel.user.collectAsState(initial = ErrorMessage("").left())
+        val eitherUser by profileViewModel.user.collectAsState()
 
         if (eitherUser.isLeft()) {
-            errorMessage = eitherUser.leftOrNull()?.message!!
-            // TODO: Display error message
+            ErrorAlertDialog(
+                title = "Error",
+                content = "Unable to retrieve your data",
+                onError = onError
+            )
         } else {
             val user = eitherUser.getOrNull()
-            ProfileForm(modifier = modifier, user = user!!)
+            // TODO: Fix this
+            if (user?.uid != null) {
+                ProfileForm(
+                    profileViewModel = profileViewModel,
+                    modifier = modifier,
+                    user = user
+                )
+            }
         }
     }
 }
 
 @Composable
-fun ProfileForm(modifier: Modifier, user: User) {
-    var firstName by rememberSaveable { mutableStateOf(user.firstName) }
-    var lastName by rememberSaveable { mutableStateOf(user.lastName) }
-    var emailAddress by rememberSaveable { mutableStateOf(user.emailAddress) }
+fun ProfileForm(profileViewModel: ProfileViewModel, modifier: Modifier, user: User) {
+    var firstName by rememberSaveable { mutableStateOf(user.firstName ?: "") }
+    var lastName by rememberSaveable { mutableStateOf(user.lastName ?: "") }
+    var emailAddress by rememberSaveable { mutableStateOf(user.emailAddress ?: "") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
@@ -95,7 +105,7 @@ fun ProfileForm(modifier: Modifier, user: User) {
     }
 
     OutlinedTextField(
-        value = firstName!!,
+        value = firstName,
         onValueChange = { firstName = it },
         label = { Text("First name") },
         placeholder = { Text("Mario") },
@@ -104,7 +114,7 @@ fun ProfileForm(modifier: Modifier, user: User) {
     Spacer(modifier = modifier.padding(6.dp))
 
     OutlinedTextField(
-        value = lastName!!,
+        value = lastName,
         onValueChange = { lastName = it },
         label = { Text("Last name") },
         placeholder = { Text("Rossi") },
@@ -113,7 +123,7 @@ fun ProfileForm(modifier: Modifier, user: User) {
     Spacer(modifier = modifier.padding(6.dp))
 
     OutlinedTextField(
-        value = emailAddress!!,
+        value = emailAddress,
         onValueChange = { emailAddress = it },
         label = { Text("Email address") },
         placeholder = { Text("example@gmail.com") },
@@ -143,7 +153,9 @@ fun ProfileForm(modifier: Modifier, user: User) {
 
     Button(
         modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
-        onClick = { errorMessageHidden = !errorMessageHidden }
+        onClick = {
+            TODO()
+        }
     ) {
         Text("Update profile")
     }
