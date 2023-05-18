@@ -22,7 +22,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.dora.model.User
+import com.example.dora.model.*
 import com.example.dora.ui.composable.ErrorAlertDialog
 import com.example.dora.ui.composable.ProfilePicture
 import com.example.dora.viewmodel.ProfileViewModel
@@ -154,7 +154,17 @@ fun ProfileForm(profileViewModel: ProfileViewModel, modifier: Modifier, user: Us
     Button(
         modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
         onClick = {
-            TODO()
+            if (password.isEmpty()) {
+                errorMessage = "Password required"
+                errorMessageHidden = false
+            } else {
+                User.firstName.modify(user) { firstName }
+                User.lastName.modify(user) { lastName }
+                User.emailAddress.modify(user) { emailAddress }
+                User.profilePicture.modify(user) { imageUri.toString()}
+
+                // TODO()
+            }
         }
     ) {
         Text("Update profile")

@@ -1,5 +1,6 @@
 package com.example.dora.model
 
+import arrow.optics.optics
 import com.example.dora.common.Location
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -7,7 +8,7 @@ import java.time.format.DateTimeFormatter
 fun nowWithPattern(pattern: String): String =
     LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern))
 
-data class User(
+@optics data class User(
     val uid: String? = null,
     val firstName: String? = null,
     val lastName: String? = null,
