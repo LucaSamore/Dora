@@ -66,9 +66,11 @@ fun NavigationGraph(
         }
 
         composable(route = DoraScreen.Profile.name) {
-            ProfileScreen(modifier = modifier, profileViewModel = hiltViewModel(), onError = {
-                navController.navigate(DoraScreen.Home.name)
-            })
+            ProfileScreen(
+                modifier = modifier,
+                profileViewModel = hiltViewModel(),
+                onError = { navController.navigate(DoraScreen.Home.name) }
+            )
         }
     }
 }

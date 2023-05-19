@@ -8,7 +8,8 @@ import java.time.format.DateTimeFormatter
 fun nowWithPattern(pattern: String): String =
     LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern))
 
-@optics data class User(
+@optics
+data class User(
     val uid: String? = null,
     val firstName: String? = null,
     val lastName: String? = null,
@@ -21,4 +22,8 @@ fun nowWithPattern(pattern: String): String =
     companion object {
         const val collection = "users"
     }
+}
+
+fun <T> opticsCompose(entity: T, vararg transformations: (T) -> T): T {
+    return transformations.fold(entity) { e, transformation -> transformation(e) }
 }
