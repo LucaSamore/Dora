@@ -8,8 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,7 +38,9 @@ fun ProfileScreen(
     onUpdate: () -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -101,11 +102,17 @@ fun ProfileForm(
     Spacer(modifier = modifier.padding(6.dp))
 
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(6.dp),
         horizontalArrangement = Arrangement.Center,
     ) {
         TextButton(onClick = { galleryLauncher.launch("image/*") }) {
-            Text(text = "Get from gallery")
+            Icon(Icons.Filled.Image, contentDescription = "Get from gallery")
+            Text(text = "Gallery")
+        }
+
+        TextButton(onClick = { imageUri = Uri.EMPTY }) {
+            Icon(Icons.Filled.Delete, contentDescription = "Delete profile picture")
+            Text(text = "Remove")
         }
     }
 
