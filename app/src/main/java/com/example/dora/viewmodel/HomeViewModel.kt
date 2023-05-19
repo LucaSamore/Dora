@@ -28,8 +28,7 @@ constructor(
 
     fun updateLocation(location: Location) {
         viewModelScope.launch {
-            val user = authenticationRepository.getCurrentUser() ?: return@launch
-            userRepository.updateLocation(user.uid, location)
+            userRepository.updateLocation(location)
         }
     }
 

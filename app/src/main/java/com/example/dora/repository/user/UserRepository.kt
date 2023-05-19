@@ -12,10 +12,7 @@ interface UserRepository {
 
     suspend fun updateUser(user: User): Either<ErrorMessage, SuccessMessage>
 
-    suspend fun updateLocation(
-        userId: String,
-        location: Location
-    ): Either<ErrorMessage, SuccessMessage>
+    suspend fun updateLocation(location: Location): Either<ErrorMessage, SuccessMessage>
 
     suspend fun updateProfilePicture(profilePictureUri: Uri): Either<ErrorMessage, Uri>
 }

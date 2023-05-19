@@ -73,10 +73,7 @@ constructor(
             }
         }
 
-    override suspend fun updateLocation(
-        userId: String,
-        location: Location
-    ): Either<ErrorMessage, SuccessMessage> =
+    override suspend fun updateLocation(location: Location): Either<ErrorMessage, SuccessMessage> =
         withContext(ioDispatcher) {
             try {
                 firestoreAPI
@@ -84,7 +81,7 @@ constructor(
                         NetworkRequest.of(
                             FirestoreRequest(
                                 collection = User.collection,
-                                document = userId,
+                                document = userDatastore.userId.first(),
                                 updates = mapOf("location" to location),
                             )
                         )
