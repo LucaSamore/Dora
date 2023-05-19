@@ -12,6 +12,12 @@ interface UserRepository {
 
     suspend fun updateUser(user: User): Either<ErrorMessage, SuccessMessage>
 
+    suspend fun updateAuthEmailAddress(
+        newEmailAddress: String
+    ): Either<ErrorMessage, SuccessMessage>
+
+    suspend fun updateAuthPassword(newPlainPassword: String): Either<ErrorMessage, SuccessMessage>
+
     suspend fun updateLocation(location: Location): Either<ErrorMessage, SuccessMessage>
 
     suspend fun updateProfilePicture(

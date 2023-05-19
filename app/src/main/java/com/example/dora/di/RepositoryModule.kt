@@ -41,12 +41,14 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun providesUserRepository(
+        firebaseAuthAPI: FirebaseAuthAPI,
         firestoreAPI: FirestoreAPI,
         firebaseStorageAPI: FirebaseStorageAPI,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
         userDatastore: UserDatastore,
     ): UserRepository =
         UserRepositoryImpl(
+            firebaseAuthAPI = firebaseAuthAPI,
             firestoreAPI = firestoreAPI,
             firebaseStorageAPI = firebaseStorageAPI,
             ioDispatcher = ioDispatcher,

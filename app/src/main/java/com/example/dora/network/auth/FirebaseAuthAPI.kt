@@ -46,6 +46,12 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
         return NetworkResponse(authenticationResult, null)
     }
 
+    fun updateEmailAddress(newEmailAddress: String): Task<Void> =
+        auth.currentUser!!.updateEmail(newEmailAddress)
+
+    fun updatePassword(newPassword: String): Task<Void> =
+        auth.currentUser!!.updatePassword(newPassword)
+
     override fun isUserSignedIn(): Boolean = auth.currentUser != null
 
     override fun signOut() = auth.signOut()
