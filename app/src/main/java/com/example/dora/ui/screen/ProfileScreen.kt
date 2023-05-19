@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import arrow.core.Either
+import arrow.core.getOrElse
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.dora.model.*
 import com.example.dora.ui.composable.ErrorAlertDialog
@@ -167,11 +168,13 @@ fun ProfileForm(profileViewModel: ProfileViewModel, modifier: Modifier, user: Us
             }
 
             scope.launch {
-                //                if (imageUri.toString() != user.profilePicture) {
-                //                    val uri =
-                // profileViewModel.updateProfilePicture(imageUri).getOrElse { Uri.EMPTY }
-                //                }
-
+                var uri = imageUri
+                if (imageUri.toString() != user.profilePicture) {
+                    uri =
+                        profileViewModel.updateProfilePicture(user.uid!!, imageUri).getOrElse {
+                            Uri.EMPTY
+                        }
+                }
                 // TODO: validate input before update
                 val changes =
                     opticsCompose(
@@ -179,7 +182,7 @@ fun ProfileForm(profileViewModel: ProfileViewModel, modifier: Modifier, user: Us
                         { u -> User.firstName.set(u, firstName) },
                         { u -> User.lastName.set(u, lastName) },
                         { u -> User.emailAddress.set(u, emailAddress) },
-                        { u -> User.profilePicture.set(u, imageUri.toString()) },
+                        { u -> User.profilePicture.set(u, uri.toString()) },
                     )
                 when (val result = profileViewModel.updateProfile(changes)) {
                     is Either.Left -> {

@@ -41,8 +41,8 @@ constructor(
             userRepository.updateUser(user)
         }
 
-    suspend fun updateProfilePicture(profilePictureUri: Uri) =
+    suspend fun updateProfilePicture(userId: String, profilePictureUri: Uri) =
         withContext(viewModelScope.coroutineContext + ioDispatcher) {
-            userRepository.updateProfilePicture(profilePictureUri)
+            userRepository.updateProfilePicture(userId, profilePictureUri)
         }
 }

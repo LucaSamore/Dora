@@ -55,7 +55,7 @@ constructor(
                 val request =
                     FirestoreRequest(
                         collection = User.collection,
-                        document = userDatastore.userId.first(),
+                        document = user.uid!!,
                         updates =
                             mapOf(
                                 "firstName" to user.firstName!!,
@@ -65,9 +65,12 @@ constructor(
                             )
                     )
 
-                firestoreAPI.update(NetworkRequest.of(request)).data?.updateTask?.await().let {
-                    SuccessMessage("User updated successfully").right()
-                }
+                firestoreAPI
+                    .update(NetworkRequest.of(request))
+                    .data
+                    ?.updateTask
+                    ?.await()
+                    .let { SuccessMessage("User updated successfully").right() }
             } catch (e: Exception) {
                 ErrorMessage(e.message!!).left()
             }
@@ -95,19 +98,23 @@ constructor(
             }
         }
 
-    override suspend fun updateProfilePicture(profilePictureUri: Uri): Either<ErrorMessage, Uri> {
-        return try {
-            firebaseStorageAPI
-                .uploadFile(
-                    NetworkRequest.of(
-                        FirebaseStorageRequest(profilePictureUri, "${userDatastore.userId}/profile")
+    override suspend fun updateProfilePicture(
+        userId: String,
+        profilePictureUri: Uri
+    ): Either<ErrorMessage, Uri> =
+        withContext(ioDispatcher) {
+            try {
+                firebaseStorageAPI
+                    .uploadFile(
+                        NetworkRequest.of(
+                            FirebaseStorageRequest(profilePictureUri, "$userId/profile")
+                        )
                     )
-                )
-                .data
-                ?.await()!!
-                .right()
-        } catch (e: Exception) {
-            ErrorMessage(e.message!!).left()
+                    .data
+                    ?.await()!!
+                    .right()
+            } catch (e: Exception) {
+                ErrorMessage(e.message!!).left()
+            }
         }
-    }
 }

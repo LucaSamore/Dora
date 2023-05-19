@@ -27,9 +27,7 @@ constructor(
     fun signOut() = viewModelScope.launch { authenticationRepository.signOut() }
 
     fun updateLocation(location: Location) {
-        viewModelScope.launch {
-            userRepository.updateLocation(location)
-        }
+        viewModelScope.launch { userRepository.updateLocation(location) }
     }
 
     suspend fun deleteAccount(): Either<ErrorMessage, Void> =
