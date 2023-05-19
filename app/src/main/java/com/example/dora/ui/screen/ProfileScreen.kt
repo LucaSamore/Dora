@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import arrow.core.Either
 import arrow.core.getOrElse
 import at.favre.lib.crypto.bcrypt.BCrypt
+import com.example.dora.common.validation.UserValidator
+import com.example.dora.common.validation.ValidationStatus
 import com.example.dora.model.*
 import com.example.dora.ui.composable.ErrorAlertDialog
 import com.example.dora.ui.composable.ProfilePicture
@@ -38,9 +40,7 @@ fun ProfileScreen(
     onUpdate: () -> Unit
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -189,6 +189,30 @@ fun ProfileForm(
                 return@Button
             }
 
+            UserValidator.validateFirstOrLastName(firstName).also {
+                if (it.status == ValidationStatus.REJECT) {
+                    errorMessage = it.message!!
+                    errorMessageHidden = false
+                    return@Button
+                }
+            }
+
+            UserValidator.validateFirstOrLastName(lastName).also {
+                if (it.status == ValidationStatus.REJECT) {
+                    errorMessage = it.message!!
+                    errorMessageHidden = false
+                    return@Button
+                }
+            }
+
+            UserValidator.validateEmailAddress(emailAddress).also {
+                if (it.status == ValidationStatus.REJECT) {
+                    errorMessage = it.message!!
+                    errorMessageHidden = false
+                    return@Button
+                }
+            }
+
             scope.launch {
                 var uri = imageUri
                 if (imageUri.toString() != user.profilePicture) {
@@ -197,7 +221,7 @@ fun ProfileForm(
                             Uri.EMPTY
                         }
                 }
-                // TODO: validate input before update
+
                 val changes =
                     opticsCompose(
                         user,
