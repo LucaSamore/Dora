@@ -19,10 +19,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
-    onSignOut: () -> Unit,
     modifier: Modifier,
     location: MutableState<Location>,
-    startLocationUpdates: () -> Unit
+    startLocationUpdates: () -> Unit,
+    onSignOut: () -> Unit,
 ) {
     var error by rememberSaveable { mutableStateOf("Nothing yet") }
     val scope = rememberCoroutineScope()

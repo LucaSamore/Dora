@@ -65,12 +65,9 @@ constructor(
                             )
                     )
 
-                firestoreAPI
-                    .update(NetworkRequest.of(request))
-                    .data
-                    ?.updateTask
-                    ?.await()
-                    .let { SuccessMessage("User updated successfully").right() }
+                firestoreAPI.update(NetworkRequest.of(request)).data?.updateTask?.await().let {
+                    SuccessMessage("User updated successfully").right()
+                }
             } catch (e: Exception) {
                 ErrorMessage(e.message!!).left()
             }

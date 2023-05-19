@@ -52,6 +52,7 @@ internal fun DoraApplication(
             startDestination = startDestination,
             location = location,
             startLocationUpdates = startLocationUpdates,
+            snackbarHostState = snackbarHostState
         )
     }
 }

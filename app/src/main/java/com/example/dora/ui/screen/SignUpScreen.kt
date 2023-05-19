@@ -37,9 +37,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignUpScreen(
     signUpViewModel: SignUpViewModel,
+    modifier: Modifier,
     onSignUp: () -> Unit,
-    onBackToSignIn: () -> Unit,
-    modifier: Modifier
+    onBackToSignIn: () -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),

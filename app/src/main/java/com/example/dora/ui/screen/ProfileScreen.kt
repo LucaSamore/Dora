@@ -32,7 +32,12 @@ import com.example.dora.viewmodel.ProfileViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun ProfileScreen(profileViewModel: ProfileViewModel, modifier: Modifier, onError: () -> Unit) {
+fun ProfileScreen(
+    profileViewModel: ProfileViewModel,
+    modifier: Modifier,
+    onError: () -> Unit,
+    onUpdate: () -> Unit
+) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
@@ -50,14 +55,24 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, modifier: Modifier, onErro
             val user = eitherUser.getOrNull()
             // TODO: Fix this
             if (user?.uid != null) {
-                ProfileForm(profileViewModel = profileViewModel, modifier = modifier, user = user)
+                ProfileForm(
+                    profileViewModel = profileViewModel,
+                    modifier = modifier,
+                    user = user,
+                    onUpdate = onUpdate
+                )
             }
         }
     }
 }
 
 @Composable
-fun ProfileForm(profileViewModel: ProfileViewModel, modifier: Modifier, user: User) {
+fun ProfileForm(
+    profileViewModel: ProfileViewModel,
+    modifier: Modifier,
+    user: User,
+    onUpdate: () -> Unit
+) {
     var firstName by rememberSaveable { mutableStateOf(user.firstName ?: "") }
     var lastName by rememberSaveable { mutableStateOf(user.lastName ?: "") }
     var emailAddress by rememberSaveable { mutableStateOf(user.emailAddress ?: "") }
@@ -190,9 +205,7 @@ fun ProfileForm(profileViewModel: ProfileViewModel, modifier: Modifier, user: Us
                         errorMessageHidden = false
                     }
                     is Either.Right -> {
-                        // TODO: go to home with toast
-                        errorMessage = result.value.message
-                        errorMessageHidden = false
+                        onUpdate()
                     }
                 }
             }

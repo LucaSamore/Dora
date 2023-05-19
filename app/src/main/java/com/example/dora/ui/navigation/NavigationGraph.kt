@@ -1,5 +1,6 @@
 package com.example.dora.ui.navigation
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
@@ -19,6 +20,7 @@ fun NavigationGraph(
     startDestination: String,
     modifier: Modifier = Modifier,
     location: MutableState<Location>,
+    snackbarHostState: SnackbarHostState,
     startLocationUpdates: () -> Unit,
 ) {
     NavHost(
@@ -29,14 +31,14 @@ fun NavigationGraph(
         composable(route = DoraScreen.Home.name) {
             HomeScreen(
                 homeViewModel = hiltViewModel(),
+                modifier = modifier,
+                location = location,
+                startLocationUpdates = startLocationUpdates,
                 onSignOut = {
                     navController.navigate(DoraScreen.SignIn.name) {
                         popUpTo(DoraScreen.Home.name) { inclusive = true }
                     }
                 },
-                modifier = modifier,
-                location = location,
-                startLocationUpdates = startLocationUpdates,
             )
         }
 
@@ -56,12 +58,12 @@ fun NavigationGraph(
         composable(route = DoraScreen.SignUp.name) {
             SignUpScreen(
                 signUpViewModel = hiltViewModel(),
+                modifier = modifier,
                 onSignUp = {
                     navController.backQueue.clear()
                     navController.navigate(DoraScreen.Home.name)
                 },
                 onBackToSignIn = { navController.navigate(DoraScreen.SignIn.name) },
-                modifier = modifier,
             )
         }
 
@@ -69,7 +71,8 @@ fun NavigationGraph(
             ProfileScreen(
                 modifier = modifier,
                 profileViewModel = hiltViewModel(),
-                onError = { navController.navigate(DoraScreen.Home.name) }
+                onError = { navController.navigate(DoraScreen.Home.name) },
+                onUpdate = { navController.navigate(DoraScreen.Home.name) }
             )
         }
     }
