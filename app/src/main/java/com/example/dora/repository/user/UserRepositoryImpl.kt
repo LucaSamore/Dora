@@ -66,7 +66,6 @@ constructor(
                                 "profilePicture" to user.profilePicture!!,
                             )
                     )
-
                 updateAuthEmailAddress(user.emailAddress)
 
                 return@withContext firestoreAPI

@@ -79,6 +79,8 @@ fun ProfileForm(
     var emailAddress by rememberSaveable { mutableStateOf(user.emailAddress ?: "") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
+    var passwordConfirmation by rememberSaveable { mutableStateOf("") }
+    var passwordConfirmationHidden by rememberSaveable { mutableStateOf(true) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
     var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
@@ -155,7 +157,7 @@ fun ProfileForm(
         value = password,
         onValueChange = { password = it },
         singleLine = true,
-        label = { Text("Password") },
+        label = { Text("New password") },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation =
             if (passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
@@ -169,19 +171,43 @@ fun ProfileForm(
         }
     )
 
+    Spacer(modifier = modifier.padding(6.dp))
+
+    OutlinedTextField(
+        value = passwordConfirmation,
+        onValueChange = { passwordConfirmation = it },
+        singleLine = true,
+        label = { Text("Password confirmation") },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        visualTransformation =
+            if (passwordConfirmationHidden) PasswordVisualTransformation()
+            else VisualTransformation.None,
+        trailingIcon = {
+            IconButton(onClick = { passwordConfirmationHidden = !passwordConfirmationHidden }) {
+                val visibilityIcon =
+                    if (!passwordConfirmationHidden) Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+                val description =
+                    if (passwordConfirmationHidden) "Show password" else "Hide password"
+                Icon(imageVector = visibilityIcon, contentDescription = description)
+            }
+        }
+    )
+
     Spacer(modifier = modifier.padding(16.dp))
 
     Button(
         modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
         onClick = {
-            if (password.isEmpty()) {
+            if (passwordConfirmation.isEmpty()) {
                 errorMessage = "Password required"
                 errorMessageHidden = false
                 return@Button
             }
 
             val passwordVerificationResult =
-                BCrypt.verifyer().verify(password.toByteArray(), user.password?.toByteArray())
+                BCrypt.verifyer()
+                    .verify(passwordConfirmation.toByteArray(), user.password?.toByteArray())
 
             if (!passwordVerificationResult.verified) {
                 errorMessage = "Password is not correct"
@@ -210,6 +236,16 @@ fun ProfileForm(
                     errorMessage = it.message!!
                     errorMessageHidden = false
                     return@Button
+                }
+            }
+
+            if (password.isNotEmpty()) {
+                UserValidator.validatePassword(password).also {
+                    if (it.status == ValidationStatus.REJECT) {
+                        errorMessage = it.message!!
+                        errorMessageHidden = false
+                        return@Button
+                    }
                 }
             }
 
