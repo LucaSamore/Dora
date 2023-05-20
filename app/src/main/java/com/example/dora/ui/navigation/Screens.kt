@@ -1,8 +1,9 @@
 package com.example.dora.ui.navigation
 
 sealed class DoraScreen(val name: String) {
-    object Home : DoraScreen("home")
-    object SignIn : DoraScreen("sign in")
-    object SignUp : DoraScreen("sign up")
-    object Profile : DoraScreen("profile")
+    object Home : DoraScreen("Home")
+    object SignIn : DoraScreen("Sign In")
+    object SignUp : DoraScreen("Sign Up")
+    object Profile : DoraScreen("Profile")
+    object Settings : DoraScreen("Settings")
 }

@@ -14,6 +14,7 @@ import com.example.dora.ui.composable.NavigationBarFunction
 import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.ui.navigation.NavigationGraph
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DoraApplication(
     startDestination: String,
@@ -46,10 +47,11 @@ internal fun DoraApplication(
                 }
             }
         }
-    ) {
+    ) { innerPadding ->
         NavigationGraph(
             navController = navController,
             startDestination = startDestination,
+            paddingValues = innerPadding,
             location = location,
             startLocationUpdates = startLocationUpdates,
             snackbarHostState = snackbarHostState

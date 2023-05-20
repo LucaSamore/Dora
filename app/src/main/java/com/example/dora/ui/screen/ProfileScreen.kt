@@ -35,13 +35,17 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(
     profileViewModel: ProfileViewModel,
+    paddingValues: PaddingValues,
     modifier: Modifier,
     onError: () -> Unit,
     onUpdate: () -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(paddingValues),
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val eitherUser by profileViewModel.user.collectAsState()
@@ -99,10 +103,8 @@ fun ProfileForm(
         ProfilePicture(context = context)
     }
 
-    Spacer(modifier = modifier.padding(6.dp))
-
     Row(
-        modifier = modifier.fillMaxWidth().padding(6.dp),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
     ) {
         TextButton(onClick = { galleryLauncher.launch("image/*") }) {
@@ -131,8 +133,6 @@ fun ProfileForm(
         placeholder = { Text("Mario") },
     )
 
-    Spacer(modifier = modifier.padding(6.dp))
-
     OutlinedTextField(
         value = lastName,
         onValueChange = { lastName = it },
@@ -140,16 +140,12 @@ fun ProfileForm(
         placeholder = { Text("Rossi") },
     )
 
-    Spacer(modifier = modifier.padding(6.dp))
-
     OutlinedTextField(
         value = emailAddress,
         onValueChange = { emailAddress = it },
         label = { Text("Email address") },
         placeholder = { Text("example@gmail.com") },
     )
-
-    Spacer(modifier = modifier.padding(6.dp))
 
     OutlinedTextField(
         value = passwordConfirmation,
@@ -171,8 +167,6 @@ fun ProfileForm(
             }
         }
     )
-
-    Spacer(modifier = modifier.padding(16.dp))
 
     Button(
         modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
@@ -250,8 +244,6 @@ fun ProfileForm(
     ) {
         Text("Update profile")
     }
-
-    Spacer(modifier = modifier.padding(48.dp))
 }
 
 @Preview(showBackground = true)

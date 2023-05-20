@@ -51,7 +51,11 @@ fun NavigationBarFunction(navController: NavHostController) {
             icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") },
             label = { Text(text = "Settings") },
             selected = false,
-            onClick = { TODO() }
+            onClick = {
+                navController.navigate(DoraScreen.Settings.name) {
+                    popUpTo(DoraScreen.Settings.name) { inclusive = true }
+                }
+            }
         )
     }
 }

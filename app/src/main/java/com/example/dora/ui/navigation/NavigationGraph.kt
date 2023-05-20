@@ -1,5 +1,6 @@
 package com.example.dora.ui.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -9,15 +10,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.dora.common.Location
-import com.example.dora.ui.screen.HomeScreen
-import com.example.dora.ui.screen.ProfileScreen
-import com.example.dora.ui.screen.SignInScreen
-import com.example.dora.ui.screen.SignUpScreen
+import com.example.dora.ui.screen.*
+import com.example.dora.ui.screen.SettingsScreen
 
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
     startDestination: String,
+    paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
     location: MutableState<Location>,
     snackbarHostState: SnackbarHostState,
@@ -70,10 +70,15 @@ fun NavigationGraph(
         composable(route = DoraScreen.Profile.name) {
             ProfileScreen(
                 modifier = modifier,
+                paddingValues = paddingValues,
                 profileViewModel = hiltViewModel(),
                 onError = { navController.navigate(DoraScreen.Home.name) },
                 onUpdate = { navController.navigate(DoraScreen.Home.name) }
             )
+        }
+        
+        composable(route = DoraScreen.Settings.name) {
+            SettingsScreen(modifier = modifier)
         }
     }
 }
