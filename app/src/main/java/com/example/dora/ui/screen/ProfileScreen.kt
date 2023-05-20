@@ -77,8 +77,6 @@ fun ProfileForm(
     var firstName by rememberSaveable { mutableStateOf(user.firstName ?: "") }
     var lastName by rememberSaveable { mutableStateOf(user.lastName ?: "") }
     var emailAddress by rememberSaveable { mutableStateOf(user.emailAddress ?: "") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var passwordHidden by rememberSaveable { mutableStateOf(true) }
     var passwordConfirmation by rememberSaveable { mutableStateOf("") }
     var passwordConfirmationHidden by rememberSaveable { mutableStateOf(true) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
@@ -154,26 +152,6 @@ fun ProfileForm(
     Spacer(modifier = modifier.padding(6.dp))
 
     OutlinedTextField(
-        value = password,
-        onValueChange = { password = it },
-        singleLine = true,
-        label = { Text("New password") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        visualTransformation =
-            if (passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
-        trailingIcon = {
-            IconButton(onClick = { passwordHidden = !passwordHidden }) {
-                val visibilityIcon =
-                    if (!passwordHidden) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                val description = if (passwordHidden) "Show password" else "Hide password"
-                Icon(imageVector = visibilityIcon, contentDescription = description)
-            }
-        }
-    )
-
-    Spacer(modifier = modifier.padding(6.dp))
-
-    OutlinedTextField(
         value = passwordConfirmation,
         onValueChange = { passwordConfirmation = it },
         singleLine = true,
@@ -236,16 +214,6 @@ fun ProfileForm(
                     errorMessage = it.message!!
                     errorMessageHidden = false
                     return@Button
-                }
-            }
-
-            if (password.isNotEmpty()) {
-                UserValidator.validatePassword(password).also {
-                    if (it.status == ValidationStatus.REJECT) {
-                        errorMessage = it.message!!
-                        errorMessageHidden = false
-                        return@Button
-                    }
                 }
             }
 
