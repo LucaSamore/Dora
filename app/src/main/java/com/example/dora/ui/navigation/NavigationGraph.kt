@@ -58,6 +58,7 @@ fun NavigationGraph(
         composable(route = DoraScreen.SignUp.name) {
             SignUpScreen(
                 signUpViewModel = hiltViewModel(),
+                paddingValues = paddingValues,
                 modifier = modifier,
                 onSignUp = {
                     navController.backQueue.clear()
@@ -76,9 +77,7 @@ fun NavigationGraph(
                 onUpdate = { navController.navigate(DoraScreen.Home.name) }
             )
         }
-        
-        composable(route = DoraScreen.Settings.name) {
-            SettingsScreen(modifier = modifier)
-        }
+
+        composable(route = DoraScreen.Settings.name) { SettingsScreen(modifier = modifier) }
     }
 }

@@ -41,10 +41,8 @@ fun ProfileScreen(
     onUpdate: () -> Unit
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(paddingValues),
+        modifier =
+            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -104,16 +102,18 @@ fun ProfileForm(
     }
 
     Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
+        modifier = modifier.width(TextFieldDefaults.MinWidth),
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         TextButton(onClick = { galleryLauncher.launch("image/*") }) {
             Icon(Icons.Filled.Image, contentDescription = "Get from gallery")
+            Spacer(modifier = modifier.size(2.dp))
             Text(text = "Gallery")
         }
 
         TextButton(onClick = { imageUri = Uri.EMPTY }) {
             Icon(Icons.Filled.Delete, contentDescription = "Delete profile picture")
+            Spacer(modifier = modifier.size(2.dp))
             Text(text = "Remove")
         }
     }

@@ -11,6 +11,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -37,13 +39,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignUpScreen(
     signUpViewModel: SignUpViewModel,
+    paddingValues: PaddingValues,
     modifier: Modifier,
     onSignUp: () -> Unit,
     onBackToSignIn: () -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
+        modifier =
+            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SignUpForm(signUpViewModel, onSignUp, modifier)
@@ -89,126 +93,112 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
             }
         }
 
-    Column(
-        modifier = modifier.fillMaxWidth().padding(top = 48.dp, bottom = 24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    if (imageUri.path?.isNotEmpty() == true) {
+        ProfilePicture(image = imageUri, context = context, defaultAvatar = false)
+        // saveImage(context.applicationContext.contentResolver, imageUri)
+    } else {
+        ProfilePicture(context = context)
+    }
+
+    Row(
+        modifier = modifier.width(TextFieldDefaults.MinWidth),
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        if (imageUri.path?.isNotEmpty() == true) {
-            ProfilePicture(image = imageUri, context = context, defaultAvatar = false)
-            // saveImage(context.applicationContext.contentResolver, imageUri)
-        } else {
-            ProfilePicture(context = context)
+        TextButton(onClick = { galleryLauncher.launch("image/*") }) {
+            Icon(Icons.Filled.Image, contentDescription = "Get from gallery")
+            Spacer(modifier = modifier.size(2.dp))
+            Text(text = "Get from gallery")
         }
 
-        Spacer(modifier = modifier.padding(4.dp))
-
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            TextButton(onClick = { galleryLauncher.launch("image/*") }) {
-                Text(text = "Get from gallery")
-            }
-
-            TextButton(
-                onClick = {
-                    val permissionCheckResult =
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                    if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
-                        cameraLauncher.launch(uri)
-                    } else {
-                        permissionLauncher.launch(Manifest.permission.CAMERA)
-                    }
-                }
-            ) {
-                Text(text = "Take picture")
-            }
-        }
-
-        Spacer(modifier = modifier.padding(4.dp))
-
-        if (!errorMessageHidden) {
-            Text(
-                text = errorMessage,
-                color = Color.Red,
-                modifier = modifier.padding(top = 4.dp, bottom = 6.dp)
-            )
-        }
-
-        OutlinedTextField(
-            value = firstName,
-            onValueChange = { firstName = it },
-            label = { Text("First name") },
-            placeholder = { Text("Mario") },
-        )
-
-        Spacer(modifier = modifier.padding(6.dp))
-
-        OutlinedTextField(
-            value = lastName,
-            onValueChange = { lastName = it },
-            label = { Text("Last name") },
-            placeholder = { Text("Rossi") },
-        )
-
-        Spacer(modifier = modifier.padding(6.dp))
-
-        OutlinedTextField(
-            value = emailAddress,
-            onValueChange = { emailAddress = it },
-            label = { Text("Email address") },
-            placeholder = { Text("example@gmail.com") },
-        )
-
-        Spacer(modifier = modifier.padding(6.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            singleLine = true,
-            label = { Text("Password") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            visualTransformation =
-                if (passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
-            trailingIcon = {
-                IconButton(onClick = { passwordHidden = !passwordHidden }) {
-                    val visibilityIcon =
-                        if (!passwordHidden) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                    // Please provide localized description for accessibility services
-                    val description = if (passwordHidden) "Show password" else "Hide password"
-                    Icon(imageVector = visibilityIcon, contentDescription = description)
-                }
-            }
-        )
-
-        Spacer(modifier = modifier.padding(16.dp))
-
-        Button(
-            modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
+        TextButton(
             onClick = {
-                scope.launch {
-                    when (
-                        val signUpResult =
-                            signUpViewModel.signUp(
-                                firstName,
-                                lastName,
-                                emailAddress,
-                                password,
-                                imageUri
-                            )
-                    ) {
-                        is Either.Left -> {
-                            errorMessageHidden = false
-                            errorMessage = signUpResult.value.message
-                        }
-                        is Either.Right -> onSignUp()
-                    }
+                val permissionCheckResult =
+                    ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                    cameraLauncher.launch(uri)
+                } else {
+                    permissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             }
         ) {
-            Text("Sign Up")
+            Icon(Icons.Filled.PhotoCamera, contentDescription = "Take picture")
+            Spacer(modifier = modifier.size(2.dp))
+            Text(text = "Take picture")
         }
+    }
+
+    if (!errorMessageHidden) {
+        Text(
+            text = errorMessage,
+            color = Color.Red,
+            modifier = modifier.padding(top = 4.dp, bottom = 6.dp)
+        )
+    }
+
+    OutlinedTextField(
+        value = firstName,
+        onValueChange = { firstName = it },
+        label = { Text("First name") },
+        placeholder = { Text("Mario") },
+    )
+
+    OutlinedTextField(
+        value = lastName,
+        onValueChange = { lastName = it },
+        label = { Text("Last name") },
+        placeholder = { Text("Rossi") },
+    )
+
+    OutlinedTextField(
+        value = emailAddress,
+        onValueChange = { emailAddress = it },
+        label = { Text("Email address") },
+        placeholder = { Text("example@gmail.com") },
+    )
+
+    OutlinedTextField(
+        value = password,
+        onValueChange = { password = it },
+        singleLine = true,
+        label = { Text("Password") },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        visualTransformation =
+            if (passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
+        trailingIcon = {
+            IconButton(onClick = { passwordHidden = !passwordHidden }) {
+                val visibilityIcon =
+                    if (!passwordHidden) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                // Please provide localized description for accessibility services
+                val description = if (passwordHidden) "Show password" else "Hide password"
+                Icon(imageVector = visibilityIcon, contentDescription = description)
+            }
+        }
+    )
+
+    Button(
+        modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
+        onClick = {
+            scope.launch {
+                when (
+                    val signUpResult =
+                        signUpViewModel.signUp(
+                            firstName,
+                            lastName,
+                            emailAddress,
+                            password,
+                            imageUri
+                        )
+                ) {
+                    is Either.Left -> {
+                        errorMessageHidden = false
+                        errorMessage = signUpResult.value.message
+                    }
+                    is Either.Right -> onSignUp()
+                }
+            }
+        }
+    ) {
+        Text("Sign Up")
     }
 }
 
