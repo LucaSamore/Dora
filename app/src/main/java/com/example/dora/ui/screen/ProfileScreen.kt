@@ -219,6 +219,7 @@ fun ProfileForm(
 
             scope.launch {
                 var uri = imageUri
+
                 if (imageUri.toString() != user.profilePicture) {
                     uri =
                         profileViewModel.updateProfilePicture(user.uid!!, imageUri).getOrElse {
@@ -234,6 +235,7 @@ fun ProfileForm(
                         { u -> User.emailAddress.set(u, emailAddress) },
                         { u -> User.profilePicture.set(u, uri.toString()) },
                     )
+
                 when (val result = profileViewModel.updateProfile(changes)) {
                     is Either.Left -> {
                         errorMessage = result.value.message
