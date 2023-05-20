@@ -168,7 +168,6 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
             IconButton(onClick = { passwordHidden = !passwordHidden }) {
                 val visibilityIcon =
                     if (!passwordHidden) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                // Please provide localized description for accessibility services
                 val description = if (passwordHidden) "Show password" else "Hide password"
                 Icon(imageVector = visibilityIcon, contentDescription = description)
             }

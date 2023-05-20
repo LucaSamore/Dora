@@ -1,9 +1,7 @@
 package com.example.dora.ui.screen
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -13,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -25,18 +24,21 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignInScreen(
     signInViewModel: SignInViewModel,
+    paddingValues: PaddingValues,
     onSignIn: () -> Unit,
     onSignUp: () -> Unit,
     modifier: Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier = modifier.fillMaxSize().padding(paddingValues),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Dora", style = MaterialTheme.typography.titleLarge)
-
-        Spacer(modifier = modifier.padding(12.dp))
+        Text(
+            text = "Dora",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = modifier.padding(12.dp)
+        )
 
         SignInForm(signInViewModel, onSignIn, modifier)
 
@@ -49,6 +51,7 @@ fun SignInScreen(
 
 @Composable
 fun SignInForm(signInViewModel: SignInViewModel, onSignIn: () -> Unit, modifier: Modifier) {
+    val configuration = LocalConfiguration.current
     var emailAddress by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordHidden by rememberSaveable { mutableStateOf(true) }
@@ -57,15 +60,14 @@ fun SignInForm(signInViewModel: SignInViewModel, onSignIn: () -> Unit, modifier:
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = modifier.padding(top = 24.dp, bottom = 24.dp),
-        verticalArrangement = Arrangement.Center,
+        modifier =
+            modifier.size(configuration.screenWidthDp.dp, (configuration.screenHeightDp / 3).dp),
+        verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (!errorMessageHidden) {
             Text(text = errorMessage, color = Color.Red)
         }
-
-        Spacer(modifier = modifier.padding(6.dp))
 
         OutlinedTextField(
             value = emailAddress,
@@ -73,8 +75,6 @@ fun SignInForm(signInViewModel: SignInViewModel, onSignIn: () -> Unit, modifier:
             label = { Text("Email address") },
             placeholder = { Text("example@gmail.com") },
         )
-
-        Spacer(modifier = modifier.padding(6.dp))
 
         OutlinedTextField(
             value = password,
@@ -88,14 +88,11 @@ fun SignInForm(signInViewModel: SignInViewModel, onSignIn: () -> Unit, modifier:
                 IconButton(onClick = { passwordHidden = !passwordHidden }) {
                     val visibilityIcon =
                         if (!passwordHidden) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                    // Please provide localized description for accessibility services
                     val description = if (passwordHidden) "Show password" else "Hide password"
                     Icon(imageVector = visibilityIcon, contentDescription = description)
                 }
             }
         )
-
-        Spacer(modifier = modifier.padding(16.dp))
 
         Button(
             modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),

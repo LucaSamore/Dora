@@ -45,6 +45,7 @@ fun NavigationGraph(
         composable(route = DoraScreen.SignIn.name) {
             SignInScreen(
                 signInViewModel = hiltViewModel(),
+                paddingValues = paddingValues,
                 onSignIn = {
                     navController.navigate(DoraScreen.Home.name) {
                         popUpTo(DoraScreen.SignIn.name) { inclusive = true }
