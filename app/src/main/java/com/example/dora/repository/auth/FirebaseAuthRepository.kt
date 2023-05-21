@@ -42,12 +42,10 @@ constructor(
             firebaseAuthAPI
                 .signInWithEmailAndPassword(NetworkRequest.of(credentials))
                 .toEither()
-                .let {
-                    when (it) {
-                        is Either.Left -> onValidationError(it.value).left()
-                        is Either.Right -> onAuthenticationComplete(it.value!!)
-                    }
-                }
+                .fold(
+                    { left -> onValidationError(left).left() },
+                    { right -> onAuthenticationComplete(right!!) }
+                )
         }
 
     override suspend fun signUpWithEmailAndPassword(
@@ -57,13 +55,10 @@ constructor(
             firebaseAuthAPI
                 .signUpWithEmailAndPassword(NetworkRequest.of(credentials))
                 .toEither()
-                .let {
-                    when (it) {
-                        is Either.Left -> onValidationError(it.value).left()
-                        is Either.Right ->
-                            onAccountCreated(onAuthenticationComplete(it.value!!), credentials)
-                    }
-                }
+                .fold(
+                    { left -> onValidationError(left).left() },
+                    { right -> onAccountCreated(onAuthenticationComplete(right!!), credentials) }
+                )
         }
 
     override suspend fun getCurrentUser(): SignedUser? {
@@ -106,18 +101,13 @@ constructor(
         taskResult: Either<ErrorMessage, SignedUser>,
         credentials: Credentials.Register
     ): Either<ErrorMessage, SignedUser> =
-        when (taskResult) {
-            is Either.Left -> taskResult.value.left()
-            is Either.Right -> {
-                when (
-                    val accountCreationResult =
-                        storeUserOnFirestore(credentials, taskResult.value.uid)
-                ) {
-                    is Either.Left -> accountCreationResult.value.left()
-                    is Either.Right -> taskResult.value.right()
-                }
+        taskResult.fold(
+            { failed -> failed.left() },
+            { success ->
+                storeUserOnFirestore(credentials, success.uid)
+                    .fold({ it.left() }, { success.right() })
             }
-        }
+        )
 
     private suspend fun storeUserOnFirestore(
         credentials: Credentials.Register,
