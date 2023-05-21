@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,13 +18,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.dora.R
+import com.example.dora.ui.composable.DeleteAccountAlertDialog
 import com.example.dora.viewmodel.SettingsViewModel
 
 @Composable
 internal fun SettingsScreen(
     settingsViewModel: SettingsViewModel,
     modifier: Modifier,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    onDismiss: () -> Unit,
+    onAccountDeleted: () -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
@@ -32,6 +36,7 @@ internal fun SettingsScreen(
     ) {
         val context = LocalContext.current
         val theme by settingsViewModel.theme.collectAsState(initial = "")
+        var showDeleteAccountDialog by rememberSaveable { mutableStateOf(false) }
 
         Row(
             modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
@@ -58,7 +63,7 @@ internal fun SettingsScreen(
         Divider()
 
         ListItem(
-            modifier = modifier.clickable { TODO() },
+            modifier = modifier.clickable { showDeleteAccountDialog = true },
             headlineContent = {
                 Text(
                     text = "Delete my account",
@@ -88,6 +93,14 @@ internal fun SettingsScreen(
         )
 
         Divider()
+
+        if (showDeleteAccountDialog) {
+            DeleteAccountAlertDialog(
+                settingsViewModel = settingsViewModel,
+                onDismiss = onDismiss,
+                onAccountDeleted = onAccountDeleted,
+            )
+        }
     }
 }
 

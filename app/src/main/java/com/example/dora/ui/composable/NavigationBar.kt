@@ -16,7 +16,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.dora.ui.navigation.DoraScreen
 
 @Composable
-fun NavigationBarFunction(navController: NavHostController) {
+internal fun NavigationBarFunction(navController: NavHostController) {
     NavigationBar {
         val backStackEntry by navController.currentBackStackEntryAsState()
         val currentScreen = backStackEntry?.destination?.route ?: DoraScreen.SignIn.name

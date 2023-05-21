@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -135,7 +136,8 @@ internal fun SignUpForm(
         Text(
             text = errorMessage,
             color = Color.Red,
-            modifier = modifier.padding(top = 4.dp, bottom = 6.dp)
+            modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
+            textAlign = TextAlign.Center
         )
     }
 

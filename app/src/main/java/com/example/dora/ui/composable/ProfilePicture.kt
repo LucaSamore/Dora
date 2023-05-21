@@ -14,7 +14,7 @@ import coil.request.ImageRequest
 import com.example.dora.R
 
 @Composable
-fun ProfilePicture(image: Any? = null, context: Context, defaultAvatar: Boolean = true) {
+internal fun ProfilePicture(image: Any? = null, context: Context, defaultAvatar: Boolean = true) {
     val avatar = ResourcesCompat.getDrawable(context.resources, R.drawable.default_avatar, null)
 
     AsyncImage(

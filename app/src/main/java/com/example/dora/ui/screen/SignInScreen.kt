@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import arrow.core.Either
@@ -70,7 +71,7 @@ internal fun SignInForm(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (!errorMessageHidden) {
-            Text(text = errorMessage, color = Color.Red)
+            Text(text = errorMessage, color = Color.Red, textAlign = TextAlign.Center)
         }
 
         OutlinedTextField(

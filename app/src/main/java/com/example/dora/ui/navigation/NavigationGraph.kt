@@ -88,6 +88,8 @@ fun NavigationGraph(
                         popUpTo(DoraScreen.Home.name) { inclusive = true }
                     }
                 },
+                onDismiss = { navController.navigate(DoraScreen.Settings.name) },
+                onAccountDeleted = { navController.navigate(DoraScreen.SignIn.name) }
             )
         }
     }
