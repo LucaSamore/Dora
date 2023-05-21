@@ -83,6 +83,11 @@ fun NavigationGraph(
             SettingsScreen(
                 settingsViewModel = hiltViewModel(),
                 modifier = modifier,
+                onSignOut = {
+                    navController.navigate(DoraScreen.SignIn.name) {
+                        popUpTo(DoraScreen.Home.name) { inclusive = true }
+                    }
+                },
             )
         }
     }

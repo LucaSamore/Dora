@@ -42,17 +42,6 @@ internal fun HomeScreen(
 
         Button(
             onClick = {
-                homeViewModel.signOut()
-                onSignOut()
-            }
-        ) {
-            Text(text = "Sign Out")
-        }
-
-        Spacer(modifier = modifier.padding(vertical = 12.dp))
-
-        Button(
-            onClick = {
                 scope.launch {
                     when (val result = homeViewModel.deleteAccount()) {
                         is Either.Left -> error = result.value.message
