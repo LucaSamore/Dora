@@ -60,13 +60,6 @@ android {
     packagingOptions {
         resources.excludes.add("META-INF/*")
     }
-    applicationVariants.all { variant ->
-        kotlin {
-            sourceSets {
-                main.kotlin.srcDirs += "build/generated/ksp/${variant.name}/kotlin"
-            }
-        }
-    }
 }
 
 dependencies {
