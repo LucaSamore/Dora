@@ -14,7 +14,6 @@ import com.example.dora.ui.composable.NavigationBarFunction
 import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.ui.navigation.NavigationGraph
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DoraApplication(
     startDestination: String,
@@ -23,7 +22,6 @@ internal fun DoraApplication(
 ) {
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
-
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = backStackEntry?.destination?.route ?: DoraScreen.SignIn.name
 
