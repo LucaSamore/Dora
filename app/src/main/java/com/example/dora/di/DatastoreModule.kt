@@ -1,6 +1,7 @@
 package com.example.dora.di
 
 import android.content.Context
+import com.example.dora.datastore.SettingsDatastore
 import com.example.dora.datastore.UserDatastore
 import dagger.Module
 import dagger.Provides
@@ -16,4 +17,8 @@ object DatastoreModule {
     @Singleton
     @Provides
     fun providesUserDatastore(@ApplicationContext context: Context) = UserDatastore(context)
+
+    @Singleton
+    @Provides
+    fun providesSettingsDatastore(@ApplicationContext context: Context) = SettingsDatastore(context)
 }
