@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import arrow.core.Either
 import arrow.core.getOrElse
 import at.favre.lib.crypto.bcrypt.BCrypt
+import com.example.dora.common.opticsCompose
 import com.example.dora.common.validation.UserValidator
 import com.example.dora.common.validation.ValidationStatus
 import com.example.dora.model.*
