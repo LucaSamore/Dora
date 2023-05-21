@@ -37,7 +37,7 @@ import java.util.*
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpScreen(
+internal fun SignUpScreen(
     signUpViewModel: SignUpViewModel,
     paddingValues: PaddingValues,
     modifier: Modifier,
@@ -60,7 +60,11 @@ fun SignUpScreen(
 }
 
 @Composable
-fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier: Modifier) {
+internal fun SignUpForm(
+    signUpViewModel: SignUpViewModel,
+    onSignUp: () -> Unit,
+    modifier: Modifier
+) {
     var firstName by rememberSaveable { mutableStateOf("") }
     var lastName by rememberSaveable { mutableStateOf("") }
     var emailAddress by rememberSaveable { mutableStateOf("") }
@@ -203,6 +207,6 @@ fun SignUpForm(signUpViewModel: SignUpViewModel, onSignUp: () -> Unit, modifier:
 
 @Preview(showBackground = true)
 @Composable
-fun SignUpScreenPreview() {
+internal fun SignUpScreenPreview() {
     // SignUpScreen()
 }

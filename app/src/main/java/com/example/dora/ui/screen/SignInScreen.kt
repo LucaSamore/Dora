@@ -22,7 +22,7 @@ import com.example.dora.viewmodel.SignInViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignInScreen(
+internal fun SignInScreen(
     signInViewModel: SignInViewModel,
     paddingValues: PaddingValues,
     onSignIn: () -> Unit,
@@ -50,7 +50,11 @@ fun SignInScreen(
 }
 
 @Composable
-fun SignInForm(signInViewModel: SignInViewModel, onSignIn: () -> Unit, modifier: Modifier) {
+internal fun SignInForm(
+    signInViewModel: SignInViewModel,
+    onSignIn: () -> Unit,
+    modifier: Modifier
+) {
     val configuration = LocalConfiguration.current
     var emailAddress by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -115,6 +119,6 @@ fun SignInForm(signInViewModel: SignInViewModel, onSignIn: () -> Unit, modifier:
 
 @Preview(showBackground = true)
 @Composable
-fun SignInScreenPreview() {
+internal fun SignInScreenPreview() {
     // SignInScreen()
 }

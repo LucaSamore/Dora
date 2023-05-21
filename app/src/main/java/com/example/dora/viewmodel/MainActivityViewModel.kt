@@ -2,6 +2,7 @@ package com.example.dora.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dora.datastore.SettingsDatastore
 import com.example.dora.di.FirebaseRepository
 import com.example.dora.di.IoDispatcher
 import com.example.dora.repository.auth.AuthenticationRepository
@@ -15,8 +16,11 @@ class MainActivityViewModel
 @Inject
 constructor(
     @FirebaseRepository private val authenticationRepository: AuthenticationRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    settingsDatastore: SettingsDatastore,
 ) : ViewModel() {
+
+    val theme = settingsDatastore.theme
 
     suspend fun isUserSignedIn(): Boolean =
         withContext(viewModelScope.coroutineContext + ioDispatcher) {

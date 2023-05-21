@@ -17,7 +17,7 @@ import com.example.dora.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen(
+internal fun HomeScreen(
     homeViewModel: HomeViewModel,
     modifier: Modifier,
     location: MutableState<Location>,
@@ -76,6 +76,6 @@ fun HomeScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview() {
+internal fun HomeScreenPreview() {
     // HomeScreen()
 }

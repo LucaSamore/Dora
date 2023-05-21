@@ -75,10 +75,15 @@ fun NavigationGraph(
                 paddingValues = paddingValues,
                 profileViewModel = hiltViewModel(),
                 onError = { navController.navigate(DoraScreen.Home.name) },
-                onUpdate = { navController.navigate(DoraScreen.Home.name) }
+                onUpdate = { navController.navigate(DoraScreen.Home.name) },
             )
         }
 
-        composable(route = DoraScreen.Settings.name) { SettingsScreen(modifier = modifier) }
+        composable(route = DoraScreen.Settings.name) {
+            SettingsScreen(
+                settingsViewModel = hiltViewModel(),
+                modifier = modifier,
+            )
+        }
     }
 }

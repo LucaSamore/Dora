@@ -33,7 +33,7 @@ import com.example.dora.viewmodel.ProfileViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun ProfileScreen(
+internal fun ProfileScreen(
     profileViewModel: ProfileViewModel,
     paddingValues: PaddingValues,
     modifier: Modifier,
@@ -70,7 +70,7 @@ fun ProfileScreen(
 }
 
 @Composable
-fun ProfileForm(
+internal fun ProfileForm(
     profileViewModel: ProfileViewModel,
     modifier: Modifier,
     user: User,
@@ -248,6 +248,6 @@ fun ProfileForm(
 
 @Preview(showBackground = true)
 @Composable
-fun ProfileScreenPreview() {
+internal fun ProfileScreenPreview() {
     // ProfileScreen(modifier = Modifier)
 }
