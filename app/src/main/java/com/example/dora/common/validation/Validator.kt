@@ -5,7 +5,13 @@ enum class ValidationStatus {
     REJECT
 }
 
-class ValidationResult(var status: ValidationStatus, var message: String?)
+class ValidationResult(var status: ValidationStatus, var message: String?) {
+    inline fun catch(block: (ValidationResult) -> Unit) {
+        if (status == ValidationStatus.REJECT) {
+            block(this)
+        }
+    }
+}
 
 interface Validator {
     fun <T> validate(
@@ -25,9 +31,7 @@ interface Validator {
     }
 
     companion object {
-        fun <T> pipeline(
-            vararg functions: Pair<T, (T) -> ValidationResult>
-        ) : ValidationResult {
+        fun <T> pipeline(vararg functions: Pair<T, (T) -> ValidationResult>): ValidationResult {
             for (function in functions) {
                 val result = function.second(function.first)
                 if (result.status == ValidationStatus.REJECT) {

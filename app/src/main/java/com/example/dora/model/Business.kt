@@ -3,7 +3,8 @@ package com.example.dora.model
 import arrow.optics.optics
 import com.example.dora.common.nowWithPattern
 
-@optics data class Business(
+@optics
+data class Business(
     val uuid: String? = null,
     val name: String? = null,
     val owner: User? = null,
@@ -23,15 +24,18 @@ import com.example.dora.common.nowWithPattern
     }
 }
 
-@optics data class Address(val street: Street, val city: City) {
+@optics
+data class Address(val street: Street, val city: City) {
     companion object
 }
 
-@optics data class Street(val name: String, val number: Int?) {
+@optics
+data class Street(val name: String, val number: Int?) {
     companion object
 }
 
-@optics data class City(val name: String, val country: String) {
+@optics
+data class City(val name: String, val country: String) {
     companion object
 }
 

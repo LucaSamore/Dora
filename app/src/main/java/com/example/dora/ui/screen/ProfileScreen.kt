@@ -27,7 +27,6 @@ import arrow.core.getOrElse
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.dora.common.opticsCompose
 import com.example.dora.common.validation.UserValidator
-import com.example.dora.common.validation.ValidationStatus
 import com.example.dora.common.validation.Validator
 import com.example.dora.model.*
 import com.example.dora.ui.composable.ErrorAlertDialog
@@ -192,16 +191,15 @@ internal fun ProfileForm(
             }
 
             Validator.pipeline(
-                Pair(firstName, UserValidator::validateFirstOrLastName),
-                Pair(lastName, UserValidator::validateFirstOrLastName),
-                Pair(emailAddress, UserValidator::validateEmailAddress),
-            ).also {
-                if (it.status == ValidationStatus.REJECT) {
+                    Pair(firstName, UserValidator::validateFirstOrLastName),
+                    Pair(lastName, UserValidator::validateFirstOrLastName),
+                    Pair(emailAddress, UserValidator::validateEmailAddress),
+                )
+                .catch {
                     errorMessage = it.message!!
                     errorMessageHidden = false
                     return@Button
                 }
-            }
 
             scope.launch {
                 var uri = imageUri

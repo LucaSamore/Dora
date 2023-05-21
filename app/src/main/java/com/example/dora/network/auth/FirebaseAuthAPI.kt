@@ -75,13 +75,12 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
     ): NetworkResponse<ValidationStatus, Throwable> {
 
         Validator.pipeline(
-            Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
-            Pair(credentials.password, UserValidator::validatePassword)
-        ).also {
-            if (it.status == ValidationStatus.REJECT) {
+                Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
+                Pair(credentials.password, UserValidator::validatePassword)
+            )
+            .catch {
                 return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
             }
-        }
 
         return NetworkResponse(ValidationStatus.PASS, null)
     }
@@ -91,15 +90,14 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
     ): NetworkResponse<ValidationStatus, Throwable> {
 
         Validator.pipeline(
-            Pair(credentials.firstName, UserValidator::validateFirstOrLastName),
-            Pair(credentials.lastName, UserValidator::validateFirstOrLastName),
-            Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
-            Pair(credentials.password, UserValidator::validatePassword),
-        ).also {
-            if (it.status == ValidationStatus.REJECT) {
+                Pair(credentials.firstName, UserValidator::validateFirstOrLastName),
+                Pair(credentials.lastName, UserValidator::validateFirstOrLastName),
+                Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
+                Pair(credentials.password, UserValidator::validatePassword),
+            )
+            .catch {
                 return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
             }
-        }
 
         return NetworkResponse(ValidationStatus.PASS, null)
     }
