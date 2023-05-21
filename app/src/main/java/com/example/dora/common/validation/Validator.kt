@@ -13,7 +13,7 @@ class ValidationResult(var status: ValidationStatus, var message: String?) {
     }
 }
 
-interface Validator {
+object Validator {
     fun <T> validate(
         subject: T,
         vararg rules: (subject: T) -> Pair<Boolean, String>
@@ -30,15 +30,13 @@ interface Validator {
         return validationResult
     }
 
-    companion object {
-        fun <T> pipeline(vararg functions: Pair<T, (T) -> ValidationResult>): ValidationResult {
-            for (function in functions) {
-                val result = function.second(function.first)
-                if (result.status == ValidationStatus.REJECT) {
-                    return result
-                }
+    fun <T> pipeline(vararg functions: Pair<T, (T) -> ValidationResult>): ValidationResult {
+        for (function in functions) {
+            val result = function.second(function.first)
+            if (result.status == ValidationStatus.REJECT) {
+                return result
             }
-            return ValidationResult(status = ValidationStatus.PASS, message = null)
         }
+        return ValidationResult(status = ValidationStatus.PASS, message = null)
     }
 }
