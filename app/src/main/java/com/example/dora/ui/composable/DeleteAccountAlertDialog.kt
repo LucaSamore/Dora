@@ -41,7 +41,7 @@ internal fun DeleteAccountAlertDialog(
                             }
                             is Either.Right -> {
                                 onAccountDeleted()
-                                Toast.makeText(context, "Account deleted", Toast.LENGTH_SHORT)
+                                Toast.makeText(context, result.value.message, Toast.LENGTH_SHORT)
                                     .show()
                             }
                         }

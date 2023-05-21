@@ -74,6 +74,8 @@ internal fun SignInForm(
             Text(text = errorMessage, color = Color.Red, textAlign = TextAlign.Center)
         }
 
+        Spacer(modifier = modifier.size(6.dp))
+
         OutlinedTextField(
             value = emailAddress,
             onValueChange = { emailAddress = it },
@@ -98,6 +100,8 @@ internal fun SignInForm(
                 }
             }
         )
+
+        Spacer(modifier = modifier.size(6.dp))
 
         Button(
             modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),

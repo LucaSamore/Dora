@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.example.dora.common.ErrorMessage
+import com.example.dora.common.SuccessMessage
 import com.example.dora.datastore.SettingsDatastore
 import com.example.dora.di.FirebaseRepository
 import com.example.dora.di.IoDispatcher
@@ -31,7 +32,7 @@ constructor(
 
     fun signOut() = viewModelScope.launch { authenticationRepository.signOut() }
 
-    suspend fun deleteAccount(): Either<ErrorMessage, Void> =
+    suspend fun deleteAccount(): Either<ErrorMessage, SuccessMessage> =
         withContext(viewModelScope.coroutineContext + ioDispatcher) {
             authenticationRepository.deleteUser()
         }

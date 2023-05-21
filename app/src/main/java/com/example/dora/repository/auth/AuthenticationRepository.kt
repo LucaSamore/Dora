@@ -2,6 +2,7 @@ package com.example.dora.repository.auth
 
 import arrow.core.Either
 import com.example.dora.common.ErrorMessage
+import com.example.dora.common.SuccessMessage
 import com.example.dora.common.auth.Credentials
 import com.example.dora.common.auth.SignedUser
 
@@ -20,5 +21,5 @@ interface AuthenticationRepository {
 
     suspend fun isUserSignedIn(): Boolean
 
-    suspend fun deleteUser(): Either<ErrorMessage, Void>
+    suspend fun deleteUser(): Either<ErrorMessage, SuccessMessage>
 }

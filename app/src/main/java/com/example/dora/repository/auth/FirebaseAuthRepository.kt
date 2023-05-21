@@ -7,6 +7,7 @@ import arrow.core.left
 import arrow.core.right
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.dora.common.ErrorMessage
+import com.example.dora.common.SuccessMessage
 import com.example.dora.common.auth.Credentials
 import com.example.dora.common.auth.SignedUser
 import com.example.dora.datastore.UserDatastore
@@ -77,10 +78,12 @@ constructor(
     override suspend fun isUserSignedIn(): Boolean =
         withContext(ioDispatcher) { firebaseAuthAPI.isUserSignedIn() }
 
-    override suspend fun deleteUser(): Either<ErrorMessage, Void> =
+    override suspend fun deleteUser(): Either<ErrorMessage, SuccessMessage> =
         withContext(ioDispatcher) {
             try {
-                firebaseAuthAPI.deleteUser().await().right()
+                firebaseAuthAPI.deleteUser().await().let {
+                    SuccessMessage("Account deleted successfully").right()
+                }
             } catch (e: Exception) {
                 ErrorMessage(e.message!!).left()
             }

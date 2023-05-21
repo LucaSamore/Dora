@@ -34,11 +34,6 @@ fun NavigationGraph(
                 modifier = modifier,
                 location = location,
                 startLocationUpdates = startLocationUpdates,
-                onSignOut = {
-                    navController.navigate(DoraScreen.SignIn.name) {
-                        popUpTo(DoraScreen.Home.name) { inclusive = true }
-                    }
-                },
             )
         }
 

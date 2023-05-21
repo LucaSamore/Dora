@@ -4,17 +4,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import arrow.core.Either
 import com.example.dora.common.Location
 import com.example.dora.viewmodel.HomeViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 internal fun HomeScreen(
@@ -22,10 +21,8 @@ internal fun HomeScreen(
     modifier: Modifier,
     location: MutableState<Location>,
     startLocationUpdates: () -> Unit,
-    onSignOut: () -> Unit,
 ) {
-    var error by rememberSaveable { mutableStateOf("Nothing yet") }
-    val scope = rememberCoroutineScope()
+    var currentLocation by rememberSaveable { mutableStateOf("") }
 
     startLocationUpdates()
 
@@ -33,33 +30,16 @@ internal fun HomeScreen(
 
     Column(
         modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Home screen")
+        Text(text = "Home screen", style = MaterialTheme.typography.titleLarge)
 
-        Spacer(modifier = modifier.padding(vertical = 12.dp))
-
-        Button(
-            onClick = {
-                scope.launch {
-                    when (val result = homeViewModel.deleteAccount()) {
-                        is Either.Left -> error = result.value.message
-                        is Either.Right -> onSignOut()
-                    }
-                }
-            }
-        ) {
-            Text(text = "Delete account")
+        Button(onClick = { currentLocation = location.value.toString() }) {
+            Text(text = "Get location")
         }
 
-        Spacer(modifier = modifier.padding(vertical = 12.dp))
-
-        Button(onClick = { error = location.value.toString() }) { Text(text = "Get location") }
-
-        Spacer(modifier = modifier.padding(vertical = 12.dp))
-
-        Text(text = error)
+        Text(text = currentLocation, textAlign = TextAlign.Center)
     }
 }
 
