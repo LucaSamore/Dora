@@ -12,7 +12,7 @@ interface Validator {
         subject: T,
         vararg rules: (subject: T) -> Pair<Boolean, String>
     ): ValidationResult {
-        val validationResult = ValidationResult(ValidationStatus.PASS, null)
+        val validationResult = ValidationResult(status = ValidationStatus.PASS, message = null)
         for (applyRule in rules) {
             val result = applyRule(subject)
             if (!result.first) {
@@ -22,5 +22,19 @@ interface Validator {
             }
         }
         return validationResult
+    }
+
+    companion object {
+        fun <T> pipeline(
+            vararg functions: Pair<T, (T) -> ValidationResult>
+        ) : ValidationResult {
+            for (function in functions) {
+                val result = function.second(function.first)
+                if (result.status == ValidationStatus.REJECT) {
+                    return result
+                }
+            }
+            return ValidationResult(status = ValidationStatus.PASS, message = null)
+        }
     }
 }

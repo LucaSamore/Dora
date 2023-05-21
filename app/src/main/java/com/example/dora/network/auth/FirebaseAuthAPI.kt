@@ -3,6 +3,7 @@ package com.example.dora.network.auth
 import com.example.dora.common.auth.Credentials
 import com.example.dora.common.validation.UserValidator
 import com.example.dora.common.validation.ValidationStatus
+import com.example.dora.common.validation.Validator
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.NetworkResponse
 import com.example.dora.network.api.AuthenticationAPI
@@ -72,13 +73,11 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
     private fun validateLoginCredentials(
         credentials: Credentials.Login
     ): NetworkResponse<ValidationStatus, Throwable> {
-        UserValidator.validateEmailAddress(credentials.emailAddress).also {
-            if (it.status == ValidationStatus.REJECT) {
-                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
-            }
-        }
 
-        UserValidator.validatePassword(credentials.password).also {
+        Validator.pipeline(
+            Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
+            Pair(credentials.password, UserValidator::validatePassword)
+        ).also {
             if (it.status == ValidationStatus.REJECT) {
                 return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
             }
@@ -90,25 +89,13 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
     private fun validateRegisterCredentials(
         credentials: Credentials.Register
     ): NetworkResponse<ValidationStatus, Throwable> {
-        UserValidator.validateFirstOrLastName(credentials.firstName).also {
-            if (it.status == ValidationStatus.REJECT) {
-                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
-            }
-        }
 
-        UserValidator.validateFirstOrLastName(credentials.lastName).also {
-            if (it.status == ValidationStatus.REJECT) {
-                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
-            }
-        }
-
-        UserValidator.validateEmailAddress(credentials.emailAddress).also {
-            if (it.status == ValidationStatus.REJECT) {
-                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
-            }
-        }
-
-        UserValidator.validatePassword(credentials.password).also {
+        Validator.pipeline(
+            Pair(credentials.firstName, UserValidator::validateFirstOrLastName),
+            Pair(credentials.lastName, UserValidator::validateFirstOrLastName),
+            Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
+            Pair(credentials.password, UserValidator::validatePassword),
+        ).also {
             if (it.status == ValidationStatus.REJECT) {
                 return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
             }

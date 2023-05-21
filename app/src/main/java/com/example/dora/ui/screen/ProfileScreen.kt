@@ -28,6 +28,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.dora.common.opticsCompose
 import com.example.dora.common.validation.UserValidator
 import com.example.dora.common.validation.ValidationStatus
+import com.example.dora.common.validation.Validator
 import com.example.dora.model.*
 import com.example.dora.ui.composable.ErrorAlertDialog
 import com.example.dora.ui.composable.ProfilePicture
@@ -190,23 +191,11 @@ internal fun ProfileForm(
                 return@Button
             }
 
-            UserValidator.validateFirstOrLastName(firstName).also {
-                if (it.status == ValidationStatus.REJECT) {
-                    errorMessage = it.message!!
-                    errorMessageHidden = false
-                    return@Button
-                }
-            }
-
-            UserValidator.validateFirstOrLastName(lastName).also {
-                if (it.status == ValidationStatus.REJECT) {
-                    errorMessage = it.message!!
-                    errorMessageHidden = false
-                    return@Button
-                }
-            }
-
-            UserValidator.validateEmailAddress(emailAddress).also {
+            Validator.pipeline(
+                Pair(firstName, UserValidator::validateFirstOrLastName),
+                Pair(lastName, UserValidator::validateFirstOrLastName),
+                Pair(emailAddress, UserValidator::validateEmailAddress),
+            ).also {
                 if (it.status == ValidationStatus.REJECT) {
                     errorMessage = it.message!!
                     errorMessageHidden = false
