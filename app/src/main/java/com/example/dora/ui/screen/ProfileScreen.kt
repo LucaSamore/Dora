@@ -108,15 +108,23 @@ internal fun ProfileForm(
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         TextButton(onClick = { galleryLauncher.launch("image/*") }) {
-            Icon(Icons.Filled.Image, contentDescription = "Get from gallery")
+            Icon(
+                Icons.Filled.Image,
+                contentDescription = "Get from gallery",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
             Spacer(modifier = modifier.size(2.dp))
-            Text(text = "Gallery")
+            Text(text = "Gallery", color = MaterialTheme.colorScheme.onPrimary)
         }
 
         TextButton(onClick = { imageUri = Uri.EMPTY }) {
-            Icon(Icons.Filled.Delete, contentDescription = "Delete profile picture")
+            Icon(
+                Icons.Filled.Delete,
+                contentDescription = "Delete profile picture",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
             Spacer(modifier = modifier.size(2.dp))
-            Text(text = "Remove")
+            Text(text = "Remove", color = MaterialTheme.colorScheme.onPrimary)
         }
     }
 
@@ -133,21 +141,36 @@ internal fun ProfileForm(
         value = firstName,
         onValueChange = { firstName = it },
         label = { Text("First name") },
-        placeholder = { Text("Mario") },
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+            )
     )
 
     OutlinedTextField(
         value = lastName,
         onValueChange = { lastName = it },
         label = { Text("Last name") },
-        placeholder = { Text("Rossi") },
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+            )
     )
 
     OutlinedTextField(
         value = emailAddress,
         onValueChange = { emailAddress = it },
         label = { Text("Email address") },
-        placeholder = { Text("example@gmail.com") },
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+            )
     )
 
     OutlinedTextField(
@@ -168,7 +191,15 @@ internal fun ProfileForm(
                     if (passwordConfirmationHidden) "Show password" else "Hide password"
                 Icon(imageVector = visibilityIcon, contentDescription = description)
             }
-        }
+        },
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+            )
     )
 
     Button(

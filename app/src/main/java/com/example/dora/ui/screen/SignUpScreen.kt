@@ -55,7 +55,9 @@ internal fun SignUpScreen(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Already have an account?")
-            TextButton(onClick = { onBackToSignIn() }) { Text(text = "Sign In") }
+            TextButton(onClick = { onBackToSignIn() }) {
+                Text(text = "Sign In", color = MaterialTheme.colorScheme.onPrimary)
+            }
         }
     }
 }
@@ -110,9 +112,13 @@ internal fun SignUpForm(
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         TextButton(onClick = { galleryLauncher.launch("image/*") }) {
-            Icon(Icons.Filled.Image, contentDescription = "Get from gallery")
+            Icon(
+                Icons.Filled.Image,
+                contentDescription = "Get from gallery",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
             Spacer(modifier = modifier.size(2.dp))
-            Text(text = "Get from gallery")
+            Text(text = "Get from gallery", color = MaterialTheme.colorScheme.onPrimary)
         }
 
         TextButton(
@@ -126,9 +132,13 @@ internal fun SignUpForm(
                 }
             }
         ) {
-            Icon(Icons.Filled.PhotoCamera, contentDescription = "Take picture")
+            Icon(
+                Icons.Filled.PhotoCamera,
+                contentDescription = "Take picture",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
             Spacer(modifier = modifier.size(2.dp))
-            Text(text = "Take picture")
+            Text(text = "Take picture", color = MaterialTheme.colorScheme.onPrimary)
         }
     }
 
@@ -145,21 +155,36 @@ internal fun SignUpForm(
         value = firstName,
         onValueChange = { firstName = it },
         label = { Text("First name") },
-        placeholder = { Text("Mario") },
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+            )
     )
 
     OutlinedTextField(
         value = lastName,
         onValueChange = { lastName = it },
         label = { Text("Last name") },
-        placeholder = { Text("Rossi") },
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+            )
     )
 
     OutlinedTextField(
         value = emailAddress,
         onValueChange = { emailAddress = it },
         label = { Text("Email address") },
-        placeholder = { Text("example@gmail.com") },
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+            )
     )
 
     OutlinedTextField(
@@ -177,11 +202,24 @@ internal fun SignUpForm(
                 val description = if (passwordHidden) "Show password" else "Hide password"
                 Icon(imageVector = visibilityIcon, contentDescription = description)
             }
-        }
+        },
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+            )
     )
 
     Button(
         modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ),
         onClick = {
             scope.launch {
                 when (

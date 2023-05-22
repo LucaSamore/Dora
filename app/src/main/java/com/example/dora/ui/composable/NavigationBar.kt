@@ -5,10 +5,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
@@ -17,7 +14,9 @@ import com.example.dora.ui.navigation.DoraScreen
 
 @Composable
 internal fun NavigationBarFunction(navController: NavHostController) {
-    NavigationBar {
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.primary,
+    ) {
         val backStackEntry by navController.currentBackStackEntryAsState()
         val currentScreen = backStackEntry?.destination?.route ?: DoraScreen.SignIn.name
 
@@ -29,7 +28,15 @@ internal fun NavigationBarFunction(navController: NavHostController) {
                 navController.navigate(DoraScreen.Home.name) {
                     popUpTo(DoraScreen.Home.name) { inclusive = true }
                 }
-            }
+            },
+            colors =
+                NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    indicatorColor = MaterialTheme.colorScheme.secondary,
+                )
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Person, contentDescription = "Profile") },
@@ -39,13 +46,29 @@ internal fun NavigationBarFunction(navController: NavHostController) {
                 navController.navigate(DoraScreen.Profile.name) {
                     popUpTo(DoraScreen.Profile.name) { inclusive = true }
                 }
-            }
+            },
+            colors =
+                NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    indicatorColor = MaterialTheme.colorScheme.secondary,
+                )
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Star, contentDescription = "Favorites") },
             label = { Text(text = "Favorites") },
             selected = false,
-            onClick = { TODO() }
+            onClick = { TODO() },
+            colors =
+                NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    indicatorColor = MaterialTheme.colorScheme.secondary,
+                )
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") },
@@ -55,7 +78,15 @@ internal fun NavigationBarFunction(navController: NavHostController) {
                 navController.navigate(DoraScreen.Settings.name) {
                     popUpTo(DoraScreen.Settings.name) { inclusive = true }
                 }
-            }
+            },
+            colors =
+                NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    indicatorColor = MaterialTheme.colorScheme.secondary,
+                )
         )
     }
 }

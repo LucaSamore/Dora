@@ -32,7 +32,13 @@ internal fun DoraApplication(
             if (
                 currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name
             ) {
-                CenterAlignedTopAppBar(title = { Text(text = currentScreen) })
+                CenterAlignedTopAppBar(
+                    title = { Text(text = currentScreen) },
+                    colors =
+                        TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
+                )
             }
         },
         bottomBar = {
@@ -50,6 +56,7 @@ internal fun DoraApplication(
                     currentScreen != DoraScreen.AddBusiness.name
             ) {
                 FloatingActionButton(
+                    containerColor = MaterialTheme.colorScheme.primary,
                     onClick = { navController.navigate(DoraScreen.AddBusiness.name) }
                 ) {
                     Icon(Icons.Filled.Add, "Add business")
