@@ -14,6 +14,7 @@ import com.example.dora.ui.composable.NavigationBarFunction
 import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.ui.navigation.NavigationGraph
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DoraApplication(
     startDestination: String,
@@ -27,6 +28,13 @@ internal fun DoraApplication(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            if (currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name) {
+                CenterAlignedTopAppBar(
+                    title = { Text(text = currentScreen) }
+                )
+            }
+        },
         bottomBar = {
             if (
                 currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name
