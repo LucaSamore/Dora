@@ -29,10 +29,10 @@ internal fun DoraApplication(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            if (currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name) {
-                CenterAlignedTopAppBar(
-                    title = { Text(text = currentScreen) }
-                )
+            if (
+                currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name
+            ) {
+                CenterAlignedTopAppBar(title = { Text(text = currentScreen) })
             }
         },
         bottomBar = {

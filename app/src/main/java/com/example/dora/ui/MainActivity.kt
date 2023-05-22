@@ -56,7 +56,10 @@ class MainActivity : ComponentActivity() {
 
             setContent {
                 val theme by mainActivityViewModel.theme.collectAsState(initial = "")
-                DoraTheme(darkTheme = theme == getString(R.string.dark_theme), dynamicColor = false) {
+                DoraTheme(
+                    darkTheme = theme == getString(R.string.dark_theme),
+                    dynamicColor = false
+                ) {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background

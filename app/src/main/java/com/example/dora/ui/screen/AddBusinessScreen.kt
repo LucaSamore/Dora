@@ -12,10 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
-import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -24,30 +21,23 @@ internal fun AddBusinessScreen(
     modifier: Modifier,
 ) {
     val pagerState = rememberPagerState()
-    
+
     Column(
         modifier =
-        modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(paddingValues),
+            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
         verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Add business screen", style = MaterialTheme.typography.titleLarge)
-        
+
         HorizontalPager(pageCount = 2, state = pagerState) { page ->
             if (page == 0) {
-                Card(
-                    modifier = modifier.size(256.dp, 128.dp)
-                ) {
+                Card(modifier = modifier.size(256.dp, 128.dp)) {
                     Text(text = "Ciao")
                     Text(text = "Bella")
                 }
             } else if (page == 1) {
-                Card(
-                    modifier = modifier.size(256.dp, 128.dp)
-                ) {
+                Card(modifier = modifier.size(256.dp, 128.dp)) {
                     Text(text = "Hey")
                     Text(text = "You")
                 }

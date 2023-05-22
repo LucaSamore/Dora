@@ -45,7 +45,9 @@ internal fun SignInScreen(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Don’t have an account yet?")
-            TextButton(onClick = { onSignUp() }) { Text(text = "Sign Up") }
+            TextButton(onClick = { onSignUp() }) {
+                Text(text = "Sign Up", color = MaterialTheme.colorScheme.onPrimary)
+            }
         }
     }
 }
@@ -79,15 +81,20 @@ internal fun SignInForm(
         OutlinedTextField(
             value = emailAddress,
             onValueChange = { emailAddress = it },
-            label = { Text("Email address") },
-            placeholder = { Text("example@gmail.com") },
+            label = { Text(text = "Email address", color = MaterialTheme.colorScheme.onPrimary) },
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                )
         )
 
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             singleLine = true,
-            label = { Text("Password") },
+            label = { Text(text = "Password", color = MaterialTheme.colorScheme.onPrimary) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation =
                 if (passwordHidden) PasswordVisualTransformation() else VisualTransformation.None,
@@ -98,13 +105,26 @@ internal fun SignInForm(
                     val description = if (passwordHidden) "Show password" else "Hide password"
                     Icon(imageVector = visibilityIcon, contentDescription = description)
                 }
-            }
+            },
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                )
         )
 
         Spacer(modifier = modifier.size(6.dp))
 
         Button(
             modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
             onClick = {
                 scope.launch {
                     when (val signInResult = signInViewModel.signIn(emailAddress, password)) {
