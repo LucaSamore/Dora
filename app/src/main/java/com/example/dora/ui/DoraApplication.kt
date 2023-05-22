@@ -2,6 +2,7 @@ package com.example.dora.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -14,7 +15,6 @@ import com.example.dora.common.Location
 import com.example.dora.ui.composable.NavigationBarFunction
 import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.ui.navigation.NavigationGraph
-import com.example.dora.ui.theme.quicksand
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +38,7 @@ internal fun DoraApplication(
                     title = {
                         Text(
                             text = currentScreen,
-                            fontFamily = quicksand,
+                            style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
                     },
@@ -68,6 +68,13 @@ internal fun DoraApplication(
                     onClick = { navController.navigate(DoraScreen.AddBusiness.name) }
                 ) {
                     Icon(Icons.Filled.Add, "Add business")
+                }
+            } else if (currentScreen == DoraScreen.AddBusiness.name) {
+                FloatingActionButton(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    onClick = { TODO() }
+                ) {
+                    Icon(Icons.Filled.Photo, "Browse gallery")
                 }
             }
         }
