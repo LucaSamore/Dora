@@ -12,13 +12,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import arrow.core.Either
+import com.example.dora.ui.theme.boris
 import com.example.dora.viewmodel.SignInViewModel
 import kotlinx.coroutines.launch
 
@@ -38,15 +41,22 @@ internal fun SignInScreen(
         Text(
             text = "Dora",
             style = MaterialTheme.typography.titleLarge,
-            modifier = modifier.padding(12.dp)
+            modifier = modifier.padding(12.dp),
+            fontFamily = boris,
+            fontSize = 64.sp
         )
 
         SignInForm(signInViewModel, onSignIn, modifier)
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "Don’t have an account yet?")
+            Text(text = "Don’t have an account yet?", style = MaterialTheme.typography.bodyLarge)
             TextButton(onClick = { onSignUp() }) {
-                Text(text = "Sign Up", color = MaterialTheme.colorScheme.onPrimary)
+                Text(
+                    text = "Sign Up",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
@@ -137,7 +147,11 @@ internal fun SignInForm(
                 }
             }
         ) {
-            Text("Sign In")
+            Text(
+                text = "Sign In",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

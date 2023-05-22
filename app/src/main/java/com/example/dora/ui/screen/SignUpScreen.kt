@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -54,9 +55,14 @@ internal fun SignUpScreen(
         SignUpForm(signUpViewModel, onSignUp, modifier)
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "Already have an account?")
+            Text(text = "Already have an account?", style = MaterialTheme.typography.bodyLarge)
             TextButton(onClick = { onBackToSignIn() }) {
-                Text(text = "Sign In", color = MaterialTheme.colorScheme.onPrimary)
+                Text(
+                    text = "Sign In",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
@@ -241,7 +247,7 @@ internal fun SignUpForm(
             }
         }
     ) {
-        Text("Sign Up")
+        Text("Sign Up", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
     }
 }
 

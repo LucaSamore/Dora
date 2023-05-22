@@ -7,12 +7,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.dora.common.Location
 import com.example.dora.ui.composable.NavigationBarFunction
 import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.ui.navigation.NavigationGraph
+import com.example.dora.ui.theme.quicksand
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +35,13 @@ internal fun DoraApplication(
                 currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name
             ) {
                 CenterAlignedTopAppBar(
-                    title = { Text(text = currentScreen) },
+                    title = {
+                        Text(
+                            text = currentScreen,
+                            fontFamily = quicksand,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     colors =
                         TopAppBarDefaults.centerAlignedTopAppBarColors(
                             containerColor = MaterialTheme.colorScheme.primary
