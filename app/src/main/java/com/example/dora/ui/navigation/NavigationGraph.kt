@@ -77,6 +77,7 @@ fun NavigationGraph(
         composable(route = DoraScreen.Settings.name) {
             SettingsScreen(
                 settingsViewModel = hiltViewModel(),
+                paddingValues = paddingValues,
                 modifier = modifier,
                 onSignOut = {
                     navController.navigate(DoraScreen.SignIn.name) {
@@ -86,6 +87,10 @@ fun NavigationGraph(
                 onDismiss = { navController.navigate(DoraScreen.Settings.name) },
                 onAccountDeleted = { navController.navigate(DoraScreen.SignIn.name) }
             )
+        }
+
+        composable(route = DoraScreen.AddBusiness.name) {
+            AddBusinessScreen(paddingValues = paddingValues, modifier = modifier)
         }
     }
 }

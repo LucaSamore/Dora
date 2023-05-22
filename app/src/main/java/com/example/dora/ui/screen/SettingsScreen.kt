@@ -24,13 +24,15 @@ import com.example.dora.viewmodel.SettingsViewModel
 @Composable
 internal fun SettingsScreen(
     settingsViewModel: SettingsViewModel,
+    paddingValues: PaddingValues,
     modifier: Modifier,
     onSignOut: () -> Unit,
     onDismiss: () -> Unit,
     onAccountDeleted: () -> Unit,
 ) {
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier =
+            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
