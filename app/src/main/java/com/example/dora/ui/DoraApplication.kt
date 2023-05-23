@@ -69,13 +69,6 @@ internal fun DoraApplication(
                 ) {
                     Icon(Icons.Filled.Add, "Add business")
                 }
-            } else if (currentScreen == DoraScreen.AddBusiness.name) {
-                FloatingActionButton(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    onClick = { TODO() }
-                ) {
-                    Icon(Icons.Filled.Photo, "Browse gallery")
-                }
             }
         }
     ) { innerPadding ->
