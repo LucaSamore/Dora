@@ -34,6 +34,7 @@ import androidx.core.content.FileProvider
 import arrow.core.Either
 import com.example.dora.ui.composable.ProfilePicture
 import com.example.dora.ui.util.createImageFile
+import com.example.dora.ui.util.saveImage
 import com.example.dora.viewmodel.SignUpViewModel
 import java.util.*
 import kotlinx.coroutines.launch
@@ -94,7 +95,7 @@ internal fun SignUpForm(
     val cameraLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { imageUri = uri }
     val galleryLauncher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
             imageUri = it ?: Uri.EMPTY
         }
     val permissionLauncher =
@@ -108,7 +109,7 @@ internal fun SignUpForm(
 
     if (imageUri.path?.isNotEmpty() == true) {
         ProfilePicture(image = imageUri, context = context, defaultAvatar = false)
-        // saveImage(context.applicationContext.contentResolver, imageUri)
+        saveImage(context.applicationContext.contentResolver, imageUri)
     } else {
         ProfilePicture(context = context)
     }
