@@ -21,6 +21,11 @@ import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.dora.model.Category
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +51,11 @@ internal fun AddBusinessScreen(
             }
         }
 
+    val singapore = LatLng(1.35, 103.87)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(singapore, 10f)
+    }
+
     Column(
         modifier =
         modifier
@@ -65,6 +75,17 @@ internal fun AddBusinessScreen(
                     return@forEachIndexed
                 }
             }
+        }
+
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState
+        ) {
+            Marker(
+                position = singapore,
+                title = "Singapore",
+                snippet = "Marker in Singapore"
+            )
         }
 
         Button(onClick = { galleryLauncher.launch("image/*") }) { Text(text = "Get images") }
