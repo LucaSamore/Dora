@@ -22,6 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.dora.BuildConfig
+import com.example.dora.common.BusinessPlace
+import com.example.dora.common.Location
 import com.example.dora.model.Category
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -43,6 +46,7 @@ internal fun AddBusinessScreen(
     val categories = Category.values()
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(categories[0]) }
+    var businessPlace by rememberSaveable { mutableStateOf<BusinessPlace?>(null) }
     val images = remember { mutableStateListOf<Uri>(Uri.EMPTY) }
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) {
@@ -51,7 +55,6 @@ internal fun AddBusinessScreen(
                 addAll(it)
             }
         }
-
     val intentLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             result: ActivityResult ->
@@ -59,17 +62,24 @@ internal fun AddBusinessScreen(
                 val intent = result.data
                 if (intent != null) {
                     val place = Autocomplete.getPlaceFromIntent(intent)
-                    Log.i("place", "Place: ${place.latLng?.latitude}, ${place.latLng?.longitude}")
+                    businessPlace =
+                        BusinessPlace(
+                            place.id!!,
+                            place.name!!,
+                            place.address!!,
+                            Location(place.latLng?.latitude!!, place.latLng?.longitude!!)
+                        )
+                    Log.i("place", businessPlace.toString())
                 }
             } else if (result.resultCode == Activity.RESULT_CANCELED) {
                 // The user canceled the operation.
                 Log.i("place", "User canceled autocomplete")
             }
         }
-
     val launchMapInputOverlay = {
-        Places.initialize(context, "YOUR-API-KEY")
-        val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+        Places.initialize(context, BuildConfig.MAPS_API_KEY)
+        val fields =
+            listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
         val intent =
             Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(context)
         intentLauncher.launch(intent)
@@ -185,6 +195,6 @@ internal fun AddBusinessScreen(
 }
 
 /**
- * name [X] description [X] address (street name, number, city, country) website [X] phoneNumber [X]
- * category [X] amenities timeTable isOpen images
+ * name [X] description [X] address (street name, number, city, country) [X] website [X] phoneNumber
+ * [X] category [X] amenities timeTable isOpen images
  */

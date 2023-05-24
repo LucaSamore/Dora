@@ -1,6 +1,7 @@
 package com.example.dora.model
 
 import arrow.optics.optics
+import com.example.dora.common.BusinessPlace
 import com.example.dora.common.nowWithPattern
 
 @optics
@@ -9,7 +10,7 @@ data class Business(
     val name: String? = null,
     val owner: User? = null,
     val description: String? = null,
-    val address: Address? = null,
+    val address: BusinessPlace? = null,
     val website: String? = null,
     val phoneNumber: String? = null,
     val category: Category? = null,
@@ -22,21 +23,6 @@ data class Business(
     companion object {
         const val collection = "businesses"
     }
-}
-
-@optics
-data class Address(val street: Street, val city: City) {
-    companion object
-}
-
-@optics
-data class Street(val name: String, val number: Int?) {
-    companion object
-}
-
-@optics
-data class City(val name: String, val country: String) {
-    companion object
 }
 
 enum class Days(val day: String) {
