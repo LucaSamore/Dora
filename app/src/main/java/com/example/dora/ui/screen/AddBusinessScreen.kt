@@ -1,10 +1,12 @@
 package com.example.dora.ui.screen
 
+import android.app.Activity
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -21,11 +23,10 @@ import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.dora.model.Category
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -51,17 +52,32 @@ internal fun AddBusinessScreen(
             }
         }
 
-    val singapore = LatLng(1.35, 103.87)
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(singapore, 10f)
+    val intentLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = result.data
+                if (intent != null) {
+                    val place = Autocomplete.getPlaceFromIntent(intent)
+                    Log.i("place", "Place: ${place.latLng?.latitude}, ${place.latLng?.longitude}")
+                }
+            } else if (result.resultCode == Activity.RESULT_CANCELED) {
+                // The user canceled the operation.
+                Log.i("place", "User canceled autocomplete")
+            }
+        }
+
+    val launchMapInputOverlay = {
+        Places.initialize(context, "YOUR-API-KEY")
+        val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+        val intent =
+            Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(context)
+        intentLauncher.launch(intent)
     }
 
     Column(
         modifier =
-        modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(paddingValues),
+            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
         verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -77,29 +93,20 @@ internal fun AddBusinessScreen(
             }
         }
 
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState
-        ) {
-            Marker(
-                position = singapore,
-                title = "Singapore",
-                snippet = "Marker in Singapore"
-            )
-        }
-
         Button(onClick = { galleryLauncher.launch("image/*") }) { Text(text = "Get images") }
+
+        Button(onClick = launchMapInputOverlay) { Text(text = "Test maps") }
 
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
             label = { Text("Name") },
             colors =
-            TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-            )
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                )
         )
 
         OutlinedTextField(
@@ -107,11 +114,11 @@ internal fun AddBusinessScreen(
             onValueChange = { description = it },
             label = { Text("Description (optional)") },
             colors =
-            TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-            )
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                )
         )
 
         ExposedDropdownMenuBox(
@@ -126,12 +133,13 @@ internal fun AddBusinessScreen(
                 onValueChange = {},
                 label = { Text("Category") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(
-                    focusedContainerColor = MaterialTheme.colorScheme.background,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                    focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                ),
+                colors =
+                    ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
             )
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -155,11 +163,11 @@ internal fun AddBusinessScreen(
             onValueChange = { website = it },
             label = { Text("Website (optional)") },
             colors =
-            TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-            )
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                )
         )
 
         OutlinedTextField(
@@ -167,24 +175,16 @@ internal fun AddBusinessScreen(
             onValueChange = { phoneNumber = it },
             label = { Text("Phone number") },
             colors =
-            TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-            )
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                )
         )
     }
 }
 
 /**
- * name [X]
- * description [X]
- * address (street name, number, city, country)
- * website [X]
- * phoneNumber [X]
- * category [X]
- * amenities
- * timeTable
- * isOpen
- * images
- **/
+ * name [X] description [X] address (street name, number, city, country) website [X] phoneNumber [X]
+ * category [X] amenities timeTable isOpen images
+ */
