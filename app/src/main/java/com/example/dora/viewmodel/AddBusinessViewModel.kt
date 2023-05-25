@@ -31,7 +31,7 @@ constructor(
     suspend fun createBusiness(
         name: String,
         description: String?,
-        address: BusinessPlace,
+        address: BusinessPlace?,
         website: String?,
         phoneNumber: String?,
         category: Category,

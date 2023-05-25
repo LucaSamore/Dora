@@ -15,7 +15,7 @@ data class Business(
     val phoneNumber: String? = null,
     val category: Category? = null,
     @field:JvmField val isOpen: Boolean? = null,
-    val images: List<String>? = null,
+    var images: List<String>? = null,
     val createdAt: String = nowWithPattern("yyyy-MM-dd HH:mm:ss")
 ) {
     companion object {

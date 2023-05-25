@@ -28,12 +28,13 @@ constructor(
     override suspend fun storeBusiness(business: Business): Either<ErrorMessage, SuccessMessage> =
         withContext(ioDispatcher) {
             try {
-                if (business.images != null) {
-                    storeBusinessImagesToFirebaseStorage(
+                if (business.images?.isNotEmpty()!!) {
+                    val imagesUrls = storeBusinessImagesToFirebaseStorage(
                         business.owner?.uid!!,
                         business.uuid!!,
-                        *business.images.toTypedArray()
+                        *business.images!!.toTypedArray()
                     )
+                    business.images = imagesUrls
                 }
 
                 val request =
@@ -55,9 +56,11 @@ constructor(
         userId: String,
         businessId: String,
         vararg images: String
-    ) {
+    ): List<String> {
+        val stored = mutableListOf<String>()
+
         for (image in images) {
-            firebaseStorageAPI
+            val result = firebaseStorageAPI
                 .uploadFile(
                     NetworkRequest.of(
                         FirebaseStorageRequest(
@@ -68,6 +71,9 @@ constructor(
                 )
                 .data
                 ?.await()
+            stored.add(result.toString())
         }
+
+        return stored.toList()
     }
 }

@@ -2,6 +2,7 @@ package com.example.dora.ui.screen
 
 import android.app.Activity
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,11 +33,13 @@ import com.example.dora.BuildConfig
 import com.example.dora.common.BusinessPlace
 import com.example.dora.common.Location
 import com.example.dora.model.Category
+import com.example.dora.ui.composable.ErrorAlertDialog
 import com.example.dora.viewmodel.AddBusinessViewModel
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +49,7 @@ internal fun AddBusinessScreen(
     modifier: Modifier,
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
     var name by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
@@ -96,7 +100,10 @@ internal fun AddBusinessScreen(
 
     Column(
         modifier =
-            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
+        modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(paddingValues),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -243,7 +250,27 @@ internal fun AddBusinessScreen(
             Text(text = "Add business images")
         }
 
-        Button(modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp), onClick = {}) {
+        Button(
+            modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
+            onClick = {
+                scope.launch {
+                    addBusinessViewModel.createBusiness(
+                        name = name,
+                        description = description,
+                        address = businessPlace,
+                        website = website,
+                        phoneNumber = phoneNumber,
+                        category = category,
+                        isOpen = isOpen,
+                        images = images.filter { uri -> uri != Uri.EMPTY }.toList()
+                    ).fold(
+                        // TODO
+                        { left -> name = left.message },
+                        {}
+                    )
+                }
+            }
+        ) {
             Text(
                 text = "Create",
                 style = MaterialTheme.typography.bodyLarge,
