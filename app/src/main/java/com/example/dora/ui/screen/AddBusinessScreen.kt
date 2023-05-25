@@ -91,10 +91,7 @@ internal fun AddBusinessScreen(
 
     Column(
         modifier =
-        modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(paddingValues),
+            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -103,7 +100,12 @@ internal fun AddBusinessScreen(
                 images.forEachIndexed { index, uri ->
                     if (pageNumber == index) {
                         AsyncImage(
-                            model = ImageRequest.Builder(context).data(uri).size(320,320).crossfade(true).build(),
+                            model =
+                                ImageRequest.Builder(context)
+                                    .data(uri)
+                                    .size(320, 320)
+                                    .crossfade(true)
+                                    .build(),
                             contentDescription = "Business photo ${pageNumber + 1}",
                         )
                         return@forEachIndexed
@@ -172,12 +174,12 @@ internal fun AddBusinessScreen(
                 label = { Text("Category") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors =
-                ExposedDropdownMenuDefaults.textFieldColors(
-                    focusedContainerColor = MaterialTheme.colorScheme.background,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                    focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                ),
+                    ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
             )
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -211,19 +213,14 @@ internal fun AddBusinessScreen(
 
         Button(
             modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
-            onClick = {
-                galleryLauncher.launch("image/*")
-            }
+            onClick = { galleryLauncher.launch("image/*") }
         ) {
             Icon(Icons.Filled.Photo, "Browse gallery")
             Spacer(modifier = modifier.size(6.dp))
             Text(text = "Add business images")
         }
 
-        Button(
-            modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
-            onClick = { }
-        ) {
+        Button(modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp), onClick = {}) {
             Text(
                 text = "Create",
                 style = MaterialTheme.typography.bodyLarge,

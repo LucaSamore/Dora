@@ -6,6 +6,8 @@ import com.example.dora.network.database.FirestoreAPI
 import com.example.dora.network.storage.FirebaseStorageAPI
 import com.example.dora.repository.auth.AuthenticationRepository
 import com.example.dora.repository.auth.FirebaseAuthRepository
+import com.example.dora.repository.business.BusinessRepository
+import com.example.dora.repository.business.BusinessRepositoryImpl
 import com.example.dora.repository.user.UserRepository
 import com.example.dora.repository.user.UserRepositoryImpl
 import dagger.Module
@@ -53,6 +55,20 @@ object RepositoryModule {
             firebaseStorageAPI = firebaseStorageAPI,
             ioDispatcher = ioDispatcher,
             userDatastore = userDatastore
+        )
+
+    @FirebaseRepository
+    @Singleton
+    @Provides
+    fun providesBusinessRepository(
+        firestoreAPI: FirestoreAPI,
+        firebaseStorageAPI: FirebaseStorageAPI,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher,
+    ): BusinessRepository =
+        BusinessRepositoryImpl(
+            firestoreAPI = firestoreAPI,
+            firebaseStorageAPI = firebaseStorageAPI,
+            ioDispatcher = ioDispatcher,
         )
 }
 
