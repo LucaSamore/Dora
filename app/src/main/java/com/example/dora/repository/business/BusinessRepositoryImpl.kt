@@ -29,11 +29,12 @@ constructor(
         withContext(ioDispatcher) {
             try {
                 if (business.images?.isNotEmpty()!!) {
-                    val imagesUrls = storeBusinessImagesToFirebaseStorage(
-                        business.owner?.uid!!,
-                        business.uuid!!,
-                        *business.images!!.toTypedArray()
-                    )
+                    val imagesUrls =
+                        storeBusinessImagesToFirebaseStorage(
+                            business.owner?.uid!!,
+                            business.uuid!!,
+                            *business.images!!.toTypedArray()
+                        )
                     business.images = imagesUrls
                 }
 
@@ -60,17 +61,18 @@ constructor(
         val stored = mutableListOf<String>()
 
         for (image in images) {
-            val result = firebaseStorageAPI
-                .uploadFile(
-                    NetworkRequest.of(
-                        FirebaseStorageRequest(
-                            fileUri = Uri.parse(image),
-                            reference = "$userId/businesses/$businessId"
+            val result =
+                firebaseStorageAPI
+                    .uploadFile(
+                        NetworkRequest.of(
+                            FirebaseStorageRequest(
+                                fileUri = Uri.parse(image),
+                                reference = "$userId/businesses/$businessId"
+                            )
                         )
                     )
-                )
-                .data
-                ?.await()
+                    .data
+                    ?.await()
             stored.add(result.toString())
         }
 

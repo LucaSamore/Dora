@@ -93,7 +93,12 @@ fun NavigationGraph(
             AddBusinessScreen(
                 addBusinessViewModel = hiltViewModel(),
                 paddingValues = paddingValues,
-                modifier = modifier
+                modifier = modifier,
+                onCreated = {
+                    navController.navigate(DoraScreen.Home.name) {
+                        popUpTo(DoraScreen.Home.name) { inclusive = true }
+                    }
+                },
             )
         }
     }

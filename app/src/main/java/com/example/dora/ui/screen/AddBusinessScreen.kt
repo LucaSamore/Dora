@@ -22,10 +22,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -33,7 +35,6 @@ import com.example.dora.BuildConfig
 import com.example.dora.common.BusinessPlace
 import com.example.dora.common.Location
 import com.example.dora.model.Category
-import com.example.dora.ui.composable.ErrorAlertDialog
 import com.example.dora.viewmodel.AddBusinessViewModel
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -47,6 +48,7 @@ internal fun AddBusinessScreen(
     addBusinessViewModel: AddBusinessViewModel,
     paddingValues: PaddingValues,
     modifier: Modifier,
+    onCreated: () -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -97,13 +99,12 @@ internal fun AddBusinessScreen(
             Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(context)
         intentLauncher.launch(intent)
     }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
 
     Column(
         modifier =
-        modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(paddingValues),
+            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -250,24 +251,40 @@ internal fun AddBusinessScreen(
             Text(text = "Add business images")
         }
 
+        if (!errorMessageHidden) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+
         Button(
             modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
             onClick = {
                 scope.launch {
-                    addBusinessViewModel.createBusiness(
-                        name = name,
-                        description = description,
-                        address = businessPlace,
-                        website = website,
-                        phoneNumber = phoneNumber,
-                        category = category,
-                        isOpen = isOpen,
-                        images = images.filter { uri -> uri != Uri.EMPTY }.toList()
-                    ).fold(
-                        // TODO
-                        { left -> name = left.message },
-                        {}
-                    )
+                    addBusinessViewModel
+                        .createBusiness(
+                            name = name,
+                            description = description,
+                            address = businessPlace,
+                            website = website,
+                            phoneNumber = phoneNumber,
+                            category = category,
+                            isOpen = isOpen,
+                            images = images.filter { uri -> uri != Uri.EMPTY }.toList()
+                        )
+                        .fold(
+                            { left ->
+                                errorMessage = left.message
+                                errorMessageHidden = false
+                            },
+                            { right ->
+                                onCreated()
+                                Toast.makeText(context, right.message, Toast.LENGTH_SHORT).show()
+                            }
+                        )
                 }
             }
         ) {
@@ -280,8 +297,3 @@ internal fun AddBusinessScreen(
         }
     }
 }
-
-/**
- * name [X] description [X] address (street name, number, city, country) [X] website [X] phoneNumber
- * [X] category [X] isOpen [] images [X]
- */
