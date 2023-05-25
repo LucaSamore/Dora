@@ -28,7 +28,7 @@ constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _user = MutableStateFlow<Either<ErrorMessage, User?>>(User().right())
+    private val _user = MutableStateFlow<Either<ErrorMessage, User>>(User().right())
 
     val user = _user.asStateFlow()
 

@@ -90,7 +90,11 @@ fun NavigationGraph(
         }
 
         composable(route = DoraScreen.AddBusiness.name) {
-            AddBusinessScreen(paddingValues = paddingValues, modifier = modifier)
+            AddBusinessScreen(
+                addBusinessViewModel = hiltViewModel(),
+                paddingValues = paddingValues,
+                modifier = modifier
+            )
         }
     }
 }

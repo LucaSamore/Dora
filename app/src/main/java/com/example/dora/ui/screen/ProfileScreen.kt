@@ -51,24 +51,25 @@ internal fun ProfileScreen(
     ) {
         val eitherUser by profileViewModel.user.collectAsState()
 
-        if (eitherUser.isLeft()) {
-            ErrorAlertDialog(
-                title = "Error",
-                content = "Unable to retrieve your data",
-                onError = onError
-            )
-        } else {
-            val user = eitherUser.getOrNull()
-            // TODO: Fix this
-            if (user?.uid != null) {
-                ProfileForm(
-                    profileViewModel = profileViewModel,
-                    modifier = modifier,
-                    user = user,
-                    onUpdate = onUpdate
+        eitherUser.fold(
+            {
+                ErrorAlertDialog(
+                    title = "Error",
+                    content = "Unable to retrieve your data",
+                    onError = onError
                 )
+            },
+            { user ->
+                if (user.uid != null) {
+                    ProfileForm(
+                        profileViewModel = profileViewModel,
+                        modifier = modifier,
+                        user = user,
+                        onUpdate = onUpdate
+                    )
+                }
             }
-        }
+        )
     }
 }
 

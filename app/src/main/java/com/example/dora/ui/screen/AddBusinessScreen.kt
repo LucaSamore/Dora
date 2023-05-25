@@ -22,6 +22,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -30,6 +32,7 @@ import com.example.dora.BuildConfig
 import com.example.dora.common.BusinessPlace
 import com.example.dora.common.Location
 import com.example.dora.model.Category
+import com.example.dora.viewmodel.AddBusinessViewModel
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
@@ -38,6 +41,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun AddBusinessScreen(
+    addBusinessViewModel: AddBusinessViewModel,
     paddingValues: PaddingValues,
     modifier: Modifier,
 ) {
@@ -50,8 +54,9 @@ internal fun AddBusinessScreen(
     var businessPlace by rememberSaveable { mutableStateOf<BusinessPlace?>(null) }
     val categories = Category.values()
     var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf(categories[0]) }
+    var category by remember { mutableStateOf(categories[0]) }
     val images = remember { mutableStateListOf<Uri>(Uri.EMPTY) }
+    var isOpen by rememberSaveable { mutableStateOf(false) }
     var showBusinessPlaceName by rememberSaveable { mutableStateOf(false) }
     var showCarousel by rememberSaveable { mutableStateOf(false) }
     val galleryLauncher =
@@ -169,7 +174,7 @@ internal fun AddBusinessScreen(
             TextField(
                 modifier = modifier.menuAnchor(),
                 readOnly = true,
-                value = selectedOptionText.categoryName,
+                value = category.categoryName,
                 onValueChange = {},
                 label = { Text("Category") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -189,13 +194,31 @@ internal fun AddBusinessScreen(
                     DropdownMenuItem(
                         text = { Text(selectionOption.categoryName) },
                         onClick = {
-                            selectedOptionText = selectionOption
+                            category = selectionOption
                             expanded = false
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     )
                 }
             }
+        }
+
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Is open",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium
+            )
+
+            Switch(
+                modifier = Modifier.semantics { contentDescription = "Is open" },
+                checked = isOpen,
+                onCheckedChange = { isOpen = !isOpen }
+            )
         }
 
         if (showBusinessPlaceName) {

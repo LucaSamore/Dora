@@ -8,7 +8,7 @@ import com.example.dora.common.SuccessMessage
 import com.example.dora.model.User
 
 interface UserRepository {
-    suspend fun getUser(): Either<ErrorMessage, User?>
+    suspend fun getUser(): Either<ErrorMessage, User>
 
     suspend fun updateUser(user: User): Either<ErrorMessage, SuccessMessage>
 

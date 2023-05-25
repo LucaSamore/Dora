@@ -30,7 +30,7 @@ constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val userDatastore: UserDatastore
 ) : UserRepository {
-    override suspend fun getUser(): Either<ErrorMessage, User?> =
+    override suspend fun getUser(): Either<ErrorMessage, User> =
         withContext(ioDispatcher) {
             try {
                 val request =
@@ -44,7 +44,7 @@ constructor(
                     .data
                     ?.findOneTask
                     ?.await()
-                    ?.toObject(User::class.java)
+                    ?.toObject(User::class.java)!!
                     .right()
             } catch (e: Exception) {
                 ErrorMessage(e.message!!).left()
