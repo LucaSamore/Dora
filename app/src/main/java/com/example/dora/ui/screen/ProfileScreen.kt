@@ -43,33 +43,39 @@ internal fun ProfileScreen(
     onError: () -> Unit,
     onUpdate: () -> Unit
 ) {
-    Column(
-        modifier =
-            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
-        verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        val eitherUser by profileViewModel.user.collectAsState()
+    val eitherUser by profileViewModel.user.collectAsState()
 
-        eitherUser.fold(
-            {
-                ErrorAlertDialog(
-                    title = "Error",
-                    content = "Unable to retrieve your data",
-                    onError = onError
-                )
-            },
-            { user ->
-                if (user.uid != null) {
-                    ProfileForm(
-                        profileViewModel = profileViewModel,
-                        modifier = modifier,
-                        user = user,
-                        onUpdate = onUpdate
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(
+            modifier =
+                modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            eitherUser.fold(
+                {
+                    ErrorAlertDialog(
+                        title = "Error",
+                        content = "Unable to retrieve your data",
+                        onError = onError
                     )
+                },
+                { user ->
+                    if (user.uid != null) {
+                        ProfileForm(
+                            profileViewModel = profileViewModel,
+                            modifier = modifier,
+                            user = user,
+                            onUpdate = onUpdate
+                        )
+                    }
                 }
-            }
-        )
+            )
+        }
+
+        if (!profileViewModel.progressIndicatorHidden.value) {
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
+        }
     }
 }
 
@@ -234,6 +240,8 @@ internal fun ProfileForm(
                     return@Button
                 }
 
+            profileViewModel.progressIndicatorHidden.value = false
+
             scope.launch {
                 var uri = imageUri
 
@@ -255,11 +263,13 @@ internal fun ProfileForm(
 
                 when (val result = profileViewModel.updateProfile(changes)) {
                     is Either.Left -> {
+                        profileViewModel.progressIndicatorHidden.value = true
                         errorMessage = result.value.message
                         errorMessageHidden = false
                     }
                     is Either.Right -> {
                         onUpdate()
+                        profileViewModel.progressIndicatorHidden.value = true
                     }
                 }
             }

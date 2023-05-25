@@ -101,199 +101,212 @@ internal fun AddBusinessScreen(
     }
     var errorMessage by rememberSaveable { mutableStateOf("") }
     var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
+    var progressIndicatorHidden by rememberSaveable { mutableStateOf(true) }
 
-    Column(
-        modifier =
-            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
-        verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (showCarousel) {
-            HorizontalPager(pageCount = images.size, state = pagerState) { pageNumber ->
-                images.forEachIndexed { index, uri ->
-                    if (pageNumber == index) {
-                        AsyncImage(
-                            model =
-                                ImageRequest.Builder(context)
-                                    .data(uri)
-                                    .size(320, 320)
-                                    .crossfade(true)
-                                    .build(),
-                            contentDescription = "Business photo ${pageNumber + 1}",
-                        )
-                        return@forEachIndexed
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(
+            modifier =
+                modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (showCarousel) {
+                HorizontalPager(pageCount = images.size, state = pagerState) { pageNumber ->
+                    images.forEachIndexed { index, uri ->
+                        if (pageNumber == index) {
+                            AsyncImage(
+                                model =
+                                    ImageRequest.Builder(context)
+                                        .data(uri)
+                                        .size(320, 320)
+                                        .crossfade(true)
+                                        .build(),
+                                contentDescription = "Business photo ${pageNumber + 1}",
+                            )
+                            return@forEachIndexed
+                        }
                     }
                 }
             }
-        }
 
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
-            colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.background,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                )
-        )
-
-        OutlinedTextField(
-            value = description,
-            onValueChange = { description = it },
-            label = { Text("Description (optional)") },
-            colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.background,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                )
-        )
-
-        OutlinedTextField(
-            value = website,
-            onValueChange = { website = it },
-            label = { Text("Website (optional)") },
-            colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.background,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                )
-        )
-
-        OutlinedTextField(
-            value = phoneNumber,
-            onValueChange = { phoneNumber = it },
-            label = { Text("Phone number") },
-            colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.background,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                )
-        )
-
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded },
-        ) {
-            TextField(
-                modifier = modifier.menuAnchor(),
-                readOnly = true,
-                value = category.categoryName,
-                onValueChange = {},
-                label = { Text("Category") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Name") },
                 colors =
-                    ExposedDropdownMenuDefaults.textFieldColors(
+                    TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.background,
                         unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-            ) {
-                categories.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        text = { Text(selectionOption.categoryName) },
-                        onClick = {
-                            category = selectionOption
-                            expanded = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
                     )
-                }
-            }
-        }
-
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Is open",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium
             )
 
-            Switch(
-                modifier = Modifier.semantics { contentDescription = "Is open" },
-                checked = isOpen,
-                onCheckedChange = { isOpen = !isOpen }
+            OutlinedTextField(
+                value = description,
+                onValueChange = { description = it },
+                label = { Text("Description (optional)") },
+                colors =
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                    )
             )
-        }
 
-        if (showBusinessPlaceName) {
-            Text(text = businessPlace?.name!!)
-        }
-
-        Button(
-            modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
-            onClick = launchMapInputOverlay
-        ) {
-            Icon(Icons.Filled.Search, "Search place")
-            Spacer(modifier = modifier.size(6.dp))
-            Text(text = "Add business address")
-        }
-
-        Button(
-            modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
-            onClick = { galleryLauncher.launch("image/*") }
-        ) {
-            Icon(Icons.Filled.Photo, "Browse gallery")
-            Spacer(modifier = modifier.size(6.dp))
-            Text(text = "Add business images")
-        }
-
-        if (!errorMessageHidden) {
-            Text(
-                text = errorMessage,
-                color = Color.Red,
-                modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
-                textAlign = TextAlign.Center
+            OutlinedTextField(
+                value = website,
+                onValueChange = { website = it },
+                label = { Text("Website (optional)") },
+                colors =
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                    )
             )
-        }
 
-        Button(
-            modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
-            onClick = {
-                scope.launch {
-                    addBusinessViewModel
-                        .createBusiness(
-                            name = name,
-                            description = description,
-                            address = businessPlace,
-                            website = website,
-                            phoneNumber = phoneNumber,
-                            category = category,
-                            isOpen = isOpen,
-                            images = images.filter { uri -> uri != Uri.EMPTY }.toList()
-                        )
-                        .fold(
-                            { left ->
-                                errorMessage = left.message
-                                errorMessageHidden = false
+            OutlinedTextField(
+                value = phoneNumber,
+                onValueChange = { phoneNumber = it },
+                label = { Text("Phone number") },
+                colors =
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                    )
+            )
+
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded },
+            ) {
+                TextField(
+                    modifier = modifier.menuAnchor(),
+                    readOnly = true,
+                    value = category.categoryName,
+                    onValueChange = {},
+                    label = { Text("Category") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                    },
+                    colors =
+                        ExposedDropdownMenuDefaults.textFieldColors(
+                            focusedContainerColor = MaterialTheme.colorScheme.background,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                ) {
+                    categories.forEach { selectionOption ->
+                        DropdownMenuItem(
+                            text = { Text(selectionOption.categoryName) },
+                            onClick = {
+                                category = selectionOption
+                                expanded = false
                             },
-                            { right ->
-                                onCreated()
-                                Toast.makeText(context, right.message, Toast.LENGTH_SHORT).show()
-                            }
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                         )
+                    }
                 }
             }
-        ) {
-            Text(
-                text = "Create",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimary
-            )
+
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Is open",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                )
+
+                Switch(
+                    modifier = Modifier.semantics { contentDescription = "Is open" },
+                    checked = isOpen,
+                    onCheckedChange = { isOpen = !isOpen }
+                )
+            }
+
+            if (showBusinessPlaceName) {
+                Text(text = businessPlace?.name!!)
+            }
+
+            Button(
+                modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
+                onClick = launchMapInputOverlay
+            ) {
+                Icon(Icons.Filled.Search, "Search place")
+                Spacer(modifier = modifier.size(6.dp))
+                Text(text = "Add business address")
+            }
+
+            Button(
+                modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
+                onClick = { galleryLauncher.launch("image/*") }
+            ) {
+                Icon(Icons.Filled.Photo, "Browse gallery")
+                Spacer(modifier = modifier.size(6.dp))
+                Text(text = "Add business images")
+            }
+
+            if (!errorMessageHidden) {
+                Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Button(
+                modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
+                onClick = {
+                    progressIndicatorHidden = false
+                    scope.launch {
+                        addBusinessViewModel
+                            .createBusiness(
+                                name = name,
+                                description = description,
+                                address = businessPlace,
+                                website = website,
+                                phoneNumber = phoneNumber,
+                                category = category,
+                                isOpen = isOpen,
+                                images = images.filter { uri -> uri != Uri.EMPTY }.toList()
+                            )
+                            .fold(
+                                { left ->
+                                    progressIndicatorHidden = true
+                                    errorMessage = left.message
+                                    errorMessageHidden = false
+                                },
+                                { right ->
+                                    onCreated()
+                                    progressIndicatorHidden = true
+                                    Toast.makeText(context, right.message, Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            )
+                    }
+                }
+            ) {
+                Text(
+                    text = "Create",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        }
+
+        if (!progressIndicatorHidden) {
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
         }
     }
 }

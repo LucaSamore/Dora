@@ -1,6 +1,7 @@
 package com.example.dora.viewmodel
 
 import android.net.Uri
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -31,6 +32,8 @@ constructor(
     private val _user = MutableStateFlow<Either<ErrorMessage, User>>(User().right())
 
     val user = _user.asStateFlow()
+
+    val progressIndicatorHidden = mutableStateOf(true)
 
     init {
         viewModelScope.launch(ioDispatcher) { _user.update { userRepository.getUser() } }
