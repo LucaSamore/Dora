@@ -31,6 +31,7 @@ fun NavigationGraph(
         composable(route = DoraScreen.Home.name) {
             HomeScreen(
                 homeViewModel = hiltViewModel(),
+                paddingValues = paddingValues,
                 modifier = modifier,
                 location = location,
                 startLocationUpdates = startLocationUpdates,
