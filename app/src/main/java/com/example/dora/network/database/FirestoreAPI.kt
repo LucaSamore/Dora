@@ -57,6 +57,7 @@ class FirestoreAPI(private val db: FirebaseFirestore = Firebase.firestore) :
     override fun findMany(
         request: NetworkRequest<FirestoreRequest>
     ): NetworkResponse<FirestoreResponse, Throwable> {
-        TODO("Not yet implemented")
+        val queryResult = db.collection(request.body.collection).where(request.body.where!!).get()
+        return NetworkResponse(FirestoreResponse(findManyTask = queryResult), null)
     }
 }

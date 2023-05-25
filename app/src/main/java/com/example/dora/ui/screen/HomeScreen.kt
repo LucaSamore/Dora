@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.isContainer
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -22,8 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.dora.common.Location
+import com.example.dora.model.Business
 import com.example.dora.model.Category
 import com.example.dora.viewmodel.HomeViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,9 +37,13 @@ internal fun HomeScreen(
     location: MutableState<Location>,
     startLocationUpdates: () -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
     var currentLocation by rememberSaveable { mutableStateOf("") }
+    var businesses = remember { mutableStateListOf<Business>() }
     var searchContent by rememberSaveable { mutableStateOf("") }
     var searchBarActive by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
 
     startLocationUpdates()
 
@@ -114,13 +121,49 @@ internal fun HomeScreen(
 
         Spacer(modifier = modifier.size(12.dp))
 
-        Button(onClick = { currentLocation = location.value.toString() }) {
-            Text(text = "Get location")
+        if (!errorMessageHidden) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Button(
+            onClick = {
+                scope.launch {
+                    homeViewModel
+                        .getMyBusinesses()
+                        .fold(
+                            { left ->
+                                errorMessage = left.message
+                                errorMessageHidden = false
+                            },
+                            { right ->
+                                businesses.apply {
+                                    clear()
+                                    addAll(right)
+                                }
+                            }
+                        )
+                }
+            }
+        ) {
+            Text(text = "Fetch businesses")
         }
 
         Spacer(modifier = modifier.size(12.dp))
 
-        Text(text = currentLocation, textAlign = TextAlign.Center)
+        LazyColumn {
+            items(businesses) { business ->
+                Card(
+                    modifier = modifier.fillMaxWidth().padding(12.dp).height(256.dp),
+                ) {
+                    Text(text = business.name!!)
+                }
+            }
+        }
     }
 }
 

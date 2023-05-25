@@ -12,6 +12,7 @@ import com.example.dora.network.database.FirestoreAPI
 import com.example.dora.network.database.FirestoreRequest
 import com.example.dora.network.storage.FirebaseStorageAPI
 import com.example.dora.network.storage.FirebaseStorageRequest
+import com.google.firebase.firestore.Filter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
@@ -48,6 +49,30 @@ constructor(
                 firestoreAPI.insert(NetworkRequest.of(request)).data?.insertTask?.await().let {
                     SuccessMessage("Business created successfully").right()
                 }
+            } catch (e: Exception) {
+                ErrorMessage(e.message!!).left()
+            }
+        }
+
+    override suspend fun getBusinessesByUserId(
+        userId: String
+    ): Either<ErrorMessage, List<Business>> =
+        withContext(ioDispatcher) {
+            try {
+                val request =
+                    FirestoreRequest(
+                        collection = Business.collection,
+                        where = Filter.equalTo("owner.uid", userId)
+                    )
+
+                firestoreAPI
+                    .findMany(NetworkRequest.of(request))
+                    .data!!
+                    .findManyTask!!
+                    .await()
+                    .toObjects(Business::class.java)
+                    .toList()
+                    .right()
             } catch (e: Exception) {
                 ErrorMessage(e.message!!).left()
             }

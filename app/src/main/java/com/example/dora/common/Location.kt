@@ -8,8 +8,8 @@ data class Location(val latitude: Double = 0.0, val longitude: Double = 0.0) : P
 
 @Parcelize
 data class BusinessPlace(
-    val id: String,
-    val name: String,
-    val address: String,
-    val location: Location
+    val id: String? = null,
+    val name: String? = null,
+    val address: String? = null,
+    val location: Location? = null
 ) : Parcelable
