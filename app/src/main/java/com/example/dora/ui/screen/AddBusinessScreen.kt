@@ -36,6 +36,8 @@ import coil.request.ImageRequest
 import com.example.dora.BuildConfig
 import com.example.dora.common.BusinessPlace
 import com.example.dora.common.Location
+import com.example.dora.common.validation.BusinessValidator
+import com.example.dora.common.validation.Validator
 import com.example.dora.model.Category
 import com.example.dora.viewmodel.AddBusinessViewModel
 import com.google.android.libraries.places.api.Places
@@ -60,7 +62,7 @@ internal fun AddBusinessScreen(
     var description by rememberSaveable { mutableStateOf("") }
     var website by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
-    var businessPlace by rememberSaveable { mutableStateOf<BusinessPlace?>(null) }
+    var address by rememberSaveable { mutableStateOf<BusinessPlace?>(null) }
     val categories = Category.values()
     var expanded by remember { mutableStateOf(false) }
     var category by remember { mutableStateOf(categories[0]) }
@@ -84,7 +86,7 @@ internal fun AddBusinessScreen(
                 val intent = result.data
                 if (intent != null) {
                     val place = Autocomplete.getPlaceFromIntent(intent)
-                    businessPlace =
+                    address =
                         BusinessPlace(
                             place.id!!,
                             place.name!!,
@@ -134,6 +136,15 @@ internal fun AddBusinessScreen(
                     }
                 }
                 Spacer(modifier = modifier.size(spacing.dp))
+            }
+
+            if (!errorMessageHidden) {
+                Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
+                    textAlign = TextAlign.Center
+                )
             }
 
             OutlinedTextField(
@@ -253,7 +264,7 @@ internal fun AddBusinessScreen(
             Spacer(modifier = modifier.size(spacing.dp))
 
             if (showBusinessPlaceName) {
-                Text(text = businessPlace?.name!!)
+                Text(text = address?.name!!)
                 Spacer(modifier = modifier.size(spacing.dp))
             }
 
@@ -279,25 +290,45 @@ internal fun AddBusinessScreen(
 
             Spacer(modifier = modifier.size(spacing.dp))
 
-            if (!errorMessageHidden) {
-                Text(
-                    text = errorMessage,
-                    color = Color.Red,
-                    modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
-
             Button(
                 modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
                 onClick = {
+                    // Unfortunately validator pipelines work only on a single type at the time
+
+                    Validator.pipeline(
+                            Pair(name, BusinessValidator::validateName),
+                            Pair(website, BusinessValidator::validateWebsite),
+                            Pair(phoneNumber, BusinessValidator::validatePhoneNumber),
+                        )
+                        .catch {
+                            errorMessage = it.message!!
+                            errorMessageHidden = false
+                            return@Button
+                        }
+
+                    Validator.pipeline(Pair(address, BusinessValidator::validateAddress)).catch {
+                        errorMessage = it.message!!
+                        errorMessageHidden = false
+                        return@Button
+                    }
+
+                    Validator.pipeline(
+                            Pair(images.toList(), BusinessValidator::validateImages),
+                        )
+                        .catch {
+                            errorMessage = it.message!!
+                            errorMessageHidden = false
+                            return@Button
+                        }
+
                     progressIndicatorHidden = false
+
                     scope.launch {
                         addBusinessViewModel
                             .createBusiness(
                                 name = name,
                                 description = description,
-                                address = businessPlace,
+                                address = address,
                                 website = website,
                                 phoneNumber = phoneNumber,
                                 category = category,

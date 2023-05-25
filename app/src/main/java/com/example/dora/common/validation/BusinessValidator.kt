@@ -13,9 +13,9 @@ object BusinessValidator {
     internal fun validateName(name: String): ValidationResult =
         Validator.validate(
             name,
-            { n -> Pair(n.isEmpty(), "Business name is required") },
-            { n -> Pair(n.length <= NAME_MIN_LENGTH, "Business name is too short") },
-            { n -> Pair(n.length >= NAME_MAX_LENGTH, "Business name is too long") }
+            { n -> Pair(n.isNotEmpty(), "Business name is required") },
+            { n -> Pair(n.length >= NAME_MIN_LENGTH, "Business name is too short") },
+            { n -> Pair(n.length <= NAME_MAX_LENGTH, "Business name is too long") }
         )
 
     internal fun validateAddress(address: BusinessPlace?): ValidationResult =
@@ -38,7 +38,7 @@ object BusinessValidator {
     internal fun validateWebsite(website: String): ValidationResult =
         Validator.validate(
             website,
-            { w -> Pair(UrlValidator().isValid(w), "Website url is not valid") },
+            { w -> Pair(w.isEmpty() || UrlValidator().isValid(w), "Website url is not valid") },
         )
 
     internal fun validateImages(images: List<Uri>): ValidationResult =
