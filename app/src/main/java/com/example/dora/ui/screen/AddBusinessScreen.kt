@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Photo
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
@@ -53,6 +55,7 @@ internal fun AddBusinessScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
+    var spacing by rememberSaveable { mutableStateOf(0) }
     var name by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
     var website by rememberSaveable { mutableStateOf("") }
@@ -72,6 +75,7 @@ internal fun AddBusinessScreen(
                 addAll(it)
             }
             showCarousel = true
+            spacing = 12
         }
     val intentLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -111,6 +115,7 @@ internal fun AddBusinessScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (showCarousel) {
+                Spacer(modifier = modifier.size(spacing.dp))
                 HorizontalPager(pageCount = images.size, state = pagerState) { pageNumber ->
                     images.forEachIndexed { index, uri ->
                         if (pageNumber == index) {
@@ -118,15 +123,17 @@ internal fun AddBusinessScreen(
                                 model =
                                     ImageRequest.Builder(context)
                                         .data(uri)
-                                        .size(320, 320)
+                                        .size(1280, 720)
                                         .crossfade(true)
                                         .build(),
                                 contentDescription = "Business photo ${pageNumber + 1}",
+                                modifier = modifier.clip(RoundedCornerShape(10))
                             )
                             return@forEachIndexed
                         }
                     }
                 }
+                Spacer(modifier = modifier.size(spacing.dp))
             }
 
             OutlinedTextField(
@@ -141,6 +148,8 @@ internal fun AddBusinessScreen(
                     )
             )
 
+            Spacer(modifier = modifier.size(spacing.dp))
+
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
@@ -152,6 +161,8 @@ internal fun AddBusinessScreen(
                         focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
                     )
             )
+
+            Spacer(modifier = modifier.size(spacing.dp))
 
             OutlinedTextField(
                 value = website,
@@ -165,6 +176,8 @@ internal fun AddBusinessScreen(
                     )
             )
 
+            Spacer(modifier = modifier.size(spacing.dp))
+
             OutlinedTextField(
                 value = phoneNumber,
                 onValueChange = { phoneNumber = it },
@@ -176,6 +189,8 @@ internal fun AddBusinessScreen(
                         focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
                     )
             )
+
+            Spacer(modifier = modifier.size(spacing.dp))
 
             ExposedDropdownMenuBox(
                 expanded = expanded,
@@ -215,6 +230,8 @@ internal fun AddBusinessScreen(
                 }
             }
 
+            Spacer(modifier = modifier.size(spacing.dp))
+
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround,
@@ -233,8 +250,11 @@ internal fun AddBusinessScreen(
                 )
             }
 
+            Spacer(modifier = modifier.size(spacing.dp))
+
             if (showBusinessPlaceName) {
                 Text(text = businessPlace?.name!!)
+                Spacer(modifier = modifier.size(spacing.dp))
             }
 
             Button(
@@ -246,6 +266,8 @@ internal fun AddBusinessScreen(
                 Text(text = "Add business address")
             }
 
+            Spacer(modifier = modifier.size(spacing.dp))
+
             Button(
                 modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
                 onClick = { galleryLauncher.launch("image/*") }
@@ -254,6 +276,8 @@ internal fun AddBusinessScreen(
                 Spacer(modifier = modifier.size(6.dp))
                 Text(text = "Add business images")
             }
+
+            Spacer(modifier = modifier.size(spacing.dp))
 
             if (!errorMessageHidden) {
                 Text(
@@ -303,6 +327,8 @@ internal fun AddBusinessScreen(
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             }
+
+            Spacer(modifier = modifier.size(spacing.dp))
         }
 
         if (!progressIndicatorHidden) {
