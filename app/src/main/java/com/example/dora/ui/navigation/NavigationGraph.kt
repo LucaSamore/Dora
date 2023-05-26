@@ -122,7 +122,8 @@ fun NavigationGraph(
             BusinessDetailsScreen(
                 businessDetailsViewModel = hiltViewModel(),
                 businessId = it.arguments?.getString("businessId")!!,
-                modifier = modifier
+                modifier = modifier,
+                paddingValues = paddingValues,
             )
         }
     }
