@@ -35,6 +35,7 @@ fun NavigationGraph(
                 modifier = modifier,
                 location = location,
                 startLocationUpdates = startLocationUpdates,
+                navController = navController,
             )
         }
 
@@ -111,8 +112,16 @@ fun NavigationGraph(
         composable(route = DoraScreen.MyBusinesses.name) {
             MyBusinessesScreen(
                 myBusinessesViewModel = hiltViewModel(),
+                navController = navController,
                 modifier = modifier,
                 paddingValues = paddingValues,
+            )
+        }
+
+        composable(route = "${DoraScreen.BusinessDetails.name}/{businessId}") {
+            BusinessDetailsScreen(
+                businessId = it.arguments?.getString("businessId")!!,
+                modifier = modifier
             )
         }
     }

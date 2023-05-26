@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.dora.model.Business
 import com.example.dora.ui.composable.BusinessCard
 import com.example.dora.viewmodel.MyBusinessesViewModel
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun MyBusinessesScreen(
     myBusinessesViewModel: MyBusinessesViewModel,
+    navController: NavHostController,
     modifier: Modifier,
     paddingValues: PaddingValues,
 ) {
@@ -64,6 +66,10 @@ internal fun MyBusinessesScreen(
 
         Spacer(modifier = modifier.size(12.dp))
 
-        LazyColumn { items(businesses) { business -> BusinessCard(business, context, modifier) } }
+        LazyColumn {
+            items(businesses) { business ->
+                BusinessCard(business, context, modifier, navController)
+            }
+        }
     }
 }

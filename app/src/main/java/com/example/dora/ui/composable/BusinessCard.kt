@@ -2,8 +2,8 @@ package com.example.dora.ui.composable
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -11,18 +11,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.dora.model.Business
+import com.example.dora.ui.navigation.DoraScreen
 
 @Composable
-internal fun BusinessCard(business: Business, context: Context, modifier: Modifier) {
+internal fun BusinessCard(
+    business: Business,
+    context: Context,
+    modifier: Modifier,
+    navController: NavHostController
+) {
     Card(
-        modifier = modifier.fillMaxWidth().padding(12.dp).height(256.dp),
+        modifier =
+            modifier.fillMaxWidth().padding(12.dp).height(256.dp).clickable {
+                navController.navigate("${DoraScreen.BusinessDetails.name}/${business.uuid}")
+            },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
     ) {
         Row(
@@ -30,7 +39,7 @@ internal fun BusinessCard(business: Business, context: Context, modifier: Modifi
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(modifier = modifier.clip(RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))) {
+            Box {
                 if (business.images?.isNotEmpty()!!) {
                     AsyncImage(
                         model =
@@ -39,8 +48,6 @@ internal fun BusinessCard(business: Business, context: Context, modifier: Modifi
                                 .crossfade(true)
                                 .build(),
                         contentDescription = "Image of ${business.name}",
-                        modifier =
-                            modifier.clip(RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
                     )
                 }
             }

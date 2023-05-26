@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
 import com.example.dora.common.Location
 import com.example.dora.model.Business
 import com.example.dora.model.Category
@@ -37,6 +38,7 @@ internal fun HomeScreen(
     paddingValues: PaddingValues,
     location: MutableState<Location>,
     startLocationUpdates: () -> Unit,
+    navController: NavHostController,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -133,7 +135,11 @@ internal fun HomeScreen(
 
         Spacer(modifier = modifier.size(12.dp))
 
-        LazyColumn { items(businesses) { business -> BusinessCard(business, context, modifier) } }
+        LazyColumn {
+            items(businesses) { business ->
+                BusinessCard(business, context, modifier, navController)
+            }
+        }
     }
 }
 

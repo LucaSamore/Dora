@@ -25,7 +25,8 @@ internal fun DoraApplication(
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = backStackEntry?.destination?.route ?: DoraScreen.SignIn.name
+    val currentScreen =
+        backStackEntry?.destination?.route?.split("/")?.first() ?: DoraScreen.SignIn.name
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
