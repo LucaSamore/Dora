@@ -29,6 +29,7 @@ internal fun SettingsScreen(
     onSignOut: () -> Unit,
     onDismiss: () -> Unit,
     onAccountDeleted: () -> Unit,
+    onMyBusinessesClicked: () -> Unit,
 ) {
     Column(
         modifier =
@@ -61,6 +62,21 @@ internal fun SettingsScreen(
                 }
             )
         }
+
+        Divider()
+
+        ListItem(
+            modifier = modifier.clickable { onMyBusinessesClicked() },
+            headlineContent = {
+                Text(
+                    text = "My businesses",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            trailingContent = {
+                Icon(Icons.Filled.ArrowForward, contentDescription = "My businesses")
+            }
+        )
 
         Divider()
 

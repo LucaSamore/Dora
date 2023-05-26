@@ -28,7 +28,6 @@ import com.example.dora.model.Business
 import com.example.dora.model.Category
 import com.example.dora.ui.composable.BusinessCard
 import com.example.dora.viewmodel.HomeViewModel
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +40,6 @@ internal fun HomeScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var currentLocation by rememberSaveable { mutableStateOf("") }
     var businesses = remember { mutableStateListOf<Business>() }
     var searchContent by rememberSaveable { mutableStateOf("") }
     var searchBarActive by rememberSaveable { mutableStateOf(false) }
@@ -51,25 +49,6 @@ internal fun HomeScreen(
     startLocationUpdates()
 
     homeViewModel.updateLocation(location.value)
-
-    LaunchedEffect(key1 = Unit) {
-        scope.launch {
-            homeViewModel
-                .getMyBusinesses()
-                .fold(
-                    { left ->
-                        errorMessage = left.message
-                        errorMessageHidden = false
-                    },
-                    { right ->
-                        businesses.apply {
-                            clear()
-                            addAll(right)
-                        }
-                    }
-                )
-        }
-    }
 
     Column(
         modifier = modifier.fillMaxSize().padding(paddingValues),

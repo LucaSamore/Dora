@@ -86,7 +86,12 @@ fun NavigationGraph(
                     }
                 },
                 onDismiss = { navController.navigate(DoraScreen.Settings.name) },
-                onAccountDeleted = { navController.navigate(DoraScreen.SignIn.name) }
+                onAccountDeleted = { navController.navigate(DoraScreen.SignIn.name) },
+                onMyBusinessesClicked = {
+                    navController.navigate(DoraScreen.MyBusinesses.name) {
+                        popUpTo(DoraScreen.MyBusinesses.name) { inclusive = true }
+                    }
+                }
             )
         }
 
@@ -100,6 +105,14 @@ fun NavigationGraph(
                         popUpTo(DoraScreen.Home.name) { inclusive = true }
                     }
                 },
+            )
+        }
+
+        composable(route = DoraScreen.MyBusinesses.name) {
+            MyBusinessesScreen(
+                myBusinessesViewModel = hiltViewModel(),
+                modifier = modifier,
+                paddingValues = paddingValues,
             )
         }
     }
