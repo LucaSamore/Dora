@@ -27,7 +27,7 @@ internal fun MyBusinessesScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var businesses = remember { mutableStateListOf<Business>() }
+    val businesses = remember { mutableStateListOf<Business>() }
     var errorMessage by rememberSaveable { mutableStateOf("") }
     var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
 

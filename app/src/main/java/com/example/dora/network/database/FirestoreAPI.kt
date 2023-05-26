@@ -46,18 +46,18 @@ class FirestoreAPI(private val db: FirebaseFirestore = Firebase.firestore) :
         return NetworkResponse(FirestoreResponse(deleteTask = queryResult), null)
     }
 
-    override fun findOne(
+    override fun single(
         request: NetworkRequest<FirestoreRequest>
     ): NetworkResponse<FirestoreResponse, Throwable> {
         val queryResult =
             db.collection(request.body.collection).document(request.body.document!!).get()
-        return NetworkResponse(FirestoreResponse(findOneTask = queryResult), null)
+        return NetworkResponse(FirestoreResponse(singleTask = queryResult), null)
     }
 
-    override fun findMany(
+    override fun find(
         request: NetworkRequest<FirestoreRequest>
     ): NetworkResponse<FirestoreResponse, Throwable> {
         val queryResult = db.collection(request.body.collection).where(request.body.where!!).get()
-        return NetworkResponse(FirestoreResponse(findManyTask = queryResult), null)
+        return NetworkResponse(FirestoreResponse(findTask = queryResult), null)
     }
 }

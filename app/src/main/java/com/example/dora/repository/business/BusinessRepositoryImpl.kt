@@ -66,12 +66,35 @@ constructor(
                     )
 
                 firestoreAPI
-                    .findMany(NetworkRequest.of(request))
+                    .find(NetworkRequest.of(request))
                     .data!!
-                    .findManyTask!!
+                    .findTask!!
                     .await()
                     .toObjects(Business::class.java)
                     .toList()
+                    .right()
+            } catch (e: Exception) {
+                ErrorMessage(e.message!!).left()
+            }
+        }
+
+    override suspend fun getBusinessById(businessId: String): Either<ErrorMessage, Business> =
+        withContext(ioDispatcher) {
+            try {
+                val request =
+                    FirestoreRequest(
+                        collection = Business.collection,
+                        where = Filter.equalTo("uuid", businessId)
+                    )
+
+                firestoreAPI
+                    .find(NetworkRequest.of(request))
+                    .data!!
+                    .findTask!!
+                    .await()
+                    .toObjects(Business::class.java)
+                    .toList()
+                    .first()
                     .right()
             } catch (e: Exception) {
                 ErrorMessage(e.message!!).left()

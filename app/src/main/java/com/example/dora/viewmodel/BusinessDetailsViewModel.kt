@@ -1,0 +1,25 @@
+package com.example.dora.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.dora.di.FirebaseRepository
+import com.example.dora.di.IoDispatcher
+import com.example.dora.repository.business.BusinessRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+
+@HiltViewModel
+class BusinessDetailsViewModel
+@Inject
+constructor(
+    @FirebaseRepository private val businessRepository: BusinessRepository,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+) : ViewModel() {
+
+    suspend fun getBusiness(businessId: String) =
+        withContext(viewModelScope.coroutineContext + ioDispatcher) {
+            businessRepository.getBusinessById(businessId)
+        }
+}

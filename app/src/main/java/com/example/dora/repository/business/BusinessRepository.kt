@@ -9,4 +9,6 @@ interface BusinessRepository {
     suspend fun storeBusiness(business: Business): Either<ErrorMessage, SuccessMessage>
 
     suspend fun getBusinessesByUserId(userId: String): Either<ErrorMessage, List<Business>>
+
+    suspend fun getBusinessById(businessId: String): Either<ErrorMessage, Business>
 }

@@ -120,6 +120,7 @@ fun NavigationGraph(
 
         composable(route = "${DoraScreen.BusinessDetails.name}/{businessId}") {
             BusinessDetailsScreen(
+                businessDetailsViewModel = hiltViewModel(),
                 businessId = it.arguments?.getString("businessId")!!,
                 modifier = modifier
             )

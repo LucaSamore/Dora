@@ -40,9 +40,9 @@ constructor(
                     )
 
                 firestoreAPI
-                    .findOne(NetworkRequest.of(request))
+                    .single(NetworkRequest.of(request))
                     .data
-                    ?.findOneTask
+                    ?.singleTask
                     ?.await()
                     ?.toObject(User::class.java)!!
                     .right()
