@@ -9,6 +9,7 @@ object BusinessValidator {
     private const val NAME_MAX_LENGTH = 50
     private const val PHONE_NUMBER_LENGTH = 10
     private const val MAX_IMAGES_NUMBER = 5
+    private const val MIN_IMAGES_NUMBER = 1
 
     internal fun validateName(name: String): ValidationResult =
         Validator.validate(
@@ -27,9 +28,10 @@ object BusinessValidator {
     internal fun validatePhoneNumber(phoneNumber: String): ValidationResult =
         Validator.validate(
             phoneNumber,
-            { n ->
+            { pn -> Pair(pn.isNotEmpty(), "Phone number is required") },
+            { pn ->
                 Pair(
-                    n.length == PHONE_NUMBER_LENGTH,
+                    pn.length == PHONE_NUMBER_LENGTH,
                     "Phone number must be $PHONE_NUMBER_LENGTH numbers"
                 )
             },
@@ -44,6 +46,7 @@ object BusinessValidator {
     internal fun validateImages(images: List<Uri>): ValidationResult =
         Validator.validate(
             images,
+            { i -> Pair(i.size >= MIN_IMAGES_NUMBER, "At most $MIN_IMAGES_NUMBER are allowed") },
             { i -> Pair(i.size <= MAX_IMAGES_NUMBER, "At most $MAX_IMAGES_NUMBER are allowed") },
         )
 }

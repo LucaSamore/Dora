@@ -15,6 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.isContainer
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +26,7 @@ import androidx.compose.ui.zIndex
 import com.example.dora.common.Location
 import com.example.dora.model.Business
 import com.example.dora.model.Category
+import com.example.dora.ui.composable.BusinessCard
 import com.example.dora.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
@@ -37,6 +39,7 @@ internal fun HomeScreen(
     location: MutableState<Location>,
     startLocationUpdates: () -> Unit,
 ) {
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var currentLocation by rememberSaveable { mutableStateOf("") }
     var businesses = remember { mutableStateListOf<Business>() }
@@ -48,6 +51,25 @@ internal fun HomeScreen(
     startLocationUpdates()
 
     homeViewModel.updateLocation(location.value)
+
+    LaunchedEffect(key1 = Unit) {
+        scope.launch {
+            homeViewModel
+                .getMyBusinesses()
+                .fold(
+                    { left ->
+                        errorMessage = left.message
+                        errorMessageHidden = false
+                    },
+                    { right ->
+                        businesses.apply {
+                            clear()
+                            addAll(right)
+                        }
+                    }
+                )
+        }
+    }
 
     Column(
         modifier = modifier.fillMaxSize().padding(paddingValues),
@@ -130,40 +152,9 @@ internal fun HomeScreen(
             )
         }
 
-        Button(
-            onClick = {
-                scope.launch {
-                    homeViewModel
-                        .getMyBusinesses()
-                        .fold(
-                            { left ->
-                                errorMessage = left.message
-                                errorMessageHidden = false
-                            },
-                            { right ->
-                                businesses.apply {
-                                    clear()
-                                    addAll(right)
-                                }
-                            }
-                        )
-                }
-            }
-        ) {
-            Text(text = "Fetch businesses")
-        }
-
         Spacer(modifier = modifier.size(12.dp))
 
-        LazyColumn {
-            items(businesses) { business ->
-                Card(
-                    modifier = modifier.fillMaxWidth().padding(12.dp).height(256.dp),
-                ) {
-                    Text(text = business.name!!)
-                }
-            }
-        }
+        LazyColumn { items(businesses) { business -> BusinessCard(business, context, modifier) } }
     }
 }
 
