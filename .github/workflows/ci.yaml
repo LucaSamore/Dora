@@ -43,11 +43,20 @@ jobs:
       - name: Create Google Services file
         run: cat /home/runner/work/Dora/Dora/app/google-services.json | base64
 
+      - name: Create local properties file
+        run: cat /home/runner/work/Dora/Dora/local.properties | base64
+
       - name: Put data in Google Services file
         working-directory: ./app
         env:
           DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $DATA > google-services.json
+
+      - name: Put data in local properties file
+        working-directory: ./Dora
+        env:
+          DATA: ${{ secrets.LOCAL_PROPERTIES }}
+        run: echo $DATA > local.properties
 
 #      - name: Run instrumented tests on android emulator runner
 #        uses: reactivecircus/android-emulator-runner@v2
