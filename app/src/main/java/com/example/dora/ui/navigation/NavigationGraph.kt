@@ -126,5 +126,13 @@ fun NavigationGraph(
                 paddingValues = paddingValues,
             )
         }
+
+        composable(route = DoraScreen.Favorites.name) {
+            FavoritesScreen(
+                favoriteViewModel = hiltViewModel(),
+                modifier = modifier,
+                paddingValues = paddingValues
+            )
+        }
     }
 }

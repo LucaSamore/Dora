@@ -60,7 +60,11 @@ internal fun NavigationBarFunction(navController: NavHostController) {
             icon = { Icon(Icons.Filled.Star, contentDescription = "Favorites") },
             label = { Text(text = "Favorites") },
             selected = false,
-            onClick = { TODO() },
+            onClick = {
+                navController.navigate(DoraScreen.Favorites.name) {
+                    popUpTo(DoraScreen.Favorites.name) { inclusive = true }
+                }
+            },
             colors =
                 NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.onPrimary,

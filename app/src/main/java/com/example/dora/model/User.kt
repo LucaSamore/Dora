@@ -13,7 +13,6 @@ data class User(
     val password: String? = null,
     val location: Location? = null,
     var profilePicture: String? = null,
-    val favorites: List<Business>? = null,
     val createdAt: String = nowWithPattern("yyyy-MM-dd HH:mm:ss")
 ) {
     companion object {
