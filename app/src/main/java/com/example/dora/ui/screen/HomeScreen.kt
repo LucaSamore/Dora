@@ -50,8 +50,8 @@ internal fun HomeScreen(
     var errorMessage by rememberSaveable { mutableStateOf("") }
     var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
 
+    categoryFilters.add(Category.NONE)
     startLocationUpdates()
-
     homeViewModel.updateLocation(location.value)
 
     LaunchedEffect(key1 = Unit) {
@@ -143,7 +143,7 @@ internal fun HomeScreen(
             Spacer(modifier = modifier.size(6.dp))
 
             LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
-                items(Category.values()) { category ->
+                items(Category.values().filter { it != Category.NONE }) { category ->
                     FilterChip(
                         label = { Text(text = category.categoryName) },
                         selected = categoryFilters.contains(category),
@@ -153,6 +153,22 @@ internal fun HomeScreen(
                                 categoryFilters.remove(category)
                             } else {
                                 categoryFilters.add(category)
+                            }
+                            scope.launch {
+                                homeViewModel
+                                    .getBusinessesByCategories(*categoryFilters.toTypedArray())
+                                    .fold(
+                                        { left ->
+                                            errorMessage = left.message
+                                            errorMessageHidden = false
+                                        },
+                                        { right ->
+                                            businesses.apply {
+                                                clear()
+                                                addAll(right)
+                                            }
+                                        }
+                                    )
                             }
                         },
                         colors =

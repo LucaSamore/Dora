@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.dora.common.Location
 import com.example.dora.di.FirebaseRepository
 import com.example.dora.di.IoDispatcher
+import com.example.dora.model.Category
 import com.example.dora.repository.business.BusinessRepository
 import com.example.dora.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,5 +35,10 @@ constructor(
     suspend fun getBusinessesDefault() =
         withContext(viewModelScope.coroutineContext + ioDispatcher) {
             businessRepository.getBusinessesDefault()
+        }
+
+    suspend fun getBusinessesByCategories(vararg categories: Category) =
+        withContext(viewModelScope.coroutineContext + ioDispatcher) {
+            businessRepository.getBusinessesByCategories(*categories)
         }
 }
