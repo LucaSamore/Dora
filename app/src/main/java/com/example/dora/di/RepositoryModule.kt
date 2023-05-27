@@ -1,5 +1,7 @@
 package com.example.dora.di
 
+import android.content.Context
+import com.example.dora.DoraApp
 import com.example.dora.datastore.UserDatastore
 import com.example.dora.network.auth.FirebaseAuthAPI
 import com.example.dora.network.database.FirestoreAPI
@@ -8,11 +10,14 @@ import com.example.dora.repository.auth.AuthenticationRepository
 import com.example.dora.repository.auth.FirebaseAuthRepository
 import com.example.dora.repository.business.BusinessRepository
 import com.example.dora.repository.business.BusinessRepositoryImpl
+import com.example.dora.repository.favorite.FavoriteRepository
+import com.example.dora.repository.favorite.FavoriteRepositoryImpl
 import com.example.dora.repository.user.UserRepository
 import com.example.dora.repository.user.UserRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -70,6 +75,11 @@ object RepositoryModule {
             firebaseStorageAPI = firebaseStorageAPI,
             ioDispatcher = ioDispatcher,
         )
+
+    @Singleton
+    @Provides
+    fun providesFavoriteRepository(@ApplicationContext context: Context): FavoriteRepository =
+        FavoriteRepositoryImpl((context.applicationContext as DoraApp).database.favoriteDAO())
 }
 
 @Retention(AnnotationRetention.BINARY) @Qualifier annotation class FirebaseRepository
