@@ -26,8 +26,13 @@ constructor(
         viewModelScope.launch { userRepository.updateLocation(location) }
     }
 
-    suspend fun getBusinessClosedToMe(location: Location) =
+    suspend fun getBusinessesClosedToMe(location: Location) =
         withContext(viewModelScope.coroutineContext + ioDispatcher) {
             businessRepository.getBusinessesClosedToMe(location)
+        }
+
+    suspend fun getBusinessesDefault() =
+        withContext(viewModelScope.coroutineContext + ioDispatcher) {
+            businessRepository.getBusinessesDefault()
         }
 }

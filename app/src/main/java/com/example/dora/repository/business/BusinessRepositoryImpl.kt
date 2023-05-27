@@ -116,6 +116,25 @@ constructor(
             }
         }
 
+    override suspend fun getBusinessesDefault(): Either<ErrorMessage, List<Business>> =
+        withContext(ioDispatcher) {
+            try {
+                val request =
+                    FirestoreRequest(collection = Business.collection, where = Filter.and())
+
+                firestoreAPI
+                    .find(NetworkRequest.of(request))
+                    .data!!
+                    .findTask!!
+                    .await()
+                    .toObjects(Business::class.java)
+                    .toList()
+                    .right()
+            } catch (e: Exception) {
+                ErrorMessage(e.message!!).left()
+            }
+        }
+
     private suspend fun getBusinessesInClosedLatitude(latitude: Double): Set<Business> {
         val request =
             FirestoreRequest(
