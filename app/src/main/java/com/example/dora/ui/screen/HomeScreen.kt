@@ -44,6 +44,7 @@ internal fun HomeScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var businesses = remember { mutableStateListOf<Business>() }
+    var categoryFilters = remember { mutableStateListOf<Category>() }
     var searchContent by rememberSaveable { mutableStateOf("") }
     var searchBarActive by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
@@ -145,9 +146,15 @@ internal fun HomeScreen(
                 items(Category.values()) { category ->
                     FilterChip(
                         label = { Text(text = category.categoryName) },
-                        selected = false,
+                        selected = categoryFilters.contains(category),
                         enabled = true,
-                        onClick = {},
+                        onClick = {
+                            if (categoryFilters.contains(category)) {
+                                categoryFilters.remove(category)
+                            } else {
+                                categoryFilters.add(category)
+                            }
+                        },
                         colors =
                             FilterChipDefaults.filterChipColors(
                                 containerColor = MaterialTheme.colorScheme.background,
