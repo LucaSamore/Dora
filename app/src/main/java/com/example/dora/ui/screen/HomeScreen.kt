@@ -44,13 +44,13 @@ internal fun HomeScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var businesses = remember { mutableStateListOf<Business>() }
+    var toShow = remember { mutableStateListOf<Business>() }
     var categoryFilters = remember { mutableStateListOf<Category>() }
     var searchContent by rememberSaveable { mutableStateOf("") }
     var searchBarActive by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
     var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
 
-    categoryFilters.add(Category.NONE)
     startLocationUpdates()
     homeViewModel.updateLocation(location.value)
 
@@ -69,6 +69,10 @@ internal fun HomeScreen(
                                 clear()
                                 addAll(right)
                             }
+                            toShow.apply {
+                                clear()
+                                addAll(right)
+                            }
                         }
                     )
             } else {
@@ -81,6 +85,10 @@ internal fun HomeScreen(
                         },
                         { right ->
                             businesses.apply {
+                                clear()
+                                addAll(right)
+                            }
+                            toShow.apply {
                                 clear()
                                 addAll(right)
                             }
@@ -143,7 +151,7 @@ internal fun HomeScreen(
             Spacer(modifier = modifier.size(6.dp))
 
             LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
-                items(Category.values().filter { it != Category.NONE }) { category ->
+                items(Category.values()) { category ->
                     FilterChip(
                         label = { Text(text = category.categoryName) },
                         selected = categoryFilters.contains(category),
@@ -154,21 +162,17 @@ internal fun HomeScreen(
                             } else {
                                 categoryFilters.add(category)
                             }
-                            scope.launch {
-                                homeViewModel
-                                    .getBusinessesByCategories(*categoryFilters.toTypedArray())
-                                    .fold(
-                                        { left ->
-                                            errorMessage = left.message
-                                            errorMessageHidden = false
-                                        },
-                                        { right ->
-                                            businesses.apply {
-                                                clear()
-                                                addAll(right)
-                                            }
-                                        }
-                                    )
+
+                            if (categoryFilters.isEmpty()) {
+                                toShow.addAll(businesses)
+                                return@FilterChip
+                            }
+
+                            toShow.apply {
+                                clear()
+                                addAll(
+                                    businesses.filter { b -> categoryFilters.contains(b.category) }
+                                )
                             }
                         },
                         colors =
@@ -196,9 +200,7 @@ internal fun HomeScreen(
         Spacer(modifier = modifier.size(12.dp))
 
         LazyColumn {
-            items(businesses) { business ->
-                BusinessCard(business, context, modifier, navController)
-            }
+            items(toShow) { business -> BusinessCard(business, context, modifier, navController) }
         }
     }
 }

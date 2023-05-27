@@ -8,7 +8,6 @@ import com.example.dora.common.ErrorMessage
 import com.example.dora.common.Location
 import com.example.dora.common.SuccessMessage
 import com.example.dora.model.Business
-import com.example.dora.model.Category
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.database.FirestoreAPI
 import com.example.dora.network.database.FirestoreRequest
@@ -135,36 +134,6 @@ constructor(
                 ErrorMessage(e.message!!).left()
             }
         }
-
-    override suspend fun getBusinessesByCategories(
-        vararg categories: Category
-    ): Either<ErrorMessage, List<Business>> {
-
-        if (categories.all { it == Category.NONE }) {
-            return getBusinessesDefault()
-        }
-
-        return withContext(ioDispatcher) {
-            try {
-                val request =
-                    FirestoreRequest(
-                        collection = Business.collection,
-                        where = Filter.inArray("category", categories.toList())
-                    )
-
-                firestoreAPI
-                    .find(NetworkRequest.of(request))
-                    .data!!
-                    .findTask!!
-                    .await()
-                    .toObjects(Business::class.java)
-                    .toList()
-                    .right()
-            } catch (e: Exception) {
-                ErrorMessage(e.message!!).left()
-            }
-        }
-    }
 
     private suspend fun getBusinessesInClosedLatitude(latitude: Double): Set<Business> {
         val request =

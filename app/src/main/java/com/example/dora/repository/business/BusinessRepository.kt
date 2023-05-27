@@ -5,7 +5,6 @@ import com.example.dora.common.ErrorMessage
 import com.example.dora.common.Location
 import com.example.dora.common.SuccessMessage
 import com.example.dora.model.Business
-import com.example.dora.model.Category
 
 interface BusinessRepository {
     suspend fun storeBusiness(business: Business): Either<ErrorMessage, SuccessMessage>
@@ -17,8 +16,4 @@ interface BusinessRepository {
     suspend fun getBusinessesClosedToMe(myPosition: Location): Either<ErrorMessage, List<Business>>
 
     suspend fun getBusinessesDefault(): Either<ErrorMessage, List<Business>>
-
-    suspend fun getBusinessesByCategories(
-        vararg categories: Category
-    ): Either<ErrorMessage, List<Business>>
 }

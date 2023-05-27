@@ -8,5 +8,4 @@ enum class Category(val categoryName: String) {
     BEAUTY_SPAS("Beauty & Spas"),
     AUTOMOTIVE("Automotive"),
     HOME_SERVICES("Home Services"),
-    NONE("None")
 }
