@@ -53,22 +53,24 @@ internal fun HomeScreen(
 
     homeViewModel.updateLocation(location.value)
 
-    LaunchedEffect(key1 = Unit) {
-        scope.launch {
-            homeViewModel
-                .getBusinessClosedToMe(location.value)
-                .fold(
-                    { left ->
-                        errorMessage = left.message
-                        errorMessageHidden = false
-                    },
-                    { right ->
-                        businesses.apply {
-                            clear()
-                            addAll(right)
+    if (!location.value.isNotSet()) {
+        LaunchedEffect(key1 = Unit) {
+            scope.launch {
+                homeViewModel
+                    .getBusinessClosedToMe(location.value)
+                    .fold(
+                        { left ->
+                            errorMessage = left.message
+                            errorMessageHidden = false
+                        },
+                        { right ->
+                            businesses.apply {
+                                clear()
+                                addAll(right)
+                            }
                         }
-                    }
-                )
+                    )
+            }
         }
     }
 
