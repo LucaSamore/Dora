@@ -6,8 +6,7 @@ import com.example.dora.database.entity.Favorite
 import kotlinx.coroutines.flow.Flow
 
 class FavoriteRepositoryImpl(private val favoriteDAO: FavoriteDAO) : FavoriteRepository {
-
-    val favorites: Flow<List<Favorite>> = favoriteDAO.getFavorites()
+    override fun getFavorites(): Flow<List<Favorite>> = favoriteDAO.getFavorites()
 
     @WorkerThread
     override suspend fun insert(favorite: Favorite) {
