@@ -4,7 +4,10 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -27,7 +30,6 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun BusinessDetailsScreen(
     businessDetailsViewModel: BusinessDetailsViewModel,
@@ -37,7 +39,6 @@ internal fun BusinessDetailsScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState()
     var business by remember { mutableStateOf<Business?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
     var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
@@ -87,13 +88,22 @@ internal fun BusinessDetailsScreen(
             )
         }
 
-        Text(
-            text = business?.name!!,
+        Row(
             modifier = modifier.fillMaxWidth().padding(12.dp),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Left
-        )
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                text = business?.name!!,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Left
+            )
+
+            IconButton(onClick = { businessDetailsViewModel.toggleFavorite(businessId) }) {
+                Icon(Icons.Filled.Star, contentDescription = "Toggle favorite")
+            }
+        }
 
         Text(
             text = business?.description!!,

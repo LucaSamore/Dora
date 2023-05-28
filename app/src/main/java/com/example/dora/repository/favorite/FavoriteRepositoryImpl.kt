@@ -22,4 +22,8 @@ class FavoriteRepositoryImpl(private val favoriteDAO: FavoriteDAO) : FavoriteRep
     override suspend fun deleteAll() {
         favoriteDAO.deleteAll()
     }
+
+    @WorkerThread override suspend fun exists(businessId: String) = favoriteDAO.exists(businessId)
+
+    @WorkerThread override suspend fun single(businessId: String) = favoriteDAO.single(businessId)
 }

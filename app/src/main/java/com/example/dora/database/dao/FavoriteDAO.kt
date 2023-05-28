@@ -13,4 +13,10 @@ interface FavoriteDAO {
     @Delete suspend fun delete(favorite: Favorite)
 
     @Query("DELETE FROM favorites") suspend fun deleteAll()
+
+    @Query("SELECT EXISTS (SELECT * FROM favorites WHERE businessId = :businessId)")
+    suspend fun exists(businessId: String): Boolean
+
+    @Query("SELECT * FROM favorites WHERE businessId = :businessId")
+    suspend fun single(businessId: String): Favorite
 }
