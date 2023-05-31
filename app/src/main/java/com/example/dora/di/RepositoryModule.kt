@@ -78,8 +78,16 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun providesFavoriteRepository(@ApplicationContext context: Context): FavoriteRepository =
-        FavoriteRepositoryImpl((context.applicationContext as DoraApp).database.favoriteDAO())
+    fun providesFavoriteRepository(
+        @ApplicationContext context: Context,
+        firestoreAPI: FirestoreAPI,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher,
+    ): FavoriteRepository =
+        FavoriteRepositoryImpl(
+            favoriteDAO = (context.applicationContext as DoraApp).database.favoriteDAO(),
+            firestoreAPI = firestoreAPI,
+            ioDispatcher = ioDispatcher
+        )
 }
 
 @Retention(AnnotationRetention.BINARY) @Qualifier annotation class FirebaseRepository

@@ -1,10 +1,12 @@
 package com.example.dora.repository.favorite
 
+import arrow.core.Either
+import com.example.dora.common.ErrorMessage
 import com.example.dora.database.entity.Favorite
-import kotlinx.coroutines.flow.Flow
+import com.example.dora.model.Business
 
 interface FavoriteRepository {
-    fun getFavorites(): Flow<List<Favorite>>
+    suspend fun getFavorites(): List<Favorite>
 
     suspend fun insert(favorite: Favorite)
 
@@ -15,4 +17,6 @@ interface FavoriteRepository {
     suspend fun exists(businessId: String): Boolean
 
     suspend fun single(businessId: String): Favorite
+
+    suspend fun fetch(vararg businessIds: String): Either<ErrorMessage, List<Business>>
 }

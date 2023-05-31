@@ -131,7 +131,8 @@ fun NavigationGraph(
             FavoritesScreen(
                 favoriteViewModel = hiltViewModel(),
                 modifier = modifier,
-                paddingValues = paddingValues
+                paddingValues = paddingValues,
+                navController = navController,
             )
         }
     }
