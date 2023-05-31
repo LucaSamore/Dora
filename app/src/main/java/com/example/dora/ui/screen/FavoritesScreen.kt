@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.dora.model.Business
 import com.example.dora.ui.composable.BusinessCard
@@ -59,8 +60,18 @@ internal fun FavoritesScreen(
             Text(
                 text = errorMessage,
                 color = Color.Red,
-                modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
-                textAlign = TextAlign.Center
+                modifier = modifier.padding(top = 24.dp),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp,
+            )
+        }
+
+        if (businesses.isEmpty()) {
+            Text(
+                text = "No favorites yet",
+                modifier = modifier.padding(top = 24.dp),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp,
             )
         }
 
