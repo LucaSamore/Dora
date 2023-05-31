@@ -3,6 +3,7 @@ package com.example.dora.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
+import arrow.core.right
 import com.example.dora.common.ErrorMessage
 import com.example.dora.database.entity.Favorite
 import com.example.dora.di.IoDispatcher
@@ -34,9 +35,9 @@ constructor(
             val ids = favoriteRepository.getFavorites().map { it.businessId }.toTypedArray()
 
             if (ids.isEmpty()) {
-                listOf<Business>()
+                return@withContext listOf<Business>().right()
             }
 
-            favoriteRepository.fetch(*ids)
+            return@withContext favoriteRepository.fetch(*ids)
         }
 }

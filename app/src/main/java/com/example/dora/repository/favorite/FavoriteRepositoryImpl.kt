@@ -41,6 +41,7 @@ class FavoriteRepositoryImpl(
     @WorkerThread override suspend fun exists(businessId: String) = favoriteDAO.exists(businessId)
 
     @WorkerThread override suspend fun single(businessId: String) = favoriteDAO.single(businessId)
+
     override suspend fun fetch(vararg businessIds: String): Either<ErrorMessage, List<Business>> =
         withContext(ioDispatcher) {
             try {
