@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -42,6 +40,7 @@ internal fun BusinessDetailsScreen(
     var business by remember { mutableStateOf<Business?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
     var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
+    var showFilledStarIcon by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
         scope.launch {
@@ -54,6 +53,8 @@ internal fun BusinessDetailsScreen(
                     },
                     { right -> business = right }
                 )
+
+            showFilledStarIcon = businessDetailsViewModel.isInFavorites(businessId)
         }
     }
 
@@ -100,8 +101,18 @@ internal fun BusinessDetailsScreen(
                 textAlign = TextAlign.Left
             )
 
-            IconButton(onClick = { businessDetailsViewModel.toggleFavorite(businessId) }) {
-                Icon(Icons.Filled.Star, contentDescription = "Toggle favorite")
+            IconToggleButton(
+                checked = showFilledStarIcon,
+                onCheckedChange = {
+                    showFilledStarIcon = !showFilledStarIcon
+                    businessDetailsViewModel.toggleFavorite(businessId)
+                }
+            ) {
+                Icon(
+                    if (showFilledStarIcon) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    contentDescription = "Toggle favorite",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
 
