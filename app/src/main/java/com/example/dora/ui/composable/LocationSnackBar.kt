@@ -12,29 +12,29 @@ import androidx.compose.runtime.MutableState
 
 @Composable
 internal fun SnackBarComposable(
-    snackbarHostState: SnackbarHostState,
-    applicationContext: Context,
-    showSnackBar: MutableState<Boolean>
+  snackbarHostState: SnackbarHostState,
+  applicationContext: Context,
+  showSnackBar: MutableState<Boolean>
 ) {
-    LaunchedEffect(snackbarHostState) {
-        val result =
-            snackbarHostState.showSnackbar(
-                message = "Permission are needed to get your position",
-                actionLabel = "Go to settings"
-            )
-        when (result) {
-            SnackbarResult.ActionPerformed -> {
-                val intent =
-                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        data = Uri.fromParts("package", applicationContext.packageName, null)
-                    }
-                if (intent.resolveActivity(applicationContext.packageManager) != null) {
-                    applicationContext.startActivity(intent)
-                }
-            }
-            SnackbarResult.Dismissed -> {
-                showSnackBar.value = false
-            }
+  LaunchedEffect(snackbarHostState) {
+    val result =
+      snackbarHostState.showSnackbar(
+        message = "Permission are needed to get your position",
+        actionLabel = "Go to settings"
+      )
+    when (result) {
+      SnackbarResult.ActionPerformed -> {
+        val intent =
+          Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", applicationContext.packageName, null)
+          }
+        if (intent.resolveActivity(applicationContext.packageManager) != null) {
+          applicationContext.startActivity(intent)
         }
+      }
+      SnackbarResult.Dismissed -> {
+        showSnackBar.value = false
+      }
     }
+  }
 }

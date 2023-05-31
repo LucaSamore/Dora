@@ -23,41 +23,41 @@ import kotlinx.coroutines.withContext
 class AddBusinessViewModel
 @Inject
 constructor(
-    @FirebaseRepository private val userRepository: UserRepository,
-    @FirebaseRepository private val businessRepository: BusinessRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+  @FirebaseRepository private val userRepository: UserRepository,
+  @FirebaseRepository private val businessRepository: BusinessRepository,
+  @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    suspend fun createBusiness(
-        name: String,
-        description: String?,
-        address: BusinessPlace?,
-        website: String?,
-        phoneNumber: String?,
-        category: Category,
-        isOpen: Boolean,
-        images: List<Uri>,
-    ): Either<ErrorMessage, SuccessMessage> =
-        when (val user = userRepository.getUser()) {
-            is Either.Left -> user.value.left()
-            is Either.Right -> {
-                val business =
-                    Business(
-                        uuid = UUID.randomUUID().toString(),
-                        name = name,
-                        owner = user.value,
-                        description = description,
-                        address = address,
-                        website = website,
-                        phoneNumber = phoneNumber,
-                        category = category,
-                        isOpen = isOpen,
-                        images = images.map { it.toString() }
-                    )
-                storeBusiness(business)
-            }
-        }
+  suspend fun createBusiness(
+    name: String,
+    description: String?,
+    address: BusinessPlace?,
+    website: String?,
+    phoneNumber: String?,
+    category: Category,
+    isOpen: Boolean,
+    images: List<Uri>,
+  ): Either<ErrorMessage, SuccessMessage> =
+    when (val user = userRepository.getUser()) {
+      is Either.Left -> user.value.left()
+      is Either.Right -> {
+        val business =
+          Business(
+            uuid = UUID.randomUUID().toString(),
+            name = name,
+            owner = user.value,
+            description = description,
+            address = address,
+            website = website,
+            phoneNumber = phoneNumber,
+            category = category,
+            isOpen = isOpen,
+            images = images.map { it.toString() }
+          )
+        storeBusiness(business)
+      }
+    }
 
-    private suspend fun storeBusiness(business: Business) =
-        withContext(ioDispatcher) { businessRepository.storeBusiness(business) }
+  private suspend fun storeBusiness(business: Business) =
+    withContext(ioDispatcher) { businessRepository.storeBusiness(business) }
 }

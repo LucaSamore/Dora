@@ -17,19 +17,19 @@ import com.example.dora.R
 
 @Composable
 internal fun ProfilePicture(image: Any? = null, context: Context, defaultAvatar: Boolean = true) {
-    val avatar = ResourcesCompat.getDrawable(context.resources, R.drawable.default_avatar, null)
+  val avatar = ResourcesCompat.getDrawable(context.resources, R.drawable.default_avatar, null)
 
-    AsyncImage(
-        model =
-            ImageRequest.Builder(context)
-                .data(if (defaultAvatar) avatar else image)
-                .crossfade(true)
-                .build(),
-        contentDescription = "Profile picture",
-        modifier =
-            Modifier.size(128.dp, 128.dp)
-                .clip(RoundedCornerShape(100))
-                .border(2.dp, MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(100)),
-        contentScale = ContentScale.Crop,
-    )
+  AsyncImage(
+    model =
+      ImageRequest.Builder(context)
+        .data(if (defaultAvatar) avatar else image)
+        .crossfade(true)
+        .build(),
+    contentDescription = "Profile picture",
+    modifier =
+      Modifier.size(128.dp, 128.dp)
+        .clip(RoundedCornerShape(100))
+        .border(2.dp, MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(100)),
+    contentScale = ContentScale.Crop,
+  )
 }

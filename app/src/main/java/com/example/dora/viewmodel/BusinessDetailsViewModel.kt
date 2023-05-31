@@ -23,34 +23,30 @@ import kotlinx.coroutines.withContext
 class BusinessDetailsViewModel
 @Inject
 constructor(
-    @FirebaseRepository private val businessRepository: BusinessRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val favoriteRepository: FavoriteRepository,
-    private val userDatastore: UserDatastore,
+  @FirebaseRepository private val businessRepository: BusinessRepository,
+  @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+  private val favoriteRepository: FavoriteRepository,
+  private val userDatastore: UserDatastore,
 ) : ViewModel() {
-    suspend fun getBusiness(businessId: String): Either<ErrorMessage, Business> =
-        withContext(viewModelScope.coroutineContext + ioDispatcher) {
-            businessRepository.getBusinessById(businessId)
-        }
+  suspend fun getBusiness(businessId: String): Either<ErrorMessage, Business> =
+    withContext(viewModelScope.coroutineContext + ioDispatcher) {
+      businessRepository.getBusinessById(businessId)
+    }
 
-    suspend fun isInFavorites(businessId: String): Boolean =
-        withContext(viewModelScope.coroutineContext + ioDispatcher) {
-            favoriteRepository.exists(businessId)
-        }
+  suspend fun isInFavorites(businessId: String): Boolean =
+    withContext(viewModelScope.coroutineContext + ioDispatcher) {
+      favoriteRepository.exists(businessId)
+    }
 
-    fun toggleFavorite(businessId: String) =
-        viewModelScope.launch {
-            val userId = userDatastore.userId.first() ?: ""
-            if (favoriteRepository.exists(businessId)) {
-                favoriteRepository.delete(favoriteRepository.single(businessId))
-            } else {
-                favoriteRepository.insert(
-                    Favorite(
-                        uuid = UUID.randomUUID().toString(),
-                        businessId = businessId,
-                        userId = userId
-                    )
-                )
-            }
-        }
+  fun toggleFavorite(businessId: String) =
+    viewModelScope.launch {
+      val userId = userDatastore.userId.first() ?: ""
+      if (favoriteRepository.exists(businessId)) {
+        favoriteRepository.delete(favoriteRepository.single(businessId))
+      } else {
+        favoriteRepository.insert(
+          Favorite(uuid = UUID.randomUUID().toString(), businessId = businessId, userId = userId)
+        )
+      }
+    }
 }

@@ -14,42 +14,39 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun DeleteAccountAlertDialog(
-    settingsViewModel: SettingsViewModel,
-    onDismiss: () -> Unit,
-    onAccountDeleted: () -> Unit,
+  settingsViewModel: SettingsViewModel,
+  onDismiss: () -> Unit,
+  onAccountDeleted: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var errorMessage by rememberSaveable { mutableStateOf("") }
-    var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
+  val context = LocalContext.current
+  val scope = rememberCoroutineScope()
+  var errorMessage by rememberSaveable { mutableStateOf("") }
+  var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
 
-    AlertDialog(
-        onDismissRequest = { onDismiss() },
-        title = { Text(text = "Delete account") },
-        text = {
-            Text(text = if (!errorMessageHidden) errorMessage else "Are you sure about that?")
-        },
-        dismissButton = { TextButton(onClick = { onDismiss() }) { Text(text = "Cancel") } },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    scope.launch {
-                        when (val result = settingsViewModel.deleteAccount()) {
-                            is Either.Left -> {
-                                errorMessage = result.value.message
-                                errorMessageHidden = false
-                            }
-                            is Either.Right -> {
-                                onAccountDeleted()
-                                Toast.makeText(context, result.value.message, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        }
-                    }
-                }
-            ) {
-                Text(text = "Delete", color = Color.Red)
+  AlertDialog(
+    onDismissRequest = { onDismiss() },
+    title = { Text(text = "Delete account") },
+    text = { Text(text = if (!errorMessageHidden) errorMessage else "Are you sure about that?") },
+    dismissButton = { TextButton(onClick = { onDismiss() }) { Text(text = "Cancel") } },
+    confirmButton = {
+      TextButton(
+        onClick = {
+          scope.launch {
+            when (val result = settingsViewModel.deleteAccount()) {
+              is Either.Left -> {
+                errorMessage = result.value.message
+                errorMessageHidden = false
+              }
+              is Either.Right -> {
+                onAccountDeleted()
+                Toast.makeText(context, result.value.message, Toast.LENGTH_SHORT).show()
+              }
             }
+          }
         }
-    )
+      ) {
+        Text(text = "Delete", color = Color.Red)
+      }
+    }
+  )
 }

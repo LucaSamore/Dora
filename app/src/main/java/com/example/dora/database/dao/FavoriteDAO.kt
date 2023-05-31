@@ -5,17 +5,17 @@ import com.example.dora.database.entity.Favorite
 
 @Dao
 interface FavoriteDAO {
-    @Query("SELECT * FROM favorites") suspend fun getFavorites(): List<Favorite>
+  @Query("SELECT * FROM favorites") suspend fun getFavorites(): List<Favorite>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE) suspend fun insert(favorite: Favorite)
+  @Insert(onConflict = OnConflictStrategy.IGNORE) suspend fun insert(favorite: Favorite)
 
-    @Delete suspend fun delete(favorite: Favorite)
+  @Delete suspend fun delete(favorite: Favorite)
 
-    @Query("DELETE FROM favorites") suspend fun deleteAll()
+  @Query("DELETE FROM favorites") suspend fun deleteAll()
 
-    @Query("SELECT EXISTS (SELECT * FROM favorites WHERE businessId = :businessId)")
-    suspend fun exists(businessId: String): Boolean
+  @Query("SELECT EXISTS (SELECT * FROM favorites WHERE businessId = :businessId)")
+  suspend fun exists(businessId: String): Boolean
 
-    @Query("SELECT * FROM favorites WHERE businessId = :businessId")
-    suspend fun single(businessId: String): Favorite
+  @Query("SELECT * FROM favorites WHERE businessId = :businessId")
+  suspend fun single(businessId: String): Favorite
 }

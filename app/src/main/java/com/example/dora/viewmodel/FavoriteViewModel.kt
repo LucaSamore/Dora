@@ -19,25 +19,24 @@ import kotlinx.coroutines.withContext
 class FavoriteViewModel
 @Inject
 constructor(
-    private val favoriteRepository: FavoriteRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+  private val favoriteRepository: FavoriteRepository,
+  @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    fun add(favorite: Favorite) = viewModelScope.launch { favoriteRepository.insert(favorite) }
+  fun add(favorite: Favorite) = viewModelScope.launch { favoriteRepository.insert(favorite) }
 
-    fun deleteOne(favorite: Favorite) =
-        viewModelScope.launch { favoriteRepository.delete(favorite) }
+  fun deleteOne(favorite: Favorite) = viewModelScope.launch { favoriteRepository.delete(favorite) }
 
-    fun deleteAll() = viewModelScope.launch { favoriteRepository.deleteAll() }
+  fun deleteAll() = viewModelScope.launch { favoriteRepository.deleteAll() }
 
-    suspend fun getBusinesses(): Either<ErrorMessage, List<Business>> =
-        withContext(viewModelScope.coroutineContext + ioDispatcher) {
-            val ids = favoriteRepository.getFavorites().map { it.businessId }.toTypedArray()
+  suspend fun getBusinesses(): Either<ErrorMessage, List<Business>> =
+    withContext(viewModelScope.coroutineContext + ioDispatcher) {
+      val ids = favoriteRepository.getFavorites().map { it.businessId }.toTypedArray()
 
-            if (ids.isEmpty()) {
-                return@withContext listOf<Business>().right()
-            }
+      if (ids.isEmpty()) {
+        return@withContext listOf<Business>().right()
+      }
 
-            return@withContext favoriteRepository.fetch(*ids)
-        }
+      return@withContext favoriteRepository.fetch(*ids)
+    }
 }

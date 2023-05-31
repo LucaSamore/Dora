@@ -19,21 +19,21 @@ import kotlinx.coroutines.withContext
 class SettingsViewModel
 @Inject
 constructor(
-    @FirebaseRepository private val authenticationRepository: AuthenticationRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val settingsDatastore: SettingsDatastore,
+  @FirebaseRepository private val authenticationRepository: AuthenticationRepository,
+  @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+  private val settingsDatastore: SettingsDatastore,
 ) : ViewModel() {
 
-    val theme = settingsDatastore.theme
+  val theme = settingsDatastore.theme
 
-    fun saveTheme(theme: String) {
-        viewModelScope.launch { settingsDatastore.saveThemeToDataStore(theme) }
+  fun saveTheme(theme: String) {
+    viewModelScope.launch { settingsDatastore.saveThemeToDataStore(theme) }
+  }
+
+  fun signOut() = viewModelScope.launch { authenticationRepository.signOut() }
+
+  suspend fun deleteAccount(): Either<ErrorMessage, SuccessMessage> =
+    withContext(viewModelScope.coroutineContext + ioDispatcher) {
+      authenticationRepository.deleteUser()
     }
-
-    fun signOut() = viewModelScope.launch { authenticationRepository.signOut() }
-
-    suspend fun deleteAccount(): Either<ErrorMessage, SuccessMessage> =
-        withContext(viewModelScope.coroutineContext + ioDispatcher) {
-            authenticationRepository.deleteUser()
-        }
 }

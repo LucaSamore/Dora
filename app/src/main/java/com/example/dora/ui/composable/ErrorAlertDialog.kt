@@ -7,10 +7,10 @@ import androidx.compose.runtime.Composable
 
 @Composable
 internal fun ErrorAlertDialog(title: String, content: String, onError: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = { onError() },
-        title = { Text(text = title) },
-        text = { Text(text = content) },
-        confirmButton = { TextButton(onClick = { onError() }) { Text("Got it") } }
-    )
+  AlertDialog(
+    onDismissRequest = { onError() },
+    title = { Text(text = title) },
+    text = { Text(text = content) },
+    confirmButton = { TextButton(onClick = { onError() }) { Text("Got it") } }
+  )
 }

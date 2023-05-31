@@ -34,179 +34,177 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
-    homeViewModel: HomeViewModel,
-    modifier: Modifier,
-    paddingValues: PaddingValues,
-    location: MutableState<Location>,
-    startLocationUpdates: () -> Unit,
-    navController: NavHostController,
+  homeViewModel: HomeViewModel,
+  modifier: Modifier,
+  paddingValues: PaddingValues,
+  location: MutableState<Location>,
+  startLocationUpdates: () -> Unit,
+  navController: NavHostController,
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var businesses = remember { mutableStateListOf<Business>() }
-    var toShow = remember { mutableStateListOf<Business>() }
-    var categoryFilters = remember { mutableStateListOf<Category>() }
-    var searchContent by rememberSaveable { mutableStateOf("") }
-    var searchBarActive by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
-    var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
+  val context = LocalContext.current
+  val scope = rememberCoroutineScope()
+  var businesses = remember { mutableStateListOf<Business>() }
+  var toShow = remember { mutableStateListOf<Business>() }
+  var categoryFilters = remember { mutableStateListOf<Category>() }
+  var searchContent by rememberSaveable { mutableStateOf("") }
+  var searchBarActive by rememberSaveable { mutableStateOf(false) }
+  var errorMessage by rememberSaveable { mutableStateOf("") }
+  var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
 
-    startLocationUpdates()
-    homeViewModel.updateLocation(location.value)
+  startLocationUpdates()
+  homeViewModel.updateLocation(location.value)
 
-    LaunchedEffect(key1 = Unit) {
-        scope.launch {
-            if (!location.value.isNotSet()) {
-                homeViewModel
-                    .getBusinessesClosedToMe(location.value)
-                    .fold(
-                        { left ->
-                            errorMessage = left.message
-                            errorMessageHidden = false
-                        },
-                        { right ->
-                            businesses.apply {
-                                clear()
-                                addAll(right)
-                            }
-                            toShow.apply {
-                                clear()
-                                addAll(right)
-                            }
-                        }
-                    )
-            } else {
-                homeViewModel
-                    .getBusinessesDefault()
-                    .fold(
-                        { left ->
-                            errorMessage = left.message
-                            errorMessageHidden = false
-                        },
-                        { right ->
-                            businesses.apply {
-                                clear()
-                                addAll(right)
-                            }
-                            toShow.apply {
-                                clear()
-                                addAll(right)
-                            }
-                        }
-                    )
+  LaunchedEffect(key1 = Unit) {
+    scope.launch {
+      if (!location.value.isNotSet()) {
+        homeViewModel
+          .getBusinessesClosedToMe(location.value)
+          .fold(
+            { left ->
+              errorMessage = left.message
+              errorMessageHidden = false
+            },
+            { right ->
+              businesses.apply {
+                clear()
+                addAll(right)
+              }
+              toShow.apply {
+                clear()
+                addAll(right)
+              }
             }
+          )
+      } else {
+        homeViewModel
+          .getBusinessesDefault()
+          .fold(
+            { left ->
+              errorMessage = left.message
+              errorMessageHidden = false
+            },
+            { right ->
+              businesses.apply {
+                clear()
+                addAll(right)
+              }
+              toShow.apply {
+                clear()
+                addAll(right)
+              }
+            }
+          )
+      }
+    }
+  }
+
+  Column(
+    modifier = modifier.fillMaxSize().padding(paddingValues),
+    verticalArrangement = Arrangement.Top,
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    Box(modifier = modifier.semantics { isContainer = true }.zIndex(1f).fillMaxWidth()) {
+      SearchBar(
+        modifier = modifier.fillMaxWidth().padding(12.dp),
+        query = searchContent,
+        onQueryChange = { searchContent = it },
+        onSearch = { searchBarActive = false },
+        active = searchBarActive,
+        onActiveChange = { searchBarActive = it },
+        placeholder = { Text(text = "Search") },
+        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search business") },
+      ) {
+        LazyColumn(
+          modifier = Modifier.fillMaxWidth(),
+          contentPadding = PaddingValues(16.dp),
+          verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+          items(4) { idx ->
+            val resultText = "Suggestion $idx"
+            ListItem(
+              headlineContent = { Text(resultText) },
+              supportingContent = { Text("Additional info") },
+              leadingContent = { Icon(Icons.Filled.Star, contentDescription = null) },
+              modifier =
+                modifier.clickable {
+                  searchContent = resultText
+                  searchBarActive = false
+                }
+            )
+          }
         }
+      }
     }
 
     Column(
-        modifier = modifier.fillMaxSize().padding(paddingValues),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+      modifier = modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondary),
+      verticalArrangement = Arrangement.SpaceAround,
+      horizontalAlignment = Alignment.Start
     ) {
-        Box(modifier = modifier.semantics { isContainer = true }.zIndex(1f).fillMaxWidth()) {
-            SearchBar(
-                modifier = modifier.fillMaxWidth().padding(12.dp),
-                query = searchContent,
-                onQueryChange = { searchContent = it },
-                onSearch = { searchBarActive = false },
-                active = searchBarActive,
-                onActiveChange = { searchBarActive = it },
-                placeholder = { Text(text = "Search") },
-                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search business") },
-            ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    items(4) { idx ->
-                        val resultText = "Suggestion $idx"
-                        ListItem(
-                            headlineContent = { Text(resultText) },
-                            supportingContent = { Text("Additional info") },
-                            leadingContent = { Icon(Icons.Filled.Star, contentDescription = null) },
-                            modifier =
-                                modifier.clickable {
-                                    searchContent = resultText
-                                    searchBarActive = false
-                                }
-                        )
-                    }
-                }
-            }
+      Text(
+        text = "Categories",
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Bold,
+        modifier = modifier.padding(12.dp)
+      )
+
+      Spacer(modifier = modifier.size(6.dp))
+
+      LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
+        items(Category.values()) { category ->
+          FilterChip(
+            label = { Text(text = category.categoryName) },
+            selected = categoryFilters.contains(category),
+            enabled = true,
+            onClick = {
+              if (categoryFilters.contains(category)) {
+                categoryFilters.remove(category)
+              } else {
+                categoryFilters.add(category)
+              }
+
+              if (categoryFilters.isEmpty()) {
+                toShow.addAll(businesses)
+                return@FilterChip
+              }
+
+              toShow.apply {
+                clear()
+                addAll(businesses.filter { b -> categoryFilters.contains(b.category) })
+              }
+            },
+            colors =
+              FilterChipDefaults.filterChipColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                selectedContainerColor = MaterialTheme.colorScheme.primary
+              ),
+            modifier = modifier.padding(horizontal = 12.dp)
+          )
         }
-
-        Column(
-            modifier = modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondary),
-            verticalArrangement = Arrangement.SpaceAround,
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = "Categories",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = modifier.padding(12.dp)
-            )
-
-            Spacer(modifier = modifier.size(6.dp))
-
-            LazyRow(modifier = modifier.padding(bottom = 12.dp)) {
-                items(Category.values()) { category ->
-                    FilterChip(
-                        label = { Text(text = category.categoryName) },
-                        selected = categoryFilters.contains(category),
-                        enabled = true,
-                        onClick = {
-                            if (categoryFilters.contains(category)) {
-                                categoryFilters.remove(category)
-                            } else {
-                                categoryFilters.add(category)
-                            }
-
-                            if (categoryFilters.isEmpty()) {
-                                toShow.addAll(businesses)
-                                return@FilterChip
-                            }
-
-                            toShow.apply {
-                                clear()
-                                addAll(
-                                    businesses.filter { b -> categoryFilters.contains(b.category) }
-                                )
-                            }
-                        },
-                        colors =
-                            FilterChipDefaults.filterChipColors(
-                                containerColor = MaterialTheme.colorScheme.background,
-                                selectedContainerColor = MaterialTheme.colorScheme.primary
-                            ),
-                        modifier = modifier.padding(horizontal = 12.dp)
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = modifier.size(12.dp))
-
-        if (!errorMessageHidden) {
-            Text(
-                text = errorMessage,
-                color = Color.Red,
-                modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
-                textAlign = TextAlign.Center
-            )
-        }
-
-        Spacer(modifier = modifier.size(12.dp))
-
-        LazyColumn {
-            items(toShow) { business -> BusinessCard(business, context, modifier, navController) }
-        }
+      }
     }
+
+    Spacer(modifier = modifier.size(12.dp))
+
+    if (!errorMessageHidden) {
+      Text(
+        text = errorMessage,
+        color = Color.Red,
+        modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
+        textAlign = TextAlign.Center
+      )
+    }
+
+    Spacer(modifier = modifier.size(12.dp))
+
+    LazyColumn {
+      items(toShow) { business -> BusinessCard(business, context, modifier, navController) }
+    }
+  }
 }
 
 @Preview(showBackground = true)
 @Composable
 internal fun HomeScreenPreview() {
-    // HomeScreen()
+  // HomeScreen()
 }

@@ -23,107 +23,102 @@ import com.example.dora.viewmodel.SettingsViewModel
 
 @Composable
 internal fun SettingsScreen(
-    settingsViewModel: SettingsViewModel,
-    paddingValues: PaddingValues,
-    modifier: Modifier,
-    onSignOut: () -> Unit,
-    onDismiss: () -> Unit,
-    onAccountDeleted: () -> Unit,
-    onMyBusinessesClicked: () -> Unit,
+  settingsViewModel: SettingsViewModel,
+  paddingValues: PaddingValues,
+  modifier: Modifier,
+  onSignOut: () -> Unit,
+  onDismiss: () -> Unit,
+  onAccountDeleted: () -> Unit,
+  onMyBusinessesClicked: () -> Unit,
 ) {
-    Column(
-        modifier =
-            modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
+  Column(
+    modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
+    verticalArrangement = Arrangement.Top,
+    horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
+    val context = LocalContext.current
+    val theme by settingsViewModel.theme.collectAsState(initial = "")
+    var showDeleteAccountDialog by rememberSaveable { mutableStateOf(false) }
+
+    Row(
+      modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically,
     ) {
-        val context = LocalContext.current
-        val theme by settingsViewModel.theme.collectAsState(initial = "")
-        var showDeleteAccountDialog by rememberSaveable { mutableStateOf(false) }
-
-        Row(
-            modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = "Dark theme",
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            Switch(
-                modifier = Modifier.semantics { contentDescription = "Dark mode" },
-                checked = theme == context.getString(R.string.dark_theme),
-                onCheckedChange = {
-                    if (theme == context.getString(R.string.dark_theme)) {
-                        settingsViewModel.saveTheme(context.getString(R.string.light_theme))
-                    } else {
-                        settingsViewModel.saveTheme(context.getString(R.string.dark_theme))
-                    }
-                }
-            )
+      Text(
+        text = "Dark theme",
+        style = MaterialTheme.typography.bodyLarge,
+      )
+      Switch(
+        modifier = Modifier.semantics { contentDescription = "Dark mode" },
+        checked = theme == context.getString(R.string.dark_theme),
+        onCheckedChange = {
+          if (theme == context.getString(R.string.dark_theme)) {
+            settingsViewModel.saveTheme(context.getString(R.string.light_theme))
+          } else {
+            settingsViewModel.saveTheme(context.getString(R.string.dark_theme))
+          }
         }
-
-        Divider()
-
-        ListItem(
-            modifier = modifier.clickable { onMyBusinessesClicked() },
-            headlineContent = {
-                Text(
-                    text = "My businesses",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            },
-            trailingContent = {
-                Icon(Icons.Filled.ArrowForward, contentDescription = "My businesses")
-            }
-        )
-
-        Divider()
-
-        ListItem(
-            modifier = modifier.clickable { showDeleteAccountDialog = true },
-            headlineContent = {
-                Text(
-                    text = "Delete my account",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            },
-            trailingContent = {
-                Icon(Icons.Filled.ArrowForward, contentDescription = "Delete account")
-            }
-        )
-
-        Divider()
-
-        ListItem(
-            modifier =
-                modifier.clickable {
-                    settingsViewModel.signOut()
-                    onSignOut()
-                },
-            headlineContent = {
-                Text(
-                    text = "Sign out",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            },
-            trailingContent = { Icon(Icons.Filled.ArrowForward, contentDescription = "Sign out") }
-        )
-
-        Divider()
-
-        if (showDeleteAccountDialog) {
-            DeleteAccountAlertDialog(
-                settingsViewModel = settingsViewModel,
-                onDismiss = onDismiss,
-                onAccountDeleted = onAccountDeleted,
-            )
-        }
+      )
     }
+
+    Divider()
+
+    ListItem(
+      modifier = modifier.clickable { onMyBusinessesClicked() },
+      headlineContent = {
+        Text(
+          text = "My businesses",
+          style = MaterialTheme.typography.bodyLarge,
+        )
+      },
+      trailingContent = { Icon(Icons.Filled.ArrowForward, contentDescription = "My businesses") }
+    )
+
+    Divider()
+
+    ListItem(
+      modifier = modifier.clickable { showDeleteAccountDialog = true },
+      headlineContent = {
+        Text(
+          text = "Delete my account",
+          style = MaterialTheme.typography.bodyLarge,
+        )
+      },
+      trailingContent = { Icon(Icons.Filled.ArrowForward, contentDescription = "Delete account") }
+    )
+
+    Divider()
+
+    ListItem(
+      modifier =
+        modifier.clickable {
+          settingsViewModel.signOut()
+          onSignOut()
+        },
+      headlineContent = {
+        Text(
+          text = "Sign out",
+          style = MaterialTheme.typography.bodyLarge,
+        )
+      },
+      trailingContent = { Icon(Icons.Filled.ArrowForward, contentDescription = "Sign out") }
+    )
+
+    Divider()
+
+    if (showDeleteAccountDialog) {
+      DeleteAccountAlertDialog(
+        settingsViewModel = settingsViewModel,
+        onDismiss = onDismiss,
+        onAccountDeleted = onAccountDeleted,
+      )
+    }
+  }
 }
 
 @Preview(showBackground = true)
 @Composable
 internal fun SettingsScreenPreview() {
-    // SettingsScreen(modifier = Modifier)
+  // SettingsScreen(modifier = Modifier)
 }

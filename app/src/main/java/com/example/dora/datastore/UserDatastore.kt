@@ -14,25 +14,25 @@ import kotlinx.coroutines.flow.map
 
 class UserDatastore(private val context: Context) {
 
-    val userId: Flow<String?> =
-        context.datastore.data
-            .catch {
-                if (it is IOException) {
-                    it.printStackTrace()
-                    emit(emptyPreferences())
-                } else {
-                    throw it
-                }
-            }
-            .map { preferences -> preferences[USER_ID] }
+  val userId: Flow<String?> =
+    context.datastore.data
+      .catch {
+        if (it is IOException) {
+          it.printStackTrace()
+          emit(emptyPreferences())
+        } else {
+          throw it
+        }
+      }
+      .map { preferences -> preferences[USER_ID] }
 
-    suspend fun saveUserIdToDataStore(userId: String) {
-        context.datastore.edit { preferences -> preferences[USER_ID] = userId }
-    }
+  suspend fun saveUserIdToDataStore(userId: String) {
+    context.datastore.edit { preferences -> preferences[USER_ID] = userId }
+  }
 
-    companion object {
-        private val Context.datastore: DataStore<Preferences> by
-            preferencesDataStore(name = "users_preferences")
-        private val USER_ID = stringPreferencesKey(name = "user_id")
-    }
+  companion object {
+    private val Context.datastore: DataStore<Preferences> by
+      preferencesDataStore(name = "users_preferences")
+    private val USER_ID = stringPreferencesKey(name = "user_id")
+  }
 }

@@ -8,20 +8,18 @@ import com.example.dora.common.SuccessMessage
 import com.example.dora.model.User
 
 interface UserRepository {
-    suspend fun getUser(): Either<ErrorMessage, User>
+  suspend fun getUser(): Either<ErrorMessage, User>
 
-    suspend fun updateUser(user: User): Either<ErrorMessage, SuccessMessage>
+  suspend fun updateUser(user: User): Either<ErrorMessage, SuccessMessage>
 
-    suspend fun updateAuthEmailAddress(
-        newEmailAddress: String
-    ): Either<ErrorMessage, SuccessMessage>
+  suspend fun updateAuthEmailAddress(newEmailAddress: String): Either<ErrorMessage, SuccessMessage>
 
-    suspend fun updateAuthPassword(newPlainPassword: String): Either<ErrorMessage, SuccessMessage>
+  suspend fun updateAuthPassword(newPlainPassword: String): Either<ErrorMessage, SuccessMessage>
 
-    suspend fun updateLocation(location: Location): Either<ErrorMessage, SuccessMessage>
+  suspend fun updateLocation(location: Location): Either<ErrorMessage, SuccessMessage>
 
-    suspend fun updateProfilePicture(
-        userId: String,
-        profilePictureUri: Uri
-    ): Either<ErrorMessage, Uri>
+  suspend fun updateProfilePicture(
+    userId: String,
+    profilePictureUri: Uri
+  ): Either<ErrorMessage, Uri>
 }

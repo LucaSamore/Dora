@@ -11,38 +11,38 @@ import com.example.dora.R
 val boris = FontFamily(Font(R.font.boris))
 
 val quicksand =
-    FontFamily(
-        Font(R.font.quicksand_bold, FontWeight.Bold),
-        Font(R.font.quicksand_light, FontWeight.Light),
-        Font(R.font.quicksand_medium, FontWeight.Medium),
-        Font(R.font.quicksand_regular, FontWeight.Normal),
-        Font(R.font.quicksand_semibold, FontWeight.SemiBold),
-    )
+  FontFamily(
+    Font(R.font.quicksand_bold, FontWeight.Bold),
+    Font(R.font.quicksand_light, FontWeight.Light),
+    Font(R.font.quicksand_medium, FontWeight.Medium),
+    Font(R.font.quicksand_regular, FontWeight.Normal),
+    Font(R.font.quicksand_semibold, FontWeight.SemiBold),
+  )
 
 val Typography =
-    Typography(
-        bodyLarge =
-            TextStyle(
-                fontFamily = quicksand,
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-                letterSpacing = 0.5.sp
-            ),
-        titleLarge =
-            TextStyle(
-                fontFamily = quicksand,
-                fontWeight = FontWeight.Normal,
-                fontSize = 22.sp,
-                lineHeight = 28.sp,
-                letterSpacing = 0.sp
-            ),
-        labelSmall =
-            TextStyle(
-                fontFamily = quicksand,
-                fontWeight = FontWeight.Medium,
-                fontSize = 11.sp,
-                lineHeight = 16.sp,
-                letterSpacing = 0.5.sp
-            )
-    )
+  Typography(
+    bodyLarge =
+      TextStyle(
+        fontFamily = quicksand,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+      ),
+    titleLarge =
+      TextStyle(
+        fontFamily = quicksand,
+        fontWeight = FontWeight.Normal,
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp
+      ),
+    labelSmall =
+      TextStyle(
+        fontFamily = quicksand,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
+      )
+  )

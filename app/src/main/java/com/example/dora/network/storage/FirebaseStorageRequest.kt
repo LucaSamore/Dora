@@ -3,10 +3,10 @@ package com.example.dora.network.storage
 import android.net.Uri
 
 data class FirebaseStorageRequest(
-    val fileUri: Uri = Uri.EMPTY,
-    val reference: String,
+  val fileUri: Uri = Uri.EMPTY,
+  val reference: String,
 ) {
-    fun fullReference(): String = "$reference/${fileUri.lastPathSegment}"
+  fun fullReference(): String = "$reference/${fileUri.lastPathSegment}"
 }
 
 /*

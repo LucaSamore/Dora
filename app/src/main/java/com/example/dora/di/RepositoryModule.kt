@@ -26,68 +26,68 @@ import kotlinx.coroutines.CoroutineDispatcher
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
-    @FirebaseRepository
-    @Singleton
-    @Provides
-    fun providesAuthenticationRepository(
-        firebaseAuthAPI: FirebaseAuthAPI,
-        firestoreAPI: FirestoreAPI,
-        firebaseStorageAPI: FirebaseStorageAPI,
-        @IoDispatcher ioDispatcher: CoroutineDispatcher,
-        userDatastore: UserDatastore
-    ): AuthenticationRepository =
-        FirebaseAuthRepository(
-            firebaseAuthAPI = firebaseAuthAPI,
-            firestoreAPI = firestoreAPI,
-            firebaseStorageAPI = firebaseStorageAPI,
-            ioDispatcher = ioDispatcher,
-            userDatastore = userDatastore
-        )
+  @FirebaseRepository
+  @Singleton
+  @Provides
+  fun providesAuthenticationRepository(
+    firebaseAuthAPI: FirebaseAuthAPI,
+    firestoreAPI: FirestoreAPI,
+    firebaseStorageAPI: FirebaseStorageAPI,
+    @IoDispatcher ioDispatcher: CoroutineDispatcher,
+    userDatastore: UserDatastore
+  ): AuthenticationRepository =
+    FirebaseAuthRepository(
+      firebaseAuthAPI = firebaseAuthAPI,
+      firestoreAPI = firestoreAPI,
+      firebaseStorageAPI = firebaseStorageAPI,
+      ioDispatcher = ioDispatcher,
+      userDatastore = userDatastore
+    )
 
-    @FirebaseRepository
-    @Singleton
-    @Provides
-    fun providesUserRepository(
-        firebaseAuthAPI: FirebaseAuthAPI,
-        firestoreAPI: FirestoreAPI,
-        firebaseStorageAPI: FirebaseStorageAPI,
-        @IoDispatcher ioDispatcher: CoroutineDispatcher,
-        userDatastore: UserDatastore,
-    ): UserRepository =
-        UserRepositoryImpl(
-            firebaseAuthAPI = firebaseAuthAPI,
-            firestoreAPI = firestoreAPI,
-            firebaseStorageAPI = firebaseStorageAPI,
-            ioDispatcher = ioDispatcher,
-            userDatastore = userDatastore
-        )
+  @FirebaseRepository
+  @Singleton
+  @Provides
+  fun providesUserRepository(
+    firebaseAuthAPI: FirebaseAuthAPI,
+    firestoreAPI: FirestoreAPI,
+    firebaseStorageAPI: FirebaseStorageAPI,
+    @IoDispatcher ioDispatcher: CoroutineDispatcher,
+    userDatastore: UserDatastore,
+  ): UserRepository =
+    UserRepositoryImpl(
+      firebaseAuthAPI = firebaseAuthAPI,
+      firestoreAPI = firestoreAPI,
+      firebaseStorageAPI = firebaseStorageAPI,
+      ioDispatcher = ioDispatcher,
+      userDatastore = userDatastore
+    )
 
-    @FirebaseRepository
-    @Singleton
-    @Provides
-    fun providesBusinessRepository(
-        firestoreAPI: FirestoreAPI,
-        firebaseStorageAPI: FirebaseStorageAPI,
-        @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): BusinessRepository =
-        BusinessRepositoryImpl(
-            firestoreAPI = firestoreAPI,
-            firebaseStorageAPI = firebaseStorageAPI,
-            ioDispatcher = ioDispatcher,
-        )
+  @FirebaseRepository
+  @Singleton
+  @Provides
+  fun providesBusinessRepository(
+    firestoreAPI: FirestoreAPI,
+    firebaseStorageAPI: FirebaseStorageAPI,
+    @IoDispatcher ioDispatcher: CoroutineDispatcher,
+  ): BusinessRepository =
+    BusinessRepositoryImpl(
+      firestoreAPI = firestoreAPI,
+      firebaseStorageAPI = firebaseStorageAPI,
+      ioDispatcher = ioDispatcher,
+    )
 
-    @Singleton
-    @Provides
-    fun providesFavoriteRepository(
-        @ApplicationContext context: Context,
-        firestoreAPI: FirestoreAPI,
-        @IoDispatcher ioDispatcher: CoroutineDispatcher,
-    ): FavoriteRepository =
-        FavoriteRepositoryImpl(
-            favoriteDAO = (context.applicationContext as DoraApp).database.favoriteDAO(),
-            firestoreAPI = firestoreAPI,
-            ioDispatcher = ioDispatcher
-        )
+  @Singleton
+  @Provides
+  fun providesFavoriteRepository(
+    @ApplicationContext context: Context,
+    firestoreAPI: FirestoreAPI,
+    @IoDispatcher ioDispatcher: CoroutineDispatcher,
+  ): FavoriteRepository =
+    FavoriteRepositoryImpl(
+      favoriteDAO = (context.applicationContext as DoraApp).database.favoriteDAO(),
+      firestoreAPI = firestoreAPI,
+      ioDispatcher = ioDispatcher
+    )
 }
 
 @Retention(AnnotationRetention.BINARY) @Qualifier annotation class FirebaseRepository

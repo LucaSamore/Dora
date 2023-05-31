@@ -5,9 +5,9 @@ import arrow.core.left
 import arrow.core.right
 
 data class NetworkResponse<O, E : Throwable>(val data: O?, val error: E?) {
-    fun toEither(): Either<E, O?> =
-        when (error) {
-            null -> data.right()
-            else -> error.left()
-        }
+  fun toEither(): Either<E, O?> =
+    when (error) {
+      null -> data.right()
+      else -> error.left()
+    }
 }

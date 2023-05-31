@@ -12,9 +12,9 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object ApiModule {
 
-    @Provides fun providesFirebaseAuthApi() = FirebaseAuthAPI()
+  @Provides fun providesFirebaseAuthApi() = FirebaseAuthAPI()
 
-    @Provides fun providesFirestoreApi() = FirestoreAPI()
+  @Provides fun providesFirestoreApi() = FirestoreAPI()
 
-    @Provides fun providesFirebaseStorageApi() = FirebaseStorageAPI()
+  @Provides fun providesFirebaseStorageApi() = FirebaseStorageAPI()
 }

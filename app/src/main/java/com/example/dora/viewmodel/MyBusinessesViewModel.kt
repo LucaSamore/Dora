@@ -16,13 +16,13 @@ import kotlinx.coroutines.withContext
 class MyBusinessesViewModel
 @Inject
 constructor(
-    @FirebaseRepository private val businessRepository: BusinessRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val userDatastore: UserDatastore,
+  @FirebaseRepository private val businessRepository: BusinessRepository,
+  @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+  private val userDatastore: UserDatastore,
 ) : ViewModel() {
 
-    suspend fun getMyBusinesses() =
-        withContext(viewModelScope.coroutineContext + ioDispatcher) {
-            businessRepository.getBusinessesByUserId(userDatastore.userId.first()!!)
-        }
+  suspend fun getMyBusinesses() =
+    withContext(viewModelScope.coroutineContext + ioDispatcher) {
+      businessRepository.getBusinessesByUserId(userDatastore.userId.first()!!)
+    }
 }

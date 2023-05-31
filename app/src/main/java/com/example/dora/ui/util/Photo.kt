@@ -14,34 +14,34 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun saveImage(contentResolver: ContentResolver, capturedImageUri: Uri) {
-    val bitmap = getBitmap(capturedImageUri, contentResolver)
+  val bitmap = getBitmap(capturedImageUri, contentResolver)
 
-    val values = ContentValues()
-    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-    values.put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_${SystemClock.uptimeMillis()}")
+  val values = ContentValues()
+  values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+  values.put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_${SystemClock.uptimeMillis()}")
 
-    val imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+  val imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 
-    val outputStream = imageUri?.let { contentResolver.openOutputStream(it) }
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-    outputStream?.close()
+  val outputStream = imageUri?.let { contentResolver.openOutputStream(it) }
+  bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+  outputStream?.close()
 }
 
 fun Context.createImageFile(): File {
-    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-    val imageFileName = "JPEG_" + timeStamp + "_"
-    return File.createTempFile(imageFileName, ".jpg", externalCacheDir)
+  val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+  val imageFileName = "JPEG_" + timeStamp + "_"
+  return File.createTempFile(imageFileName, ".jpg", externalCacheDir)
 }
 
 private fun getBitmap(selectedPhotoUri: Uri, contentResolver: ContentResolver): Bitmap {
-    val bitmap =
-        when {
-            Build.VERSION.SDK_INT < 28 ->
-                MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
-            else -> {
-                val source = ImageDecoder.createSource(contentResolver, selectedPhotoUri)
-                ImageDecoder.decodeBitmap(source)
-            }
-        }
-    return bitmap
+  val bitmap =
+    when {
+      Build.VERSION.SDK_INT < 28 ->
+        MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+      else -> {
+        val source = ImageDecoder.createSource(contentResolver, selectedPhotoUri)
+        ImageDecoder.decodeBitmap(source)
+      }
+    }
+  return bitmap
 }

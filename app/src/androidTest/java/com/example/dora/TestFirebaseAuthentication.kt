@@ -17,66 +17,66 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class TestFirebaseAuthentication {
 
-    private lateinit var auth: FirebaseAuth
+  private lateinit var auth: FirebaseAuth
 
-    @Before
-    fun beforeTests() {
-        Firebase.initialize(InstrumentationRegistry.getInstrumentation().targetContext)
-        auth = Firebase.auth
-        auth.useEmulator("10.0.2.2", 9099)
-    }
+  @Before
+  fun beforeTests() {
+    Firebase.initialize(InstrumentationRegistry.getInstrumentation().targetContext)
+    auth = Firebase.auth
+    auth.useEmulator("10.0.2.2", 9099)
+  }
 
-    @Test
-    fun testSignUpWithEmailAndPassword() = runBlocking {
-        auth
-            .createUserWithEmailAndPassword("test@gmail.com", "Test123!")
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.i("register", "Account created successfully")
-                } else {
-                    Log.i("register", "Account creation failed")
-                }
-            }
-            .await()
-        assert(auth.currentUser != null)
-        auth.signOut()
-        assert(auth.currentUser == null)
-    }
-
-    @Test
-    fun testSignInWithEmailAndPassword() = runBlocking {
-        auth
-            .signInWithEmailAndPassword("test@gmail.com", "Test123!")
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.i("login", "Login successful")
-                } else {
-                    Log.i("login", "Login failed")
-                }
-            }
-            .await()
-        assert(auth.currentUser != null)
-    }
-
-    @Test
-    fun testDeleteAccount() = runBlocking {
-        auth.currentUser
-            ?.delete()
-            ?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.i("delete", "Account deleted successfully")
-                } else {
-                    Log.i("delete", "Account deletion failed")
-                }
-            }
-            ?.await()
-        assert(auth.currentUser == null)
-    }
-
-    @After
-    fun afterTests() = runBlocking {
-        if (auth.currentUser != null) {
-            auth.currentUser?.delete()?.await()
+  @Test
+  fun testSignUpWithEmailAndPassword() = runBlocking {
+    auth
+      .createUserWithEmailAndPassword("test@gmail.com", "Test123!")
+      .addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+          Log.i("register", "Account created successfully")
+        } else {
+          Log.i("register", "Account creation failed")
         }
+      }
+      .await()
+    assert(auth.currentUser != null)
+    auth.signOut()
+    assert(auth.currentUser == null)
+  }
+
+  @Test
+  fun testSignInWithEmailAndPassword() = runBlocking {
+    auth
+      .signInWithEmailAndPassword("test@gmail.com", "Test123!")
+      .addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+          Log.i("login", "Login successful")
+        } else {
+          Log.i("login", "Login failed")
+        }
+      }
+      .await()
+    assert(auth.currentUser != null)
+  }
+
+  @Test
+  fun testDeleteAccount() = runBlocking {
+    auth.currentUser
+      ?.delete()
+      ?.addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+          Log.i("delete", "Account deleted successfully")
+        } else {
+          Log.i("delete", "Account deletion failed")
+        }
+      }
+      ?.await()
+    assert(auth.currentUser == null)
+  }
+
+  @After
+  fun afterTests() = runBlocking {
+    if (auth.currentUser != null) {
+      auth.currentUser?.delete()?.await()
     }
+  }
 }

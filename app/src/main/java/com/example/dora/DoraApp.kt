@@ -6,5 +6,5 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class DoraApp : Application() {
-    val database by lazy { DoraDatabase.getDatabase(this) }
+  val database by lazy { DoraDatabase.getDatabase(this) }
 }

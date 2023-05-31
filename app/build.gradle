@@ -134,6 +134,6 @@ kapt {
 }
 
 ktfmt {
-    // KotlinLang style - 4 space indentation - From kotlinlang.org/docs/coding-conventions.html
-    kotlinLangStyle()
+    // Google style - 2 space indentation
+    googleStyle()
 }

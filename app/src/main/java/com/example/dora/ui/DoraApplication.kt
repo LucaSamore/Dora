@@ -18,67 +18,63 @@ import com.example.dora.ui.navigation.NavigationGraph
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DoraApplication(
-    startDestination: String,
-    location: MutableState<Location>,
-    startLocationUpdates: () -> Unit
+  startDestination: String,
+  location: MutableState<Location>,
+  startLocationUpdates: () -> Unit
 ) {
-    val navController = rememberNavController()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen =
-        backStackEntry?.destination?.route?.split("/")?.first() ?: DoraScreen.SignIn.name
+  val navController = rememberNavController()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val backStackEntry by navController.currentBackStackEntryAsState()
+  val currentScreen =
+    backStackEntry?.destination?.route?.split("/")?.first() ?: DoraScreen.SignIn.name
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = {
-            if (
-                currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name
-            ) {
-                CenterAlignedTopAppBar(
-                    title = {
-                        Text(
-                            text = currentScreen,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-                    colors =
-                        TopAppBarDefaults.centerAlignedTopAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-                )
-            }
-        },
-        bottomBar = {
-            if (
-                currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name
-            ) {
-                NavigationBarFunction(navController)
-            }
-        },
-        floatingActionButton = {
-            if (
-                currentScreen != DoraScreen.SignIn.name &&
-                    currentScreen != DoraScreen.SignUp.name &&
-                    currentScreen != DoraScreen.Profile.name &&
-                    currentScreen != DoraScreen.AddBusiness.name
-            ) {
-                FloatingActionButton(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    onClick = { navController.navigate(DoraScreen.AddBusiness.name) }
-                ) {
-                    Icon(Icons.Filled.Add, "Add business")
-                }
-            }
-        }
-    ) { innerPadding ->
-        NavigationGraph(
-            navController = navController,
-            startDestination = startDestination,
-            paddingValues = innerPadding,
-            location = location,
-            startLocationUpdates = startLocationUpdates,
-            snackbarHostState = snackbarHostState
+  Scaffold(
+    snackbarHost = { SnackbarHost(snackbarHostState) },
+    topBar = {
+      if (currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name) {
+        CenterAlignedTopAppBar(
+          title = {
+            Text(
+              text = currentScreen,
+              style = MaterialTheme.typography.titleLarge,
+              fontWeight = FontWeight.Bold
+            )
+          },
+          colors =
+            TopAppBarDefaults.centerAlignedTopAppBarColors(
+              containerColor = MaterialTheme.colorScheme.primary
+            )
         )
+      }
+    },
+    bottomBar = {
+      if (currentScreen != DoraScreen.SignIn.name && currentScreen != DoraScreen.SignUp.name) {
+        NavigationBarFunction(navController)
+      }
+    },
+    floatingActionButton = {
+      if (
+        currentScreen != DoraScreen.SignIn.name &&
+          currentScreen != DoraScreen.SignUp.name &&
+          currentScreen != DoraScreen.Profile.name &&
+          currentScreen != DoraScreen.AddBusiness.name
+      ) {
+        FloatingActionButton(
+          containerColor = MaterialTheme.colorScheme.primary,
+          onClick = { navController.navigate(DoraScreen.AddBusiness.name) }
+        ) {
+          Icon(Icons.Filled.Add, "Add business")
+        }
+      }
     }
+  ) { innerPadding ->
+    NavigationGraph(
+      navController = navController,
+      startDestination = startDestination,
+      paddingValues = innerPadding,
+      location = location,
+      startLocationUpdates = startLocationUpdates,
+      snackbarHostState = snackbarHostState
+    )
+  }
 }

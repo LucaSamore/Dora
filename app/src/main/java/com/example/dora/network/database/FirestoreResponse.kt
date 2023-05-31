@@ -7,10 +7,10 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 
 data class FirestoreResponse(
-    val collectionReference: CollectionReference? = null,
-    val insertTask: Task<DocumentReference>? = null,
-    val updateTask: Task<Void>? = null,
-    val deleteTask: Task<Void>? = null,
-    val singleTask: Task<DocumentSnapshot>? = null,
-    val findTask: Task<QuerySnapshot>? = null,
+  val collectionReference: CollectionReference? = null,
+  val insertTask: Task<DocumentReference>? = null,
+  val updateTask: Task<Void>? = null,
+  val deleteTask: Task<Void>? = null,
+  val singleTask: Task<DocumentSnapshot>? = null,
+  val findTask: Task<QuerySnapshot>? = null,
 )

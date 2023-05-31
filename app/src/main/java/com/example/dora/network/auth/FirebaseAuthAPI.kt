@@ -15,90 +15,90 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
-    AuthenticationAPI<Credentials, Task<AuthResult>, Throwable> {
+  AuthenticationAPI<Credentials, Task<AuthResult>, Throwable> {
 
-    override fun signUpWithEmailAndPassword(
-        request: NetworkRequest<Credentials>
-    ): NetworkResponse<Task<AuthResult>, Throwable> {
-        val validationResult = validateCredentials(request.body)
+  override fun signUpWithEmailAndPassword(
+    request: NetworkRequest<Credentials>
+  ): NetworkResponse<Task<AuthResult>, Throwable> {
+    val validationResult = validateCredentials(request.body)
 
-        if (validationResult.data!! == ValidationStatus.REJECT) {
-            return NetworkResponse(null, validationResult.error)
-        }
-
-        val authenticationResult =
-            auth.createUserWithEmailAndPassword(request.body.emailAddress, request.body.password)
-
-        return NetworkResponse(authenticationResult, null)
+    if (validationResult.data!! == ValidationStatus.REJECT) {
+      return NetworkResponse(null, validationResult.error)
     }
 
-    override fun signInWithEmailAndPassword(
-        request: NetworkRequest<Credentials>
-    ): NetworkResponse<Task<AuthResult>, Throwable> {
-        val validationResult = validateCredentials(request.body)
+    val authenticationResult =
+      auth.createUserWithEmailAndPassword(request.body.emailAddress, request.body.password)
 
-        if (validationResult.data!! == ValidationStatus.REJECT) {
-            return NetworkResponse(null, validationResult.error)
-        }
+    return NetworkResponse(authenticationResult, null)
+  }
 
-        val authenticationResult =
-            auth.signInWithEmailAndPassword(request.body.emailAddress, request.body.password)
+  override fun signInWithEmailAndPassword(
+    request: NetworkRequest<Credentials>
+  ): NetworkResponse<Task<AuthResult>, Throwable> {
+    val validationResult = validateCredentials(request.body)
 
-        return NetworkResponse(authenticationResult, null)
+    if (validationResult.data!! == ValidationStatus.REJECT) {
+      return NetworkResponse(null, validationResult.error)
     }
 
-    fun updateEmailAddress(newEmailAddress: String): Task<Void> =
-        auth.currentUser!!.updateEmail(newEmailAddress)
+    val authenticationResult =
+      auth.signInWithEmailAndPassword(request.body.emailAddress, request.body.password)
 
-    fun updatePassword(newPassword: String): Task<Void> =
-        auth.currentUser!!.updatePassword(newPassword)
+    return NetworkResponse(authenticationResult, null)
+  }
 
-    override fun isUserSignedIn(): Boolean = auth.currentUser != null
+  fun updateEmailAddress(newEmailAddress: String): Task<Void> =
+    auth.currentUser!!.updateEmail(newEmailAddress)
 
-    override fun signOut() = auth.signOut()
+  fun updatePassword(newPassword: String): Task<Void> =
+    auth.currentUser!!.updatePassword(newPassword)
 
-    fun deleteUser(): Task<Void> = auth.currentUser?.delete()!!
+  override fun isUserSignedIn(): Boolean = auth.currentUser != null
 
-    fun getFirebaseUser(): FirebaseUser? = auth.currentUser
+  override fun signOut() = auth.signOut()
 
-    private fun validateCredentials(
-        credentials: Credentials
-    ): NetworkResponse<ValidationStatus, Throwable> {
-        return when (credentials) {
-            is Credentials.Login -> validateLoginCredentials(credentials)
-            is Credentials.Register -> validateRegisterCredentials(credentials)
-        }
+  fun deleteUser(): Task<Void> = auth.currentUser?.delete()!!
+
+  fun getFirebaseUser(): FirebaseUser? = auth.currentUser
+
+  private fun validateCredentials(
+    credentials: Credentials
+  ): NetworkResponse<ValidationStatus, Throwable> {
+    return when (credentials) {
+      is Credentials.Login -> validateLoginCredentials(credentials)
+      is Credentials.Register -> validateRegisterCredentials(credentials)
     }
+  }
 
-    private fun validateLoginCredentials(
-        credentials: Credentials.Login
-    ): NetworkResponse<ValidationStatus, Throwable> {
+  private fun validateLoginCredentials(
+    credentials: Credentials.Login
+  ): NetworkResponse<ValidationStatus, Throwable> {
 
-        Validator.pipeline(
-                Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
-                Pair(credentials.password, UserValidator::validatePassword)
-            )
-            .catch {
-                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
-            }
+    Validator.pipeline(
+        Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
+        Pair(credentials.password, UserValidator::validatePassword)
+      )
+      .catch {
+        return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
+      }
 
-        return NetworkResponse(ValidationStatus.PASS, null)
-    }
+    return NetworkResponse(ValidationStatus.PASS, null)
+  }
 
-    private fun validateRegisterCredentials(
-        credentials: Credentials.Register
-    ): NetworkResponse<ValidationStatus, Throwable> {
+  private fun validateRegisterCredentials(
+    credentials: Credentials.Register
+  ): NetworkResponse<ValidationStatus, Throwable> {
 
-        Validator.pipeline(
-                Pair(credentials.firstName, UserValidator::validateFirstOrLastName),
-                Pair(credentials.lastName, UserValidator::validateFirstOrLastName),
-                Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
-                Pair(credentials.password, UserValidator::validatePassword),
-            )
-            .catch {
-                return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
-            }
+    Validator.pipeline(
+        Pair(credentials.firstName, UserValidator::validateFirstOrLastName),
+        Pair(credentials.lastName, UserValidator::validateFirstOrLastName),
+        Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
+        Pair(credentials.password, UserValidator::validatePassword),
+      )
+      .catch {
+        return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
+      }
 
-        return NetworkResponse(ValidationStatus.PASS, null)
-    }
+    return NetworkResponse(ValidationStatus.PASS, null)
+  }
 }

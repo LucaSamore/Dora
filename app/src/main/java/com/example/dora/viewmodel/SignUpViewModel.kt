@@ -19,25 +19,25 @@ import kotlinx.coroutines.withContext
 class SignUpViewModel
 @Inject
 constructor(
-    @FirebaseRepository private val authenticationRepository: AuthenticationRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+  @FirebaseRepository private val authenticationRepository: AuthenticationRepository,
+  @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
-    suspend fun signUp(
-        firstName: String,
-        lastName: String,
-        emailAddress: String,
-        password: String,
-        profilePicture: Uri,
-    ): Either<ErrorMessage, SignedUser> =
-        withContext(viewModelScope.coroutineContext + ioDispatcher) {
-            authenticationRepository.signUpWithEmailAndPassword(
-                Credentials.Register(
-                    firstName = firstName,
-                    lastName = lastName,
-                    emailAddress = emailAddress,
-                    password = password,
-                    profilePicture = profilePicture,
-                )
-            )
-        }
+  suspend fun signUp(
+    firstName: String,
+    lastName: String,
+    emailAddress: String,
+    password: String,
+    profilePicture: Uri,
+  ): Either<ErrorMessage, SignedUser> =
+    withContext(viewModelScope.coroutineContext + ioDispatcher) {
+      authenticationRepository.signUpWithEmailAndPassword(
+        Credentials.Register(
+          firstName = firstName,
+          lastName = lastName,
+          emailAddress = emailAddress,
+          password = password,
+          profilePicture = profilePicture,
+        )
+      )
+    }
 }

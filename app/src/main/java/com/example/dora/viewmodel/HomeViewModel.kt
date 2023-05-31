@@ -17,22 +17,22 @@ import kotlinx.coroutines.withContext
 class HomeViewModel
 @Inject
 constructor(
-    @FirebaseRepository private val userRepository: UserRepository,
-    @FirebaseRepository private val businessRepository: BusinessRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+  @FirebaseRepository private val userRepository: UserRepository,
+  @FirebaseRepository private val businessRepository: BusinessRepository,
+  @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    fun updateLocation(location: Location) {
-        viewModelScope.launch { userRepository.updateLocation(location) }
+  fun updateLocation(location: Location) {
+    viewModelScope.launch { userRepository.updateLocation(location) }
+  }
+
+  suspend fun getBusinessesClosedToMe(location: Location) =
+    withContext(viewModelScope.coroutineContext + ioDispatcher) {
+      businessRepository.getBusinessesClosedToMe(location)
     }
 
-    suspend fun getBusinessesClosedToMe(location: Location) =
-        withContext(viewModelScope.coroutineContext + ioDispatcher) {
-            businessRepository.getBusinessesClosedToMe(location)
-        }
-
-    suspend fun getBusinessesDefault() =
-        withContext(viewModelScope.coroutineContext + ioDispatcher) {
-            businessRepository.getBusinessesDefault()
-        }
+  suspend fun getBusinessesDefault() =
+    withContext(viewModelScope.coroutineContext + ioDispatcher) {
+      businessRepository.getBusinessesDefault()
+    }
 }

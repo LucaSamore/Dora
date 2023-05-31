@@ -14,11 +14,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatastoreModule {
 
-    @Singleton
-    @Provides
-    fun providesUserDatastore(@ApplicationContext context: Context) = UserDatastore(context)
+  @Singleton
+  @Provides
+  fun providesUserDatastore(@ApplicationContext context: Context) = UserDatastore(context)
 
-    @Singleton
-    @Provides
-    fun providesSettingsDatastore(@ApplicationContext context: Context) = SettingsDatastore(context)
+  @Singleton
+  @Provides
+  fun providesSettingsDatastore(@ApplicationContext context: Context) = SettingsDatastore(context)
 }

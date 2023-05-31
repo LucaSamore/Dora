@@ -25,27 +25,25 @@ import kotlinx.coroutines.withContext
 class ProfileViewModel
 @Inject
 constructor(
-    @FirebaseRepository private val userRepository: UserRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+  @FirebaseRepository private val userRepository: UserRepository,
+  @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _user = MutableStateFlow<Either<ErrorMessage, User>>(User().right())
+  private val _user = MutableStateFlow<Either<ErrorMessage, User>>(User().right())
 
-    val user = _user.asStateFlow()
+  val user = _user.asStateFlow()
 
-    val progressIndicatorHidden = mutableStateOf(true)
+  val progressIndicatorHidden = mutableStateOf(true)
 
-    init {
-        viewModelScope.launch(ioDispatcher) { _user.update { userRepository.getUser() } }
+  init {
+    viewModelScope.launch(ioDispatcher) { _user.update { userRepository.getUser() } }
+  }
+
+  suspend fun updateProfile(user: User): Either<ErrorMessage, SuccessMessage> =
+    withContext(viewModelScope.coroutineContext + ioDispatcher) { userRepository.updateUser(user) }
+
+  suspend fun updateProfilePicture(userId: String, profilePictureUri: Uri) =
+    withContext(viewModelScope.coroutineContext + ioDispatcher) {
+      userRepository.updateProfilePicture(userId, profilePictureUri)
     }
-
-    suspend fun updateProfile(user: User): Either<ErrorMessage, SuccessMessage> =
-        withContext(viewModelScope.coroutineContext + ioDispatcher) {
-            userRepository.updateUser(user)
-        }
-
-    suspend fun updateProfilePicture(userId: String, profilePictureUri: Uri) =
-        withContext(viewModelScope.coroutineContext + ioDispatcher) {
-            userRepository.updateProfilePicture(userId, profilePictureUri)
-        }
 }
