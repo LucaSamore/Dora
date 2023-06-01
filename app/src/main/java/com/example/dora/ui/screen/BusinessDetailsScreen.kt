@@ -20,6 +20,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.dora.model.Business
+import com.example.dora.model.Review
 import com.example.dora.ui.composable.ReviewListItem
 import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.viewmodel.BusinessDetailsViewModel
@@ -41,6 +42,7 @@ internal fun BusinessDetailsScreen(
   val context = LocalContext.current
   val scope = rememberCoroutineScope()
   var business by remember { mutableStateOf<Business?>(null) }
+  val reviews = remember { mutableStateListOf<Review>() }
   var errorMessage by rememberSaveable { mutableStateOf("") }
   var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
   var showFilledStarIcon by rememberSaveable { mutableStateOf(false) }
@@ -55,6 +57,21 @@ internal fun BusinessDetailsScreen(
             errorMessageHidden = false
           },
           { right -> business = right }
+        )
+
+      businessDetailsViewModel
+        .getReviews(businessId)
+        .fold(
+          { left ->
+            errorMessage = left.message
+            errorMessageHidden = false
+          },
+          { right ->
+            reviews.apply {
+              clear()
+              addAll(right)
+            }
+          }
         )
 
       showFilledStarIcon = businessDetailsViewModel.isInFavorites(businessId)
@@ -224,19 +241,26 @@ internal fun BusinessDetailsScreen(
       textAlign = TextAlign.Left,
     )
 
-    Text(
-      text = "Reviews",
-      modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
-      style = MaterialTheme.typography.titleMedium,
-      fontWeight = FontWeight.Bold,
-      textAlign = TextAlign.Left
-    )
+    if (reviews.isNotEmpty()) {
+      Text(
+        text = "Reviews",
+        modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Left
+      )
 
-    repeat(5) {
-      ReviewListItem(modifier = modifier)
-      Divider()
+      Column {
+        val size = reviews.size
+        reviews.sortByDescending { it.votes }
+        reviews.forEachIndexed { index, review ->
+          ReviewListItem(review = review, modifier = modifier)
+          if (index != size - 1) {
+            Divider()
+          }
+        }
+      }
     }
-
-    Spacer(modifier = modifier.size(6.dp))
+    Spacer(modifier = modifier.size(12.dp))
   }
 }

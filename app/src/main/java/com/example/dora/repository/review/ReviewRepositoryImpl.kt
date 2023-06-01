@@ -9,6 +9,7 @@ import com.example.dora.model.Review
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.database.FirestoreAPI
 import com.example.dora.network.database.FirestoreRequest
+import com.google.firebase.firestore.Filter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
@@ -36,7 +37,25 @@ constructor(
 
   override suspend fun getReviewsByBusinessId(
     businessId: String
-  ): Either<ErrorMessage, List<Review>> {
-    TODO("Not yet implemented")
-  }
+  ): Either<ErrorMessage, List<Review>> =
+    withContext(ioDispatcher) {
+      try {
+        val request =
+          FirestoreRequest(
+            collection = Review.collection,
+            where = Filter.equalTo("businessId", businessId)
+          )
+
+        firestoreAPI
+          .find(NetworkRequest.of(request))
+          .data!!
+          .findTask!!
+          .await()
+          .toObjects(Review::class.java)
+          .toList()
+          .right()
+      } catch (e: Exception) {
+        ErrorMessage(e.message!!).left()
+      }
+    }
 }
