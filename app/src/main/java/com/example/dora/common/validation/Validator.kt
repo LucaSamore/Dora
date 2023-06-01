@@ -14,7 +14,7 @@ class ValidationResult(var status: ValidationStatus, var message: String?) {
 }
 
 object Validator {
-  fun <T> validate(
+  internal fun <T> validate(
     subject: T,
     vararg rules: (subject: T) -> Pair<Boolean, String>
   ): ValidationResult {
@@ -28,7 +28,7 @@ object Validator {
     return ValidationResult(status = ValidationStatus.PASS, message = null)
   }
 
-  fun <T> pipeline(vararg functions: Pair<T, (T) -> ValidationResult>): ValidationResult {
+  internal fun <T> pipeline(vararg functions: Pair<T, (T) -> ValidationResult>): ValidationResult {
     return functions
       .map { f -> f.second(f.first) }
       .filter { r -> r.status == ValidationStatus.REJECT }

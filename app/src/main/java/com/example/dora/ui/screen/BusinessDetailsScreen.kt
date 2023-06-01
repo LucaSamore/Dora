@@ -5,8 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -20,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.dora.model.Business
+import com.example.dora.ui.composable.ReviewListItem
 import com.example.dora.viewmodel.BusinessDetailsViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -207,7 +207,21 @@ internal fun BusinessDetailsScreen(
       modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 2.dp),
       style = MaterialTheme.typography.bodyMedium,
       textAlign = TextAlign.Left,
-      fontWeight = FontWeight.Bold
     )
+
+    Text(
+      text = "Reviews",
+      modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+      style = MaterialTheme.typography.titleMedium,
+      fontWeight = FontWeight.Bold,
+      textAlign = TextAlign.Left
+    )
+
+    repeat(5) {
+      ReviewListItem(modifier = modifier)
+      Divider()
+    }
+
+    Spacer(modifier = modifier.size(6.dp))
   }
 }
