@@ -18,16 +18,14 @@ object Validator {
     subject: T,
     vararg rules: (subject: T) -> Pair<Boolean, String>
   ): ValidationResult {
-    val validationResult = ValidationResult(status = ValidationStatus.PASS, message = null)
-    for (applyRule in rules) {
-      val result = applyRule(subject)
-      if (!result.first) {
-        validationResult.status = ValidationStatus.REJECT
-        validationResult.message = result.second
-        break
+    rules
+      .map { r -> r(subject) }
+      .forEach { p ->
+        if (!p.first) {
+          return ValidationResult(status = ValidationStatus.REJECT, message = p.second)
+        }
       }
-    }
-    return validationResult
+    return ValidationResult(status = ValidationStatus.PASS, message = null)
   }
 
   fun <T> pipeline(vararg functions: Pair<T, (T) -> ValidationResult>): ValidationResult {
