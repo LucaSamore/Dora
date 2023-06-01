@@ -252,9 +252,12 @@ internal fun BusinessDetailsScreen(
 
       Column {
         val size = reviews.size
-        reviews.sortByDescending { it.votes }
         reviews.forEachIndexed { index, review ->
-          ReviewListItem(review = review, modifier = modifier)
+          ReviewListItem(
+            businessDetailsViewModel = businessDetailsViewModel,
+            review = review,
+            modifier = modifier
+          )
           if (index != size - 1) {
             Divider()
           }

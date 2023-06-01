@@ -47,9 +47,9 @@ constructor(
           )
 
         firestoreAPI
-          .find(NetworkRequest.of(request))
+          .findMany(NetworkRequest.of(request))
           .data!!
-          .findTask!!
+          .findManyTask!!
           .await()
           .toObjects(Review::class.java)
           .toList()

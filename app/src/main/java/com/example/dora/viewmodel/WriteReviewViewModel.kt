@@ -38,7 +38,6 @@ constructor(
             uuid = UUID.randomUUID().toString(),
             content = content,
             rating = rating,
-            votes = 0,
             user = user.value,
             businessId = businessId,
           )

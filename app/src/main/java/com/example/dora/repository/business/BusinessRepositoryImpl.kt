@@ -66,9 +66,9 @@ constructor(
           )
 
         firestoreAPI
-          .find(NetworkRequest.of(request))
+          .findMany(NetworkRequest.of(request))
           .data!!
-          .findTask!!
+          .findManyTask!!
           .await()
           .toObjects(Business::class.java)
           .toList()
@@ -88,9 +88,9 @@ constructor(
           )
 
         firestoreAPI
-          .find(NetworkRequest.of(request))
+          .findMany(NetworkRequest.of(request))
           .data!!
-          .findTask!!
+          .findManyTask!!
           .await()
           .toObjects(Business::class.java)
           .toList()
@@ -120,9 +120,9 @@ constructor(
         val request = FirestoreRequest(collection = Business.collection, where = Filter.and())
 
         firestoreAPI
-          .find(NetworkRequest.of(request))
+          .findMany(NetworkRequest.of(request))
           .data!!
-          .findTask!!
+          .findManyTask!!
           .await()
           .toObjects(Business::class.java)
           .toList()
@@ -144,9 +144,9 @@ constructor(
       )
 
     return firestoreAPI
-      .find(NetworkRequest.of(request))
+      .findMany(NetworkRequest.of(request))
       .data!!
-      .findTask!!
+      .findManyTask!!
       .await()
       .toObjects(Business::class.java)
       .toSet()
@@ -173,9 +173,9 @@ constructor(
       )
 
     return firestoreAPI
-      .find(NetworkRequest.of(request))
+      .findMany(NetworkRequest.of(request))
       .data!!
-      .findTask!!
+      .findManyTask!!
       .await()
       .toObjects(Business::class.java)
       .toSet()

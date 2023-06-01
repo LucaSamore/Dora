@@ -16,6 +16,8 @@ import com.example.dora.repository.review.ReviewRepository
 import com.example.dora.repository.review.ReviewRepositoryImpl
 import com.example.dora.repository.user.UserRepository
 import com.example.dora.repository.user.UserRepositoryImpl
+import com.example.dora.repository.vote.VoteRepository
+import com.example.dora.repository.vote.VoteRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,7 +45,7 @@ object RepositoryModule {
       firestoreAPI = firestoreAPI,
       firebaseStorageAPI = firebaseStorageAPI,
       ioDispatcher = ioDispatcher,
-      userDatastore = userDatastore
+      userDatastore = userDatastore,
     )
 
   @FirebaseRepository
@@ -61,7 +63,7 @@ object RepositoryModule {
       firestoreAPI = firestoreAPI,
       firebaseStorageAPI = firebaseStorageAPI,
       ioDispatcher = ioDispatcher,
-      userDatastore = userDatastore
+      userDatastore = userDatastore,
     )
 
   @FirebaseRepository
@@ -89,7 +91,7 @@ object RepositoryModule {
     FavoriteRepositoryImpl(
       favoriteDAO = (context.applicationContext as DoraApp).database.favoriteDAO(),
       firestoreAPI = firestoreAPI,
-      ioDispatcher = ioDispatcher
+      ioDispatcher = ioDispatcher,
     )
 
   @FirebaseRepository
@@ -100,6 +102,18 @@ object RepositoryModule {
     @IoDispatcher ioDispatcher: CoroutineDispatcher
   ): ReviewRepository =
     ReviewRepositoryImpl(
+      firestoreAPI = firestoreAPI,
+      ioDispatcher = ioDispatcher,
+    )
+
+  @FirebaseRepository
+  @Singleton
+  @Provides
+  fun providesVoteRepository(
+    firestoreAPI: FirestoreAPI,
+    @IoDispatcher ioDispatcher: CoroutineDispatcher
+  ): VoteRepository =
+    VoteRepositoryImpl(
       firestoreAPI = firestoreAPI,
       ioDispatcher = ioDispatcher,
     )

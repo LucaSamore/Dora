@@ -10,7 +10,7 @@ data class FirestoreResponse(
   val collectionReference: CollectionReference? = null,
   val insertTask: Task<DocumentReference>? = null,
   val updateTask: Task<Void>? = null,
-  val deleteTask: Task<Void>? = null,
-  val singleTask: Task<DocumentSnapshot>? = null,
-  val findTask: Task<QuerySnapshot>? = null,
+  val deleteSingleTask: Task<Void>? = null,
+  val findSingleTask: Task<DocumentSnapshot>? = null,
+  val findManyTask: Task<QuerySnapshot>? = null,
 )
