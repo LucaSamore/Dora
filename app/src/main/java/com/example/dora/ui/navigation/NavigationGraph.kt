@@ -120,6 +120,7 @@ fun NavigationGraph(
         businessId = it.arguments?.getString("businessId")!!,
         modifier = modifier,
         paddingValues = paddingValues,
+        navController = navController,
       )
     }
 
@@ -129,6 +130,19 @@ fun NavigationGraph(
         modifier = modifier,
         paddingValues = paddingValues,
         navController = navController,
+      )
+    }
+
+    composable(route = "${DoraScreen.WriteReview.name}/{businessId}") {
+      WriteReviewScreen(
+        businessId = it.arguments?.getString("businessId")!!,
+        modifier = modifier,
+        paddingValues = paddingValues,
+        onSuccess = {
+          navController.navigate(DoraScreen.Home.name) {
+            popUpTo(DoraScreen.Home.name) { inclusive = true }
+          }
+        }
       )
     }
   }

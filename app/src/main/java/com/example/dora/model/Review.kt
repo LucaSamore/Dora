@@ -10,7 +10,7 @@ data class Review(
   val rating: Int? = null,
   val votes: Int? = null,
   val user: User? = null,
-  val business: Business? = null,
+  val businessId: String? = null,
   val createdAt: String = nowWithPattern("yyyy-MM-dd HH:mm:ss")
 ) {
   companion object {

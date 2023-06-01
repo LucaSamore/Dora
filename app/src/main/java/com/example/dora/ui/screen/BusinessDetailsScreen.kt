@@ -16,10 +16,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.dora.model.Business
 import com.example.dora.ui.composable.ReviewListItem
+import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.viewmodel.BusinessDetailsViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -34,6 +36,7 @@ internal fun BusinessDetailsScreen(
   businessId: String,
   modifier: Modifier,
   paddingValues: PaddingValues,
+  navController: NavHostController,
 ) {
   val context = LocalContext.current
   val scope = rememberCoroutineScope()
@@ -98,18 +101,30 @@ internal fun BusinessDetailsScreen(
         textAlign = TextAlign.Left
       )
 
-      IconToggleButton(
-        checked = showFilledStarIcon,
-        onCheckedChange = {
-          showFilledStarIcon = !showFilledStarIcon
-          businessDetailsViewModel.toggleFavorite(businessId)
+      Row {
+        IconButton(
+          onClick = {
+            navController.navigate("${DoraScreen.WriteReview.name}/${businessId}") {
+              popUpTo("${DoraScreen.WriteReview.name}/${businessId}") { inclusive = true }
+            }
+          }
+        ) {
+          Icon(Icons.Filled.AddComment, contentDescription = "Write review")
         }
-      ) {
-        Icon(
-          if (showFilledStarIcon) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-          contentDescription = "Toggle favorite",
-          tint = MaterialTheme.colorScheme.onPrimary
-        )
+
+        IconToggleButton(
+          checked = showFilledStarIcon,
+          onCheckedChange = {
+            showFilledStarIcon = !showFilledStarIcon
+            businessDetailsViewModel.toggleFavorite(businessId)
+          }
+        ) {
+          Icon(
+            if (showFilledStarIcon) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+            contentDescription = "Toggle favorite",
+            tint = MaterialTheme.colorScheme.onPrimary
+          )
+        }
       }
     }
 
