@@ -43,7 +43,8 @@ object BusinessValidator {
   internal fun validateImages(images: List<Uri>): ValidationResult =
     Validator.validate(
       images,
-      { i -> Pair(i.size >= MIN_IMAGES_NUMBER, "At most $MIN_IMAGES_NUMBER are allowed") },
-      { i -> Pair(i.size <= MAX_IMAGES_NUMBER, "At most $MAX_IMAGES_NUMBER are allowed") },
+      { i -> Pair(i.none { it == Uri.EMPTY }, "At least one image is required") },
+      { i -> Pair(i.size >= MIN_IMAGES_NUMBER, "At most $MIN_IMAGES_NUMBER images are allowed") },
+      { i -> Pair(i.size <= MAX_IMAGES_NUMBER, "At most $MAX_IMAGES_NUMBER images are allowed") },
     )
 }

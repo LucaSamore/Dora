@@ -31,12 +31,9 @@ object Validator {
   }
 
   fun <T> pipeline(vararg functions: Pair<T, (T) -> ValidationResult>): ValidationResult {
-    for (function in functions) {
-      val result = function.second(function.first)
-      if (result.status == ValidationStatus.REJECT) {
-        return result
-      }
-    }
-    return ValidationResult(status = ValidationStatus.PASS, message = null)
+    return functions
+      .map { f -> f.second(f.first) }
+      .filter { r -> r.status == ValidationStatus.REJECT }
+      .getOrElse(0) { ValidationResult(status = ValidationStatus.PASS, message = null) }
   }
 }
