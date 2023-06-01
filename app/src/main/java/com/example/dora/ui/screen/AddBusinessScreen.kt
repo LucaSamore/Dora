@@ -292,13 +292,13 @@ internal fun AddBusinessScreen(
               Pair(website, BusinessValidator::validateWebsite),
               Pair(phoneNumber, BusinessValidator::validatePhoneNumber),
             )
-            .catch {
+            .ifRejected {
               errorMessage = it.message!!
               errorMessageHidden = false
               return@Button
             }
 
-          Validator.pipeline(Pair(address, BusinessValidator::validateAddress)).catch {
+          Validator.pipeline(Pair(address, BusinessValidator::validateAddress)).ifRejected {
             errorMessage = it.message!!
             errorMessageHidden = false
             return@Button
@@ -307,7 +307,7 @@ internal fun AddBusinessScreen(
           Validator.pipeline(
               Pair(images.toList(), BusinessValidator::validateImages),
             )
-            .catch {
+            .ifRejected {
               errorMessage = it.message!!
               errorMessageHidden = false
               return@Button

@@ -6,7 +6,7 @@ enum class ValidationStatus {
 }
 
 class ValidationResult(var status: ValidationStatus, var message: String?) {
-  inline fun catch(block: (ValidationResult) -> Unit) {
+  inline fun ifRejected(block: (ValidationResult) -> Unit) {
     if (status == ValidationStatus.REJECT) {
       block(this)
     }

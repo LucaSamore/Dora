@@ -12,6 +12,8 @@ import com.example.dora.repository.business.BusinessRepository
 import com.example.dora.repository.business.BusinessRepositoryImpl
 import com.example.dora.repository.favorite.FavoriteRepository
 import com.example.dora.repository.favorite.FavoriteRepositoryImpl
+import com.example.dora.repository.review.ReviewRepository
+import com.example.dora.repository.review.ReviewRepositoryImpl
 import com.example.dora.repository.user.UserRepository
 import com.example.dora.repository.user.UserRepositoryImpl
 import dagger.Module
@@ -76,6 +78,7 @@ object RepositoryModule {
       ioDispatcher = ioDispatcher,
     )
 
+  @FirebaseRepository
   @Singleton
   @Provides
   fun providesFavoriteRepository(
@@ -87,6 +90,18 @@ object RepositoryModule {
       favoriteDAO = (context.applicationContext as DoraApp).database.favoriteDAO(),
       firestoreAPI = firestoreAPI,
       ioDispatcher = ioDispatcher
+    )
+
+  @FirebaseRepository
+  @Singleton
+  @Provides
+  fun providesReviewRepository(
+    firestoreAPI: FirestoreAPI,
+    @IoDispatcher ioDispatcher: CoroutineDispatcher
+  ): ReviewRepository =
+    ReviewRepositoryImpl(
+      firestoreAPI = firestoreAPI,
+      ioDispatcher = ioDispatcher,
     )
 }
 

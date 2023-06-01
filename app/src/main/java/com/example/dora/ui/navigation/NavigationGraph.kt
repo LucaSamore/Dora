@@ -135,6 +135,7 @@ fun NavigationGraph(
 
     composable(route = "${DoraScreen.WriteReview.name}/{businessId}") {
       WriteReviewScreen(
+        writeReviewViewModel = hiltViewModel(),
         businessId = it.arguments?.getString("businessId")!!,
         modifier = modifier,
         paddingValues = paddingValues,

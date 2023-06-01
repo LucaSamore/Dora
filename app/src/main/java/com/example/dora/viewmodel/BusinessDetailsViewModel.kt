@@ -24,8 +24,8 @@ class BusinessDetailsViewModel
 @Inject
 constructor(
   @FirebaseRepository private val businessRepository: BusinessRepository,
+  @FirebaseRepository private val favoriteRepository: FavoriteRepository,
   @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-  private val favoriteRepository: FavoriteRepository,
   private val userDatastore: UserDatastore,
 ) : ViewModel() {
   suspend fun getBusiness(businessId: String): Either<ErrorMessage, Business> =

@@ -230,7 +230,7 @@ internal fun ProfileForm(
           Pair(lastName, UserValidator::validateFirstOrLastName),
           Pair(emailAddress, UserValidator::validateEmailAddress),
         )
-        .catch {
+        .ifRejected {
           errorMessage = it.message!!
           errorMessageHidden = false
           return@Button

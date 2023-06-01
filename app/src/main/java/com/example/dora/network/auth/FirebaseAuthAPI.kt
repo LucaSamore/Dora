@@ -78,7 +78,7 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
         Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
         Pair(credentials.password, UserValidator::validatePassword)
       )
-      .catch {
+      .ifRejected {
         return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
       }
 
@@ -95,7 +95,7 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
         Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
         Pair(credentials.password, UserValidator::validatePassword),
       )
-      .catch {
+      .ifRejected {
         return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
       }
 

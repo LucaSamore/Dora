@@ -6,6 +6,7 @@ import arrow.core.Either
 import arrow.core.right
 import com.example.dora.common.ErrorMessage
 import com.example.dora.database.entity.Favorite
+import com.example.dora.di.FirebaseRepository
 import com.example.dora.di.IoDispatcher
 import com.example.dora.model.Business
 import com.example.dora.repository.favorite.FavoriteRepository
@@ -19,7 +20,7 @@ import kotlinx.coroutines.withContext
 class FavoriteViewModel
 @Inject
 constructor(
-  private val favoriteRepository: FavoriteRepository,
+  @FirebaseRepository private val favoriteRepository: FavoriteRepository,
   @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
