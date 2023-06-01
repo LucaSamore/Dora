@@ -1,6 +1,7 @@
 package com.example.dora.model
 
 import arrow.optics.optics
+import com.example.dora.common.nowWithPattern
 
 @optics
 data class Review(
@@ -10,6 +11,7 @@ data class Review(
   val votes: Int? = null,
   val user: User? = null,
   val business: Business? = null,
+  val createdAt: String = nowWithPattern("yyyy-MM-dd HH:mm:ss")
 ) {
   companion object {
     const val collection = "reviews"
