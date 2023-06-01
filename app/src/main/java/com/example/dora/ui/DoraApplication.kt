@@ -58,7 +58,8 @@ internal fun DoraApplication(
           currentScreen != DoraScreen.SignUp.name &&
           currentScreen != DoraScreen.Profile.name &&
           currentScreen != DoraScreen.AddBusiness.name &&
-          currentScreen != DoraScreen.BusinessDetails.name
+          currentScreen != DoraScreen.BusinessDetails.name &&
+          currentScreen != DoraScreen.WriteReview.name
       ) {
         FloatingActionButton(
           containerColor = MaterialTheme.colorScheme.primary,
