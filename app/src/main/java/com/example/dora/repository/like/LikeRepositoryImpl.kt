@@ -119,11 +119,7 @@ constructor(
 
         val deleteRequest = FirestoreRequest(collection = Like.collection, document = toDelete.uuid)
 
-        firestoreAPI
-          .deleteSingle(NetworkRequest.of(deleteRequest))
-          .data!!
-          .deleteSingleTask!!
-          .await()
+        firestoreAPI.delete(NetworkRequest.of(deleteRequest)).data!!.deleteSingleTask!!.await()
 
         return@withContext getNumberOfLikes(reviewId)
       } catch (e: Exception) {

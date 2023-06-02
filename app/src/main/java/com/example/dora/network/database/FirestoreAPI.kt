@@ -40,21 +40,12 @@ class FirestoreAPI(private val db: FirebaseFirestore = Firebase.firestore) :
     return NetworkResponse(FirestoreResponse(updateTask = queryResult), null)
   }
 
-  override fun deleteSingle(
+  override fun delete(
     request: NetworkRequest<FirestoreRequest>
   ): NetworkResponse<FirestoreResponse, Throwable> {
     val queryResult =
       db.collection(request.body.collection).document(request.body.document!!).delete()
     return NetworkResponse(FirestoreResponse(deleteSingleTask = queryResult), null)
-  }
-
-  override fun deleteMany(
-    request: NetworkRequest<FirestoreRequest>
-  ): NetworkResponse<FirestoreResponse, Throwable> {
-    db.collection(request.body.collection).where(request.body.where!!).get().result.forEach {
-      db.batch().delete(it.reference)
-    }
-    return NetworkResponse(FirestoreResponse(), null)
   }
 
   override fun findSingle(

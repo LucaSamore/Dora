@@ -8,9 +8,7 @@ interface RemoteDatabaseAPI<I, O, E : Throwable> {
 
   fun update(request: NetworkRequest<I>): NetworkResponse<O, E>
 
-  fun deleteSingle(request: NetworkRequest<I>): NetworkResponse<O, E>
-
-  fun deleteMany(request: NetworkRequest<I>): NetworkResponse<O, E>
+  fun delete(request: NetworkRequest<I>): NetworkResponse<O, E>
 
   fun findSingle(request: NetworkRequest<I>): NetworkResponse<O, E>
 
