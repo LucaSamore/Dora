@@ -92,7 +92,14 @@ internal fun SignUpForm(
     )
   var imageUri by remember { mutableStateOf<Uri>(Uri.EMPTY) }
   val cameraLauncher =
-    rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { imageUri = uri }
+    rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+      imageUri =
+        if (file.length() > 0) {
+          uri
+        } else {
+          Uri.EMPTY
+        }
+    }
   val galleryLauncher =
     rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
       imageUri = it ?: Uri.EMPTY
