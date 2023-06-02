@@ -12,12 +12,12 @@ import com.example.dora.repository.business.BusinessRepository
 import com.example.dora.repository.business.BusinessRepositoryImpl
 import com.example.dora.repository.favorite.FavoriteRepository
 import com.example.dora.repository.favorite.FavoriteRepositoryImpl
+import com.example.dora.repository.like.LikeRepository
+import com.example.dora.repository.like.LikeRepositoryImpl
 import com.example.dora.repository.review.ReviewRepository
 import com.example.dora.repository.review.ReviewRepositoryImpl
 import com.example.dora.repository.user.UserRepository
 import com.example.dora.repository.user.UserRepositoryImpl
-import com.example.dora.repository.vote.VoteRepository
-import com.example.dora.repository.vote.VoteRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -112,8 +112,8 @@ object RepositoryModule {
   fun providesVoteRepository(
     firestoreAPI: FirestoreAPI,
     @IoDispatcher ioDispatcher: CoroutineDispatcher
-  ): VoteRepository =
-    VoteRepositoryImpl(
+  ): LikeRepository =
+    LikeRepositoryImpl(
       firestoreAPI = firestoreAPI,
       ioDispatcher = ioDispatcher,
     )

@@ -1,6 +1,7 @@
 package com.example.dora.ui.composable
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
@@ -10,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,6 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.dora.model.Review
 import com.example.dora.viewmodel.BusinessDetailsViewModel
+import kotlinx.coroutines.launch
+
+const val TAG = "RLI"
 
 @Composable
 internal fun ReviewListItem(
@@ -27,10 +30,20 @@ internal fun ReviewListItem(
 ) {
   val scope = rememberCoroutineScope()
   val context = LocalContext.current
-  var votes by remember { mutableStateOf(0) }
+  var likes by remember { mutableStateOf(0) }
   var filledHeart by remember { mutableStateOf(false) }
-  var errorMessage by rememberSaveable { mutableStateOf("") }
-  var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
+
+  LaunchedEffect(key1 = Unit) {
+    scope.launch {
+      businessDetailsViewModel
+        .didILikeIt(review.uuid!!)
+        .fold({ error -> Log.e(TAG, error.message) }, { right -> filledHeart = right })
+
+      businessDetailsViewModel
+        .getReviewNumberOfLikes(review.uuid)
+        .fold({ error -> Log.e(TAG, error.message) }, { right -> likes = right })
+    }
+  }
 
   Column(
     modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
@@ -79,7 +92,11 @@ internal fun ReviewListItem(
             checked = filledHeart,
             onCheckedChange = {
               filledHeart = !filledHeart
-              // TODO
+              scope.launch {
+                businessDetailsViewModel
+                  .toggleReviewLike(review.uuid!!)
+                  .fold({ error -> Log.e(TAG, error.message) }, { right -> likes = right })
+              }
             }
           ) {
             Icon(
@@ -89,7 +106,7 @@ internal fun ReviewListItem(
             )
           }
           Text(
-            text = votes.toString(),
+            text = likes.toString(),
             modifier = modifier.padding(horizontal = 6.dp),
             style = MaterialTheme.typography.bodyLarge
           )
