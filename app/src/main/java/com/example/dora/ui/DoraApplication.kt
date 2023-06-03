@@ -6,7 +6,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -20,10 +19,10 @@ import com.example.dora.ui.navigation.NavigationGraph
 internal fun DoraApplication(
   startDestination: String,
   location: MutableState<Location>,
+  snackbarHostState: SnackbarHostState,
   startLocationUpdates: () -> Unit
 ) {
   val navController = rememberNavController()
-  val snackbarHostState = remember { SnackbarHostState() }
   val backStackEntry by navController.currentBackStackEntryAsState()
   val currentScreen =
     backStackEntry?.destination?.route?.split("/")?.first() ?: DoraScreen.SignIn.name

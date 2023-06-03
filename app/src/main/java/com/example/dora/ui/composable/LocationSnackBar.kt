@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
@@ -19,8 +20,9 @@ internal fun SnackBarComposable(
   LaunchedEffect(snackbarHostState) {
     val result =
       snackbarHostState.showSnackbar(
-        message = "Permission are needed to get your position",
-        actionLabel = "Go to settings"
+        message = "Permission are needed if you want to see businesses near you",
+        actionLabel = "Go to settings",
+        duration = SnackbarDuration.Short,
       )
     when (result) {
       SnackbarResult.ActionPerformed -> {

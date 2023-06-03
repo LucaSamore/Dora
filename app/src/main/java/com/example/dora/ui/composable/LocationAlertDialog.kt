@@ -15,7 +15,9 @@ internal fun AlertDialogComposable(
   AlertDialog(
     onDismissRequest = { showAlertDialog.value = false },
     title = { Text(text = "GPS disabled") },
-    text = { Text(text = "GPS is turned off but is needed to get the coordinates") },
+    text = {
+      Text(text = "GPS is turned off but is needed if you want to see all the businesses near you")
+    },
     confirmButton = {
       TextButton(
         onClick = {
@@ -26,15 +28,12 @@ internal fun AlertDialogComposable(
           showAlertDialog.value = false
         }
       ) {
-        Text("Turned on the GPS")
+        Text(text = "Turned on the GPS", color = MaterialTheme.colorScheme.onPrimary)
       }
     },
     dismissButton = {
-      TextButton(
-        // TODO: Fix onClick
-        onClick = { showAlertDialog.value = false }
-      ) {
-        Text("Dismiss")
+      TextButton(onClick = { showAlertDialog.value = false }) {
+        Text(text = "Dismiss", color = MaterialTheme.colorScheme.onPrimary)
       }
     }
   )

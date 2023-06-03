@@ -43,18 +43,17 @@ internal fun HomeScreen(
 ) {
   val context = LocalContext.current
   val scope = rememberCoroutineScope()
-  var businesses = remember { mutableStateListOf<Business>() }
-  var toShow = remember { mutableStateListOf<Business>() }
-  var categoryFilters = remember { mutableStateListOf<Category>() }
+  val businesses = remember { mutableStateListOf<Business>() }
+  val toShow = remember { mutableStateListOf<Business>() }
+  val categoryFilters = remember { mutableStateListOf<Category>() }
   var searchContent by rememberSaveable { mutableStateOf("") }
   var searchBarActive by rememberSaveable { mutableStateOf(false) }
   var errorMessage by rememberSaveable { mutableStateOf("") }
   var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
 
-  startLocationUpdates()
-  homeViewModel.updateLocation(location.value)
-
   LaunchedEffect(key1 = Unit) {
+    startLocationUpdates()
+    homeViewModel.updateLocation(location.value)
     scope.launch {
       if (!location.value.isNotSet()) {
         homeViewModel

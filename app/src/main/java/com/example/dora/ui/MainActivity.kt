@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
               startDestination =
                 if (isUserSignedIn) DoraScreen.Home.name else DoraScreen.SignIn.name,
               location = location,
+              snackbarHostState = snackbarHostState,
               startLocationUpdates = ::startLocationUpdates
             )
 
