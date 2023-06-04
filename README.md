@@ -5,13 +5,6 @@
 Dora is an Android application made for my Mobile Computing course final project.
 Inspired by [Yelp](https://www.yelp.com), Dora allows owners to share their business information, as well as browse for businesses around the user, via gps.
 
-## Project setup
-1. Create and configure a Firebase project
-2. Create and configure a Google Maps project
-
-## Requirements
-- Android device (API level 31+)
-
 ## Featuring
 - [JetPack](https://developer.android.com/jetpack)
   - [Compose](https://developer.android.com/jetpack/compose)
@@ -27,6 +20,13 @@ Inspired by [Yelp](https://www.yelp.com), Dora allows owners to share their busi
   - Cloud Storage
 - [Google Maps](https://developers.google.com/maps)
 - [Coil](https://coil-kt.github.io/coil/)
+
+## Requirements
+- Android device (API level 31+)
+
+## Project setup
+1. Create and configure a Firebase project
+2. Create and configure a Google Maps project
 
 ## Author
 - [Luca Samorè](https://github.com/LucaSamore)
