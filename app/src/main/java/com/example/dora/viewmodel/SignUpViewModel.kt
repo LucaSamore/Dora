@@ -1,6 +1,7 @@
 package com.example.dora.viewmodel
 
 import android.net.Uri
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -22,6 +23,9 @@ constructor(
   @FirebaseRepository private val authenticationRepository: AuthenticationRepository,
   @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
+
+  val progressIndicatorHidden = mutableStateOf(true)
+
   suspend fun signUp(
     firstName: String,
     lastName: String,

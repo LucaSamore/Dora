@@ -47,23 +47,28 @@ internal fun SignUpScreen(
   onSignUp: () -> Unit,
   onBackToSignIn: () -> Unit
 ) {
-  Column(
-    modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
-    verticalArrangement = Arrangement.SpaceEvenly,
-    horizontalAlignment = Alignment.CenterHorizontally
-  ) {
-    SignUpForm(signUpViewModel, onSignUp, modifier)
+  Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Column(
+      modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
+      verticalArrangement = Arrangement.SpaceEvenly,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      SignUpForm(signUpViewModel, onSignUp, modifier)
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
-      Text(text = "Already have an account?", style = MaterialTheme.typography.bodyLarge)
-      TextButton(onClick = { onBackToSignIn() }) {
-        Text(
-          text = "Sign In",
-          color = MaterialTheme.colorScheme.onPrimary,
-          style = MaterialTheme.typography.bodyLarge,
-          fontWeight = FontWeight.Bold
-        )
+      Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(text = "Already have an account?", style = MaterialTheme.typography.bodyLarge)
+        TextButton(onClick = { onBackToSignIn() }) {
+          Text(
+            text = "Sign In",
+            color = MaterialTheme.colorScheme.onPrimary,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold
+          )
+        }
       }
+    }
+    if (!signUpViewModel.progressIndicatorHidden.value) {
+      CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
     }
   }
 }
@@ -234,6 +239,7 @@ internal fun SignUpForm(
         contentColor = MaterialTheme.colorScheme.onPrimary
       ),
     onClick = {
+      signUpViewModel.progressIndicatorHidden.value = true
       scope.launch {
         when (
           val signUpResult =
@@ -243,8 +249,11 @@ internal fun SignUpForm(
             errorMessageHidden = false
             errorMessage = signUpResult.value.message
           }
-          is Either.Right -> onSignUp()
+          is Either.Right -> {
+            onSignUp()
+          }
         }
+        signUpViewModel.progressIndicatorHidden.value = false
       }
     }
   ) {

@@ -33,31 +33,37 @@ internal fun SignInScreen(
   onSignUp: () -> Unit,
   modifier: Modifier
 ) {
-  Column(
-    modifier = modifier.fillMaxSize().padding(paddingValues),
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally
-  ) {
-    Text(
-      text = "Dora",
-      style = MaterialTheme.typography.titleLarge,
-      modifier = modifier.padding(12.dp),
-      fontFamily = boris,
-      fontSize = 64.sp
-    )
+  Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Column(
+      modifier = modifier.fillMaxSize().padding(paddingValues),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      Text(
+        text = "Dora",
+        style = MaterialTheme.typography.titleLarge,
+        modifier = modifier.padding(12.dp),
+        fontFamily = boris,
+        fontSize = 64.sp
+      )
 
-    SignInForm(signInViewModel, onSignIn, modifier)
+      SignInForm(signInViewModel, onSignIn, modifier)
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
-      Text(text = "Don’t have an account yet?", style = MaterialTheme.typography.bodyLarge)
-      TextButton(onClick = { onSignUp() }) {
-        Text(
-          text = "Sign Up",
-          color = MaterialTheme.colorScheme.onPrimary,
-          style = MaterialTheme.typography.bodyLarge,
-          fontWeight = FontWeight.Bold
-        )
+      Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(text = "Don’t have an account yet?", style = MaterialTheme.typography.bodyLarge)
+        TextButton(onClick = { onSignUp() }) {
+          Text(
+            text = "Sign Up",
+            color = MaterialTheme.colorScheme.onPrimary,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold
+          )
+        }
       }
+    }
+
+    if (!signInViewModel.progressIndicatorHidden.value) {
+      CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
     }
   }
 }
@@ -136,12 +142,17 @@ internal fun SignInForm(
         ),
       onClick = {
         scope.launch {
+          signInViewModel.progressIndicatorHidden.value = true
           when (val signInResult = signInViewModel.signIn(emailAddress, password)) {
             is Either.Left -> {
+              signInViewModel.progressIndicatorHidden.value = false
               errorMessageHidden = false
               errorMessage = signInResult.value.message
             }
-            is Either.Right -> onSignIn()
+            is Either.Right -> {
+              signInViewModel.progressIndicatorHidden.value = false
+              onSignIn()
+            }
           }
         }
       }
