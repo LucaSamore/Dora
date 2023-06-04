@@ -226,9 +226,9 @@ internal fun ProfileForm(
       }
 
       Validator.pipeline(
-          Pair(firstName, UserValidator::validateFirstOrLastName),
-          Pair(lastName, UserValidator::validateFirstOrLastName),
-          Pair(emailAddress, UserValidator::validateEmailAddress),
+          Validator.Pipe(firstName, UserValidator::validateFirstOrLastName),
+          Validator.Pipe(lastName, UserValidator::validateFirstOrLastName),
+          Validator.Pipe(emailAddress, UserValidator::validateEmailAddress),
         )
         .ifRejected {
           errorMessage = it.message!!

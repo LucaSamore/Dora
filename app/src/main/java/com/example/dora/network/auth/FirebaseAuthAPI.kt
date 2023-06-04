@@ -75,8 +75,8 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
   ): NetworkResponse<ValidationStatus, Throwable> {
 
     Validator.pipeline(
-        Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
-        Pair(credentials.password, UserValidator::validatePassword)
+        Validator.Pipe(credentials.emailAddress, UserValidator::validateEmailAddress),
+        Validator.Pipe(credentials.password, UserValidator::validatePassword)
       )
       .ifRejected {
         return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
@@ -90,10 +90,10 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
   ): NetworkResponse<ValidationStatus, Throwable> {
 
     Validator.pipeline(
-        Pair(credentials.firstName, UserValidator::validateFirstOrLastName),
-        Pair(credentials.lastName, UserValidator::validateFirstOrLastName),
-        Pair(credentials.emailAddress, UserValidator::validateEmailAddress),
-        Pair(credentials.password, UserValidator::validatePassword),
+        Validator.Pipe(credentials.firstName, UserValidator::validateFirstOrLastName),
+        Validator.Pipe(credentials.lastName, UserValidator::validateFirstOrLastName),
+        Validator.Pipe(credentials.emailAddress, UserValidator::validateEmailAddress),
+        Validator.Pipe(credentials.password, UserValidator::validatePassword),
       )
       .ifRejected {
         return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))

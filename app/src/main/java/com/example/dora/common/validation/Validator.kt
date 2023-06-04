@@ -27,9 +27,9 @@ object Validator {
     return ValidationResult(status = ValidationStatus.PASS, message = null)
   }
 
-  internal fun <T> pipeline(vararg functions: Pair<T, (T) -> ValidationResult>): ValidationResult {
-    return functions
-      .map { f -> f.second(f.first) }
+  internal fun <T> pipeline(vararg pipes: Pipe<T>): ValidationResult {
+    return pipes
+      .map { p -> p.ruleFunction(p.subject) }
       .filter { r -> r.status == ValidationStatus.REJECT }
       .getOrElse(0) { ValidationResult(status = ValidationStatus.PASS, message = null) }
   }

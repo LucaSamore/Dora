@@ -288,9 +288,9 @@ internal fun AddBusinessScreen(
           // Unfortunately validator pipelines work only on a single type at the time
 
           Validator.pipeline(
-              Pair(name, BusinessValidator::validateName),
-              Pair(website, BusinessValidator::validateWebsite),
-              Pair(phoneNumber, BusinessValidator::validatePhoneNumber),
+              Validator.Pipe(name, BusinessValidator::validateName),
+              Validator.Pipe(website, BusinessValidator::validateWebsite),
+              Validator.Pipe(phoneNumber, BusinessValidator::validatePhoneNumber),
             )
             .ifRejected {
               errorMessage = it.message!!
@@ -298,14 +298,15 @@ internal fun AddBusinessScreen(
               return@Button
             }
 
-          Validator.pipeline(Pair(address, BusinessValidator::validateAddress)).ifRejected {
-            errorMessage = it.message!!
-            errorMessageHidden = false
-            return@Button
-          }
+          Validator.pipeline(Validator.Pipe(address, BusinessValidator::validateAddress))
+            .ifRejected {
+              errorMessage = it.message!!
+              errorMessageHidden = false
+              return@Button
+            }
 
           Validator.pipeline(
-              Pair(images.toList(), BusinessValidator::validateImages),
+              Validator.Pipe(images.toList(), BusinessValidator::validateImages),
             )
             .ifRejected {
               errorMessage = it.message!!

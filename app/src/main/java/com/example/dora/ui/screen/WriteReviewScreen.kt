@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.dora.common.validation.ReviewValidator
+import com.example.dora.common.validation.Validator
 import com.example.dora.viewmodel.WriteReviewViewModel
 import kotlinx.coroutines.launch
 
@@ -99,17 +100,23 @@ internal fun WriteReviewScreen(
     Button(
       modifier = modifier.size(TextFieldDefaults.MinWidth, 48.dp),
       onClick = {
-        ReviewValidator.validateContent(content).ifRejected {
-          errorMessage = it.message!!
-          errorMessageHidden = false
-          return@Button
-        }
+        Validator.pipeline(
+            Validator.Pipe(content, ReviewValidator::validateContent),
+          )
+          .ifRejected {
+            errorMessage = it.message!!
+            errorMessageHidden = false
+            return@Button
+          }
 
-        ReviewValidator.validateRating(rating.toInt()).ifRejected {
-          errorMessage = it.message!!
-          errorMessageHidden = false
-          return@Button
-        }
+        Validator.pipeline(
+            Validator.Pipe(rating.toInt(), ReviewValidator::validateRating),
+          )
+          .ifRejected {
+            errorMessage = it.message!!
+            errorMessageHidden = false
+            return@Button
+          }
 
         scope.launch {
           writeReviewViewModel
