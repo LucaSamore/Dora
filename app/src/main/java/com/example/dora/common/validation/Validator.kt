@@ -1,36 +1,35 @@
 package com.example.dora.common.validation
 
-enum class ValidationStatus {
-  PASS,
-  REJECT
-}
-
-class ValidationResult(var status: ValidationStatus, var message: String?) {
-  inline fun ifRejected(block: (ValidationResult) -> Unit) {
-    if (status == ValidationStatus.REJECT) {
-      block(this)
-    }
-  }
-}
-
 object Validator {
-  data class Rule<T>(val test: (T) -> Boolean, val errorMessage: String)
+  enum class Status {
+    PASS,
+    REJECT
+  }
 
-  data class Pipe<T>(val subject: T, val ruleFunction: (T) -> ValidationResult)
-
-  internal fun <T> validate(subject: T, vararg rules: Rule<T>): ValidationResult {
-    rules.forEach { rule ->
-      if (!rule.test(subject)) {
-        return ValidationResult(status = ValidationStatus.REJECT, message = rule.errorMessage)
+  data class Result(val status: Status, val message: String?) {
+    inline fun ifRejected(block: (Result) -> Unit) {
+      if (status == Status.REJECT) {
+        block(this)
       }
     }
-    return ValidationResult(status = ValidationStatus.PASS, message = null)
+  }
+  data class Rule<T>(val test: (T) -> Boolean, val errorMessage: String)
+
+  data class Pipe<T>(val subject: T, val ruleFunction: (T) -> Result)
+
+  internal fun <T> validate(subject: T, vararg rules: Rule<T>): Result {
+    rules.forEach { rule ->
+      if (!rule.test(subject)) {
+        return Result(status = Status.REJECT, message = rule.errorMessage)
+      }
+    }
+    return Result(status = Status.PASS, message = null)
   }
 
-  internal fun <T> pipeline(vararg pipes: Pipe<T>): ValidationResult {
+  internal fun <T> pipeline(vararg pipes: Pipe<T>): Result {
     return pipes
       .map { p -> p.ruleFunction(p.subject) }
-      .filter { r -> r.status == ValidationStatus.REJECT }
-      .getOrElse(0) { ValidationResult(status = ValidationStatus.PASS, message = null) }
+      .filter { r -> r.status == Status.REJECT }
+      .getOrElse(0) { Result(status = Status.PASS, message = null) }
   }
 }

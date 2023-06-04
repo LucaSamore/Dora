@@ -8,7 +8,7 @@ object UserValidator {
   private const val PASSWORD_MIN_LENGTH = 8
   private const val PASSWORD_MAX_LENGTH = 50
 
-  internal fun validateFirstOrLastName(firstOrLastName: String): ValidationResult =
+  internal fun validateFirstOrLastName(firstOrLastName: String): Validator.Result =
     Validator.validate(
       firstOrLastName,
       Validator.Rule(
@@ -21,7 +21,7 @@ object UserValidator {
       )
     )
 
-  internal fun validateEmailAddress(emailAddress: String): ValidationResult =
+  internal fun validateEmailAddress(emailAddress: String): Validator.Result =
     Validator.validate(
       emailAddress,
       Validator.Rule(
@@ -34,7 +34,7 @@ object UserValidator {
       )
     )
 
-  internal fun validatePassword(password: String): ValidationResult =
+  internal fun validatePassword(password: String): Validator.Result =
     Validator.validate(
       password,
       Validator.Rule(test = { password.isNotEmpty() }, errorMessage = "Password is required"),

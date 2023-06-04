@@ -2,7 +2,6 @@ package com.example.dora.network.auth
 
 import com.example.dora.common.auth.Credentials
 import com.example.dora.common.validation.UserValidator
-import com.example.dora.common.validation.ValidationStatus
 import com.example.dora.common.validation.Validator
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.NetworkResponse
@@ -22,7 +21,7 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
   ): NetworkResponse<Task<AuthResult>, Throwable> {
     val validationResult = validateCredentials(request.body)
 
-    if (validationResult.data!! == ValidationStatus.REJECT) {
+    if (validationResult.data!! == Validator.Status.REJECT) {
       return NetworkResponse(null, validationResult.error)
     }
 
@@ -37,7 +36,7 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
   ): NetworkResponse<Task<AuthResult>, Throwable> {
     val validationResult = validateCredentials(request.body)
 
-    if (validationResult.data!! == ValidationStatus.REJECT) {
+    if (validationResult.data!! == Validator.Status.REJECT) {
       return NetworkResponse(null, validationResult.error)
     }
 
@@ -63,7 +62,7 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
 
   private fun validateCredentials(
     credentials: Credentials
-  ): NetworkResponse<ValidationStatus, Throwable> {
+  ): NetworkResponse<Validator.Status, Throwable> {
     return when (credentials) {
       is Credentials.Login -> validateLoginCredentials(credentials)
       is Credentials.Register -> validateRegisterCredentials(credentials)
@@ -72,22 +71,22 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
 
   private fun validateLoginCredentials(
     credentials: Credentials.Login
-  ): NetworkResponse<ValidationStatus, Throwable> {
+  ): NetworkResponse<Validator.Status, Throwable> {
 
     Validator.pipeline(
         Validator.Pipe(credentials.emailAddress, UserValidator::validateEmailAddress),
         Validator.Pipe(credentials.password, UserValidator::validatePassword)
       )
       .ifRejected {
-        return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
+        return NetworkResponse(Validator.Status.REJECT, Throwable(it.message))
       }
 
-    return NetworkResponse(ValidationStatus.PASS, null)
+    return NetworkResponse(Validator.Status.PASS, null)
   }
 
   private fun validateRegisterCredentials(
     credentials: Credentials.Register
-  ): NetworkResponse<ValidationStatus, Throwable> {
+  ): NetworkResponse<Validator.Status, Throwable> {
 
     Validator.pipeline(
         Validator.Pipe(credentials.firstName, UserValidator::validateFirstOrLastName),
@@ -96,9 +95,9 @@ class FirebaseAuthAPI(private val auth: FirebaseAuth = Firebase.auth) :
         Validator.Pipe(credentials.password, UserValidator::validatePassword),
       )
       .ifRejected {
-        return NetworkResponse(ValidationStatus.REJECT, Throwable(it.message))
+        return NetworkResponse(Validator.Status.REJECT, Throwable(it.message))
       }
 
-    return NetworkResponse(ValidationStatus.PASS, null)
+    return NetworkResponse(Validator.Status.PASS, null)
   }
 }

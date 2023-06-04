@@ -11,7 +11,7 @@ object BusinessValidator {
   private const val MAX_IMAGES_NUMBER = 5
   private const val MIN_IMAGES_NUMBER = 1
 
-  internal fun validateName(name: String): ValidationResult =
+  internal fun validateName(name: String): Validator.Result =
     Validator.validate(
       name,
       Validator.Rule(test = { name.isNotEmpty() }, errorMessage = "Business name is required"),
@@ -25,13 +25,13 @@ object BusinessValidator {
       ),
     )
 
-  internal fun validateAddress(address: BusinessPlace?): ValidationResult =
+  internal fun validateAddress(address: BusinessPlace?): Validator.Result =
     Validator.validate(
       address,
       Validator.Rule(test = { address != null }, errorMessage = "Address is required"),
     )
 
-  internal fun validatePhoneNumber(phoneNumber: String): ValidationResult =
+  internal fun validatePhoneNumber(phoneNumber: String): Validator.Result =
     Validator.validate(
       phoneNumber,
       Validator.Rule(
@@ -44,7 +44,7 @@ object BusinessValidator {
       ),
     )
 
-  internal fun validateWebsite(website: String): ValidationResult =
+  internal fun validateWebsite(website: String): Validator.Result =
     Validator.validate(
       website,
       Validator.Rule(
@@ -53,7 +53,7 @@ object BusinessValidator {
       ),
     )
 
-  internal fun validateImages(images: List<Uri>): ValidationResult =
+  internal fun validateImages(images: List<Uri>): Validator.Result =
     Validator.validate(
       images,
       Validator.Rule(
