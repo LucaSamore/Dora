@@ -59,7 +59,7 @@ internal fun NavigationBarFunction(navController: NavHostController) {
     NavigationBarItem(
       icon = { Icon(Icons.Filled.Star, contentDescription = "Favorites") },
       label = { Text(text = "Favorites") },
-      selected = false,
+      selected = currentScreen == DoraScreen.Favorites.name,
       onClick = {
         navController.navigate(DoraScreen.Favorites.name) {
           popUpTo(DoraScreen.Favorites.name) { inclusive = true }
@@ -77,7 +77,7 @@ internal fun NavigationBarFunction(navController: NavHostController) {
     NavigationBarItem(
       icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") },
       label = { Text(text = "Settings") },
-      selected = false,
+      selected = currentScreen == DoraScreen.Settings.name,
       onClick = {
         navController.navigate(DoraScreen.Settings.name) {
           popUpTo(DoraScreen.Settings.name) { inclusive = true }
