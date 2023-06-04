@@ -132,6 +132,34 @@ constructor(
       }
     }
 
+  override suspend fun getBusinessesByName(
+    searchKey: String
+  ): Either<ErrorMessage, List<Business>> =
+    withContext(ioDispatcher) {
+      try {
+        val request =
+          FirestoreRequest(
+            collection = Business.collection,
+            where =
+              Filter.and(
+                Filter.greaterThanOrEqualTo("name", searchKey),
+                Filter.lessThanOrEqualTo("name", "$searchKey\uF7FF")
+              )
+          )
+
+        firestoreAPI
+          .findMany(NetworkRequest.of(request))
+          .data!!
+          .findManyTask!!
+          .await()
+          .toObjects(Business::class.java)
+          .toList()
+          .right()
+      } catch (e: Exception) {
+        ErrorMessage(e.message!!).left()
+      }
+    }
+
   private suspend fun getBusinessesInClosedLatitude(latitude: Double): Set<Business> {
     val request =
       FirestoreRequest(

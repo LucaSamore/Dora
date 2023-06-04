@@ -16,4 +16,6 @@ interface BusinessRepository {
   suspend fun getBusinessesClosedToMe(myPosition: Location): Either<ErrorMessage, List<Business>>
 
   suspend fun getBusinessesDefault(): Either<ErrorMessage, List<Business>>
+
+  suspend fun getBusinessesByName(searchKey: String): Either<ErrorMessage, List<Business>>
 }
