@@ -149,6 +149,7 @@ fun NavigationGraph(
 
     composable(route = "${DoraScreen.SearchResults.name}/{searchKey}") {
       SearchResultsScreen(
+        searchResultsViewModel = hiltViewModel(),
         searchKey = it.arguments?.getString("searchKey")!!,
         modifier = modifier,
         paddingValues = paddingValues,
