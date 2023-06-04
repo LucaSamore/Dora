@@ -21,7 +21,8 @@ class FavoriteRepositoryImpl(
   private val firestoreAPI: FirestoreAPI,
   private val ioDispatcher: CoroutineDispatcher,
 ) : FavoriteRepository {
-  override suspend fun getFavorites(): List<Favorite> = favoriteDAO.getFavorites()
+  override suspend fun getFavorites(userId: String): List<Favorite> =
+    favoriteDAO.getFavorites(userId)
 
   @WorkerThread
   override suspend fun insert(favorite: Favorite) {

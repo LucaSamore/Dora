@@ -49,7 +49,8 @@ internal fun SignUpScreen(
 ) {
   Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Column(
-      modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
+      modifier =
+        modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(paddingValues),
       verticalArrangement = Arrangement.SpaceEvenly,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {

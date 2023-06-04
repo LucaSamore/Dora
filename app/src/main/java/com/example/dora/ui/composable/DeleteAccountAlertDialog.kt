@@ -28,7 +28,11 @@ internal fun DeleteAccountAlertDialog(
     onDismissRequest = { onDismiss() },
     title = { Text(text = "Delete account") },
     text = { Text(text = if (!errorMessageHidden) errorMessage else "Are you sure about that?") },
-    dismissButton = { TextButton(onClick = { onDismiss() }) { Text(text = "Cancel", color = MaterialTheme.colorScheme.onPrimary) } },
+    dismissButton = {
+      TextButton(onClick = { onDismiss() }) {
+        Text(text = "Cancel", color = MaterialTheme.colorScheme.onPrimary)
+      }
+    },
     confirmButton = {
       TextButton(
         onClick = {

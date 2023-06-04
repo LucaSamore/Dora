@@ -6,7 +6,7 @@ import com.example.dora.database.entity.Favorite
 import com.example.dora.model.Business
 
 interface FavoriteRepository {
-  suspend fun getFavorites(): List<Favorite>
+  suspend fun getFavorites(userId: String): List<Favorite>
 
   suspend fun insert(favorite: Favorite)
 

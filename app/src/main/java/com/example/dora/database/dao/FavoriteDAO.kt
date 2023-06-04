@@ -5,7 +5,8 @@ import com.example.dora.database.entity.Favorite
 
 @Dao
 interface FavoriteDAO {
-  @Query("SELECT * FROM favorites") suspend fun getFavorites(): List<Favorite>
+  @Query("SELECT * FROM favorites WHERE userId = :userId")
+  suspend fun getFavorites(userId: String): List<Favorite>
 
   @Insert(onConflict = OnConflictStrategy.IGNORE) suspend fun insert(favorite: Favorite)
 

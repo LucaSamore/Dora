@@ -153,12 +153,12 @@ internal fun AddBusinessScreen(
           label = { Text("Category") },
           trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
           colors =
-          ExposedDropdownMenuDefaults.textFieldColors(
-            focusedContainerColor = MaterialTheme.colorScheme.background,
-            unfocusedContainerColor = MaterialTheme.colorScheme.background,
-            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-          ),
+            ExposedDropdownMenuDefaults.textFieldColors(
+              focusedContainerColor = MaterialTheme.colorScheme.background,
+              unfocusedContainerColor = MaterialTheme.colorScheme.background,
+              focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+              unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            ),
         )
         ExposedDropdownMenu(
           expanded = expanded,
