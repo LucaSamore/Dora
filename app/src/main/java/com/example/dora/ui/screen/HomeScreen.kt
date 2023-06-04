@@ -1,14 +1,12 @@
 package com.example.dora.ui.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -28,6 +26,7 @@ import com.example.dora.common.Location
 import com.example.dora.model.Business
 import com.example.dora.model.Category
 import com.example.dora.ui.composable.BusinessCard
+import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
@@ -107,32 +106,19 @@ internal fun HomeScreen(
         modifier = modifier.fillMaxWidth().padding(12.dp),
         query = searchContent,
         onQueryChange = { searchContent = it },
-        onSearch = { searchBarActive = false },
+        onSearch = {
+          searchBarActive = false
+          if (searchContent.isEmpty()) {
+            return@SearchBar
+          }
+          navController.navigate("${DoraScreen.SearchResults.name}/$searchContent")
+        },
         active = searchBarActive,
         onActiveChange = { searchBarActive = it },
         placeholder = { Text(text = "Search") },
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search business") },
-      ) {
-        LazyColumn(
-          modifier = Modifier.fillMaxWidth(),
-          contentPadding = PaddingValues(16.dp),
-          verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-          items(4) { idx ->
-            val resultText = "Suggestion $idx"
-            ListItem(
-              headlineContent = { Text(resultText) },
-              supportingContent = { Text("Additional info") },
-              leadingContent = { Icon(Icons.Filled.Star, contentDescription = null) },
-              modifier =
-                modifier.clickable {
-                  searchContent = resultText
-                  searchBarActive = false
-                }
-            )
-          }
-        }
-      }
+        content = {}
+      )
     }
 
     Column(

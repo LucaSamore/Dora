@@ -146,5 +146,14 @@ fun NavigationGraph(
         }
       )
     }
+
+    composable(route = "${DoraScreen.SearchResults.name}/{searchKey}") {
+      SearchResultsScreen(
+        searchKey = it.arguments?.getString("searchKey")!!,
+        modifier = modifier,
+        paddingValues = paddingValues,
+        navController = navController,
+      )
+    }
   }
 }

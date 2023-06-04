@@ -11,4 +11,5 @@ sealed class DoraScreen(val name: String) {
   object BusinessDetails : DoraScreen("Business Details")
   object Favorites : DoraScreen("Favorites")
   object WriteReview : DoraScreen("Write Review")
+  object SearchResults : DoraScreen("Search Results")
 }
