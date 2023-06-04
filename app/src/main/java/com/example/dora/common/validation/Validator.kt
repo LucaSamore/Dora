@@ -13,6 +13,7 @@ object Validator {
       }
     }
   }
+
   data class Rule<T>(val test: (T) -> Boolean, val errorMessage: String)
 
   data class Pipe<T>(val subject: T, val ruleFunction: (T) -> Result)

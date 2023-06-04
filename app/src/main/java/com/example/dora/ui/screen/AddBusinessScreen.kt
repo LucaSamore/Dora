@@ -141,6 +141,44 @@ internal fun AddBusinessScreen(
         )
       }
 
+      ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+      ) {
+        TextField(
+          modifier = modifier.menuAnchor(),
+          readOnly = true,
+          value = category.categoryName,
+          onValueChange = {},
+          label = { Text("Category") },
+          trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+          colors =
+          ExposedDropdownMenuDefaults.textFieldColors(
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+          ),
+        )
+        ExposedDropdownMenu(
+          expanded = expanded,
+          onDismissRequest = { expanded = false },
+        ) {
+          categories.forEach { selectionOption ->
+            DropdownMenuItem(
+              text = { Text(selectionOption.categoryName) },
+              onClick = {
+                category = selectionOption
+                expanded = false
+              },
+              contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+            )
+          }
+        }
+      }
+
+      Spacer(modifier = modifier.size(spacing.dp))
+
       OutlinedTextField(
         value = name,
         onValueChange = { name = it },
@@ -194,44 +232,6 @@ internal fun AddBusinessScreen(
             focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
           )
       )
-
-      Spacer(modifier = modifier.size(spacing.dp))
-
-      ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-      ) {
-        TextField(
-          modifier = modifier.menuAnchor(),
-          readOnly = true,
-          value = category.categoryName,
-          onValueChange = {},
-          label = { Text("Category") },
-          trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-          colors =
-            ExposedDropdownMenuDefaults.textFieldColors(
-              focusedContainerColor = MaterialTheme.colorScheme.background,
-              unfocusedContainerColor = MaterialTheme.colorScheme.background,
-              focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-              unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-            ),
-        )
-        ExposedDropdownMenu(
-          expanded = expanded,
-          onDismissRequest = { expanded = false },
-        ) {
-          categories.forEach { selectionOption ->
-            DropdownMenuItem(
-              text = { Text(selectionOption.categoryName) },
-              onClick = {
-                category = selectionOption
-                expanded = false
-              },
-              contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-            )
-          }
-        }
-      }
 
       Spacer(modifier = modifier.size(spacing.dp))
 

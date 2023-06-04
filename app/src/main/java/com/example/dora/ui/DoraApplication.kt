@@ -75,7 +75,6 @@ internal fun DoraApplication(
       paddingValues = innerPadding,
       location = location,
       startLocationUpdates = startLocationUpdates,
-      snackbarHostState = snackbarHostState
     )
   }
 }

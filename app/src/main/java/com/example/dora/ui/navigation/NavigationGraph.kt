@@ -1,7 +1,6 @@
 package com.example.dora.ui.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
@@ -20,7 +19,6 @@ fun NavigationGraph(
   paddingValues: PaddingValues,
   modifier: Modifier = Modifier,
   location: MutableState<Location>,
-  snackbarHostState: SnackbarHostState,
   startLocationUpdates: () -> Unit,
 ) {
   NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {

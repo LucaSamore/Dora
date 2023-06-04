@@ -43,6 +43,7 @@ class MainActivity : ComponentActivity() {
   private var showAlertDialog = mutableStateOf(false)
   private val location = mutableStateOf(Location())
   private val mainActivityViewModel: MainActivityViewModel by viewModels()
+  private var showOnce = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -70,7 +71,10 @@ class MainActivity : ComponentActivity() {
             )
 
             if (showSnackBar.value) {
-              SnackBarComposable(snackbarHostState, context, showSnackBar)
+              if (!showOnce) {
+                SnackBarComposable(snackbarHostState, context, showSnackBar)
+                showOnce = true
+              }
             }
             if (showAlertDialog.value) {
               AlertDialogComposable(context, showAlertDialog)
