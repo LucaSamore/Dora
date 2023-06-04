@@ -14,17 +14,16 @@ class ValidationResult(var status: ValidationStatus, var message: String?) {
 }
 
 object Validator {
-  internal fun <T> validate(
-    subject: T,
-    vararg rules: (subject: T) -> Pair<Boolean, String>
-  ): ValidationResult {
-    rules
-      .map { r -> r(subject) }
-      .forEach { p ->
-        if (!p.first) {
-          return ValidationResult(status = ValidationStatus.REJECT, message = p.second)
-        }
+  data class Rule<T>(val test: (T) -> Boolean, val errorMessage: String)
+
+  data class Pipe<T>(val subject: T, val ruleFunction: (T) -> ValidationResult)
+
+  internal fun <T> validate(subject: T, vararg rules: Rule<T>): ValidationResult {
+    rules.forEach { rule ->
+      if (!rule.test(subject)) {
+        return ValidationResult(status = ValidationStatus.REJECT, message = rule.errorMessage)
       }
+    }
     return ValidationResult(status = ValidationStatus.PASS, message = null)
   }
 

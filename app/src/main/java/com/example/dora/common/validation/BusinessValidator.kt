@@ -14,37 +14,59 @@ object BusinessValidator {
   internal fun validateName(name: String): ValidationResult =
     Validator.validate(
       name,
-      { n -> Pair(n.isNotEmpty(), "Business name is required") },
-      { n -> Pair(n.length >= NAME_MIN_LENGTH, "Business name is too short") },
-      { n -> Pair(n.length <= NAME_MAX_LENGTH, "Business name is too long") }
+      Validator.Rule(test = { name.isNotEmpty() }, errorMessage = "Business name is required"),
+      Validator.Rule(
+        test = { name.length >= NAME_MIN_LENGTH },
+        errorMessage = "Business name is too short"
+      ),
+      Validator.Rule(
+        test = { name.length <= NAME_MAX_LENGTH },
+        errorMessage = "Business name is too long"
+      ),
     )
 
   internal fun validateAddress(address: BusinessPlace?): ValidationResult =
     Validator.validate(
       address,
-      { a -> Pair(a != null, "Address is required") },
+      Validator.Rule(test = { address != null }, errorMessage = "Address is required"),
     )
 
   internal fun validatePhoneNumber(phoneNumber: String): ValidationResult =
     Validator.validate(
       phoneNumber,
-      { pn -> Pair(pn.isNotEmpty(), "Phone number is required") },
-      { pn ->
-        Pair(pn.length == PHONE_NUMBER_LENGTH, "Phone number must be $PHONE_NUMBER_LENGTH numbers")
-      },
+      Validator.Rule(
+        test = { phoneNumber.isNotEmpty() },
+        errorMessage = "Phone number is required"
+      ),
+      Validator.Rule(
+        test = { phoneNumber.length == PHONE_NUMBER_LENGTH },
+        errorMessage = "Phone number must be $PHONE_NUMBER_LENGTH numbers"
+      ),
     )
 
   internal fun validateWebsite(website: String): ValidationResult =
     Validator.validate(
       website,
-      { w -> Pair(w.isEmpty() || UrlValidator().isValid(w), "Website url is not valid") },
+      Validator.Rule(
+        test = { website.isEmpty() || UrlValidator().isValid(website) },
+        errorMessage = "Website url is not valid"
+      ),
     )
 
   internal fun validateImages(images: List<Uri>): ValidationResult =
     Validator.validate(
       images,
-      { i -> Pair(i.none { it == Uri.EMPTY }, "At least one image is required") },
-      { i -> Pair(i.size >= MIN_IMAGES_NUMBER, "At most $MIN_IMAGES_NUMBER images are allowed") },
-      { i -> Pair(i.size <= MAX_IMAGES_NUMBER, "At most $MAX_IMAGES_NUMBER images are allowed") },
+      Validator.Rule(
+        test = { images.none { it == Uri.EMPTY } },
+        errorMessage = "At least one image is required"
+      ),
+      Validator.Rule(
+        test = { images.size >= MIN_IMAGES_NUMBER },
+        errorMessage = "At least $MIN_IMAGES_NUMBER images are allowed"
+      ),
+      Validator.Rule(
+        test = { images.size <= MAX_IMAGES_NUMBER },
+        errorMessage = "At most $MAX_IMAGES_NUMBER images are allowed"
+      ),
     )
 }

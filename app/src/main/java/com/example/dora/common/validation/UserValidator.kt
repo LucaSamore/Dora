@@ -11,49 +11,52 @@ object UserValidator {
   internal fun validateFirstOrLastName(firstOrLastName: String): ValidationResult =
     Validator.validate(
       firstOrLastName,
-      { f -> Pair(f.isNotEmpty(), "First name or last name is required") },
-      { f ->
-        Pair(f.length in NAME_MIN_LENGTH..NAME_MAX_LENGTH, "First name or last name is too short")
-      }
+      Validator.Rule(
+        test = { firstOrLastName.isNotEmpty() },
+        errorMessage = "First name or last name is required"
+      ),
+      Validator.Rule(
+        test = { firstOrLastName.length in NAME_MIN_LENGTH..NAME_MAX_LENGTH },
+        errorMessage = "First name or last name is too short"
+      )
     )
 
   internal fun validateEmailAddress(emailAddress: String): ValidationResult =
     Validator.validate(
       emailAddress,
-      { e -> Pair(e.isNotEmpty(), "Email address is required") },
-      { e -> Pair(EmailValidator.getInstance().isValid(e), "Email address is not valid") }
+      Validator.Rule(
+        test = { emailAddress.isNotEmpty() },
+        errorMessage = "Email address is required"
+      ),
+      Validator.Rule(
+        test = { EmailValidator.getInstance().isValid(emailAddress) },
+        errorMessage = "Email address is not valid"
+      )
     )
 
   internal fun validatePassword(password: String): ValidationResult =
     Validator.validate(
       password,
-      { p -> Pair(p.isNotEmpty(), "Password is required") },
-      { p ->
-        Pair(
-          p.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH,
-          "Password must be at least $PASSWORD_MIN_LENGTH characters"
-        )
-      },
-      { p ->
-        Pair(p.firstOrNull { it.isDigit() } != null, "Password must contain at least a number")
-      },
-      { p ->
-        Pair(
-          p.filter { it.isLetter() }.firstOrNull { it.isUpperCase() } != null,
-          "Password must contain at least one uppercase letter"
-        )
-      },
-      { p ->
-        Pair(
-          p.filter { it.isLetter() }.firstOrNull { it.isLowerCase() } != null,
-          "Password must contain at least one lowercase letter"
-        )
-      },
-      { p ->
-        Pair(
-          p.firstOrNull { !it.isLetterOrDigit() } != null,
-          "Password must contain at least one letter and one number"
-        )
-      }
+      Validator.Rule(test = { password.isNotEmpty() }, errorMessage = "Password is required"),
+      Validator.Rule(
+        test = { password.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH },
+        errorMessage = "Password must be at least $PASSWORD_MIN_LENGTH characters"
+      ),
+      Validator.Rule(
+        test = { password.firstOrNull { it.isDigit() } != null },
+        errorMessage = "Password must contain at least a number"
+      ),
+      Validator.Rule(
+        test = { password.filter { it.isLetter() }.firstOrNull { it.isUpperCase() } != null },
+        errorMessage = "Password must contain at least one uppercase letter"
+      ),
+      Validator.Rule(
+        test = { password.filter { it.isLetter() }.firstOrNull { it.isLowerCase() } != null },
+        errorMessage = "Password must contain at least one lowercase letter"
+      ),
+      Validator.Rule(
+        test = { password.firstOrNull { !it.isLetterOrDigit() } != null },
+        errorMessage = "Password must contain at least one letter and one number"
+      )
     )
 }

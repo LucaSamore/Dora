@@ -7,14 +7,15 @@ object ReviewValidator {
   internal fun validateContent(content: String): ValidationResult =
     Validator.validate(
       content,
-      { c -> Pair(c.isNotEmpty(), "Content is required") },
+      Validator.Rule(test = { content.isNotEmpty() }, errorMessage = "Content is required")
     )
 
   internal fun validateRating(rating: Int): ValidationResult =
     Validator.validate(
       rating,
-      { r ->
-        Pair(r in MIN_RATING..MAX_RATING, "Rating must be between $MIN_RATING and $MAX_RATING")
-      }
+      Validator.Rule(
+        test = { rating in MIN_RATING..MAX_RATING },
+        errorMessage = "Rating must be between $MIN_RATING and $MAX_RATING"
+      )
     )
 }
