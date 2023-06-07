@@ -42,58 +42,29 @@ internal fun HomeScreen(
 ) {
   val context = LocalContext.current
   val scope = rememberCoroutineScope()
-  val businesses = remember { mutableStateListOf<Business>() }
   val toShow = remember { mutableStateListOf<Business>() }
   val categoryFilters = remember { mutableStateListOf<Category>() }
   var searchContent by rememberSaveable { mutableStateOf("") }
   var searchBarActive by rememberSaveable { mutableStateOf(false) }
-  var errorMessage by rememberSaveable { mutableStateOf("") }
-  var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
 
   LaunchedEffect(key1 = Unit) {
-    startLocationUpdates()
-    homeViewModel.updateLocation(location.value)
     scope.launch {
-      if (!location.value.isNotSet()) {
-        homeViewModel
-          .getBusinessesClosedToMe(location.value)
-          .fold(
-            { left ->
-              errorMessage = left.message
-              errorMessageHidden = false
-            },
-            { right ->
-              businesses.apply {
-                clear()
-                addAll(right)
-              }
-              toShow.apply {
-                clear()
-                addAll(right)
-              }
-            }
-          )
-      } else {
-        homeViewModel
-          .getBusinessesDefault()
-          .fold(
-            { left ->
-              errorMessage = left.message
-              errorMessageHidden = false
-            },
-            { right ->
-              businesses.apply {
-                clear()
-                addAll(right)
-              }
-              toShow.apply {
-                clear()
-                addAll(right)
-              }
-            }
-          )
-      }
+      startLocationUpdates()
+      homeViewModel.updateLocation(location.value)
     }
+  }
+
+  if (!location.value.isNotSet()) {
+    homeViewModel.getBusinessesClosedToMe(location.value)
+  } else {
+    homeViewModel.getBusinessesDefault()
+  }
+
+  val businesses by homeViewModel.businesses.collectAsState()
+
+  toShow.apply {
+    clear()
+    addAll(businesses)
   }
 
   Column(
@@ -171,9 +142,9 @@ internal fun HomeScreen(
 
     Spacer(modifier = modifier.size(12.dp))
 
-    if (!errorMessageHidden) {
+    if (!homeViewModel.errorMessageHidden.value) {
       Text(
-        text = errorMessage,
+        text = homeViewModel.errorMessage.value,
         color = Color.Red,
         modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
         textAlign = TextAlign.Center
