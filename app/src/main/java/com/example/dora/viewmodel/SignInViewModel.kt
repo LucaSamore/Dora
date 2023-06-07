@@ -1,6 +1,5 @@
 package com.example.dora.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -22,8 +21,6 @@ constructor(
   @FirebaseRepository private val authenticationRepository: AuthenticationRepository,
   @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
-
-  val progressIndicatorHidden = mutableStateOf(true)
 
   suspend fun signIn(emailAddress: String, password: String): Either<ErrorMessage, SignedUser> =
     withContext(viewModelScope.coroutineContext + ioDispatcher) {
