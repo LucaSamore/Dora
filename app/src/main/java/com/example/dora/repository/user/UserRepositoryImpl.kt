@@ -8,6 +8,7 @@ import com.example.dora.common.ErrorMessage
 import com.example.dora.common.Location
 import com.example.dora.common.SuccessMessage
 import com.example.dora.datastore.UserDatastore
+import com.example.dora.model.Review
 import com.example.dora.model.User
 import com.example.dora.network.NetworkRequest
 import com.example.dora.network.auth.FirebaseAuthAPI
@@ -15,6 +16,7 @@ import com.example.dora.network.database.FirestoreAPI
 import com.example.dora.network.database.FirestoreRequest
 import com.example.dora.network.storage.FirebaseStorageAPI
 import com.example.dora.network.storage.FirebaseStorageRequest
+import com.google.firebase.firestore.Filter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
@@ -68,6 +70,9 @@ constructor(
           )
 
         updateAuthEmailAddress(user.emailAddress)
+
+        getReviewIdsByUserId(user.uid)
+          .fold({ left -> left.left() }, { right -> updateUserReviews(user, right) })
 
         return@withContext firestoreAPI
           .update(NetworkRequest.of(request))
@@ -141,6 +146,50 @@ constructor(
           .data
           ?.await()!!
           .right()
+      } catch (e: Exception) {
+        ErrorMessage(e.message!!).left()
+      }
+    }
+
+  private suspend fun getReviewIdsByUserId(userId: String): Either<ErrorMessage, List<String>> =
+    withContext(ioDispatcher) {
+      try {
+        val request =
+          FirestoreRequest(
+            collection = Review.collection,
+            where = Filter.equalTo("user.uid", userId)
+          )
+
+        firestoreAPI
+          .findMany(NetworkRequest.of(request))
+          .data!!
+          .findManyTask!!
+          .await()
+          .toObjects(Review::class.java)
+          .map { it.uuid!! }
+          .right()
+      } catch (e: Exception) {
+        ErrorMessage(e.message!!).left()
+      }
+    }
+
+  private suspend fun updateUserReviews(
+    user: User,
+    reviewIds: List<String>
+  ): Either<ErrorMessage, SuccessMessage> =
+    withContext(ioDispatcher) {
+      try {
+        reviewIds.forEach { reviewId ->
+          val request =
+            FirestoreRequest(
+              collection = Review.collection,
+              document = reviewId,
+              updates = mapOf("user" to user)
+            )
+
+          firestoreAPI.update(NetworkRequest.of(request)).data?.updateTask?.await()
+        }
+        return@withContext SuccessMessage("").right()
       } catch (e: Exception) {
         ErrorMessage(e.message!!).left()
       }
