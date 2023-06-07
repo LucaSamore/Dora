@@ -25,7 +25,7 @@ class ProfileViewModel
 @Inject
 constructor(
   @FirebaseRepository private val userRepository: UserRepository,
-  @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+  @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
   private val _user = MutableStateFlow<User?>(null)
