@@ -1,6 +1,7 @@
 package com.example.dora.ui.screen
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -23,7 +24,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import arrow.core.Either
 import arrow.core.getOrElse
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.dora.common.opticsCompose
@@ -43,7 +43,8 @@ internal fun ProfileScreen(
   onError: () -> Unit,
   onUpdate: () -> Unit
 ) {
-  val eitherUser by profileViewModel.user.collectAsState()
+  profileViewModel.getUser()
+  val user by profileViewModel.user.collectAsState()
 
   Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Column(
@@ -52,25 +53,22 @@ internal fun ProfileScreen(
       verticalArrangement = Arrangement.SpaceEvenly,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      eitherUser.fold(
-        {
-          ErrorAlertDialog(
-            title = "Error",
-            content = "Unable to retrieve your data",
-            onError = onError
-          )
-        },
-        { user ->
-          if (user.uid != null) {
-            ProfileForm(
-              profileViewModel = profileViewModel,
-              modifier = modifier,
-              user = user,
-              onUpdate = onUpdate
-            )
-          }
-        }
-      )
+      if (!profileViewModel.errorMessageHidden.value) {
+        ErrorAlertDialog(
+          title = "Error",
+          content = profileViewModel.errorMessage.value,
+          onError = onError
+        )
+      }
+
+      if (user != null) {
+        ProfileForm(
+          profileViewModel = profileViewModel,
+          modifier = modifier,
+          user = user!!,
+          onUpdate = onUpdate
+        )
+      }
     }
 
     if (!profileViewModel.progressIndicatorHidden.value) {
@@ -254,17 +252,20 @@ internal fun ProfileForm(
             { u -> User.profilePicture.set(u, uri.toString()) },
           )
 
-        when (val result = profileViewModel.updateProfile(changes)) {
-          is Either.Left -> {
-            profileViewModel.progressIndicatorHidden.value = true
-            errorMessage = result.value.message
-            errorMessageHidden = false
-          }
-          is Either.Right -> {
-            onUpdate()
-            profileViewModel.progressIndicatorHidden.value = true
-          }
-        }
+        profileViewModel
+          .updateProfile(changes)
+          .fold(
+            { error ->
+              errorMessage = error.message
+              errorMessageHidden = false
+            },
+            { success ->
+              onUpdate()
+              Toast.makeText(context, success.message, Toast.LENGTH_SHORT).show()
+            }
+          )
+
+        profileViewModel.progressIndicatorHidden.value = true
       }
     }
   ) {

@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import arrow.core.right
 import com.example.dora.common.ErrorMessage
 import com.example.dora.common.SuccessMessage
 import com.example.dora.di.FirebaseRepository
@@ -29,15 +28,28 @@ constructor(
   @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-  private val _user = MutableStateFlow<Either<ErrorMessage, User>>(User().right())
+  private val _user = MutableStateFlow<User?>(null)
 
   val user = _user.asStateFlow()
 
   val progressIndicatorHidden = mutableStateOf(true)
 
-  init {
-    viewModelScope.launch(ioDispatcher) { _user.update { userRepository.getUser() } }
-  }
+  val errorMessage = mutableStateOf("")
+
+  val errorMessageHidden = mutableStateOf(true)
+
+  fun getUser() =
+    viewModelScope.launch {
+      userRepository
+        .getUser()
+        .fold(
+          { error ->
+            errorMessage.value = error.message
+            errorMessageHidden.value = false
+          },
+          { user -> _user.update { user } }
+        )
+    }
 
   suspend fun updateProfile(user: User): Either<ErrorMessage, SuccessMessage> =
     withContext(viewModelScope.coroutineContext + ioDispatcher) { userRepository.updateUser(user) }
