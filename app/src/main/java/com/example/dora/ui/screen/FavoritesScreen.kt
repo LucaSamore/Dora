@@ -23,8 +23,8 @@ internal fun FavoritesScreen(
   paddingValues: PaddingValues,
   navController: NavHostController,
 ) {
-  val context = LocalContext.current
   favoriteViewModel.getBusinesses()
+  val context = LocalContext.current
   val businesses by favoriteViewModel.favorites.collectAsState()
 
   Column(

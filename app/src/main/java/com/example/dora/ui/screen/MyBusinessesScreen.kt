@@ -22,8 +22,8 @@ internal fun MyBusinessesScreen(
   modifier: Modifier,
   paddingValues: PaddingValues,
 ) {
-  val context = LocalContext.current
   myBusinessesViewModel.getMyBusinesses()
+  val context = LocalContext.current
   val businesses by myBusinessesViewModel.myBusinesses.collectAsState()
 
   Column(

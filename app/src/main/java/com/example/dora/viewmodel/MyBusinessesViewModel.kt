@@ -30,6 +30,7 @@ constructor(
   val errorMessage = mutableStateOf("")
 
   val errorMessageHidden = mutableStateOf(true)
+
   fun getMyBusinesses() =
     viewModelScope.launch {
       val userId = userDatastore.userId.first() ?: ""

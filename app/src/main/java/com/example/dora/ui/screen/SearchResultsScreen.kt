@@ -24,8 +24,8 @@ internal fun SearchResultsScreen(
   paddingValues: PaddingValues,
   navController: NavHostController,
 ) {
-  val context = LocalContext.current
   searchResultsViewModel.searchBusinesses(searchKey)
+  val context = LocalContext.current
   val businesses by searchResultsViewModel.searchResult.collectAsState()
 
   LazyColumn(
