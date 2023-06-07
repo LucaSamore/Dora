@@ -8,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,8 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.dora.model.Business
-import com.example.dora.model.Review
 import com.example.dora.ui.composable.ReviewListItem
 import com.example.dora.ui.navigation.DoraScreen
 import com.example.dora.viewmodel.BusinessDetailsViewModel
@@ -29,7 +26,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
-import kotlinx.coroutines.launch
 
 @Composable
 internal fun BusinessDetailsScreen(
@@ -39,46 +35,17 @@ internal fun BusinessDetailsScreen(
   paddingValues: PaddingValues,
   navController: NavHostController,
 ) {
+  businessDetailsViewModel.getBusiness(businessId)
+  businessDetailsViewModel.getReviews(businessId)
+  businessDetailsViewModel.isInFavorites(businessId)
+
   val context = LocalContext.current
-  val scope = rememberCoroutineScope()
-  var business by remember { mutableStateOf<Business?>(null) }
-  val reviews = remember { mutableStateListOf<Review>() }
-  var errorMessage by rememberSaveable { mutableStateOf("") }
-  var errorMessageHidden by rememberSaveable { mutableStateOf(true) }
-  var showFilledStarIcon by rememberSaveable { mutableStateOf(false) }
+  val business by businessDetailsViewModel.business.collectAsState()
+  val reviews by businessDetailsViewModel.reviews.collectAsState()
 
-  LaunchedEffect(key1 = Unit) {
-    scope.launch {
-      businessDetailsViewModel
-        .getBusiness(businessId)
-        .fold(
-          { left ->
-            errorMessage = left.message
-            errorMessageHidden = false
-          },
-          { right -> business = right }
-        )
-
-      businessDetailsViewModel
-        .getReviews(businessId)
-        .fold(
-          { left ->
-            errorMessage = left.message
-            errorMessageHidden = false
-          },
-          { right ->
-            reviews.apply {
-              clear()
-              addAll(right)
-            }
-          }
-        )
-
-      showFilledStarIcon = businessDetailsViewModel.isInFavorites(businessId)
-    }
+  if (business == null) {
+    return
   }
-
-  if (business == null) return
 
   val cameraPositionState = rememberCameraPositionState {
     position =
@@ -97,9 +64,9 @@ internal fun BusinessDetailsScreen(
     verticalArrangement = Arrangement.Top,
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
-    if (!errorMessageHidden) {
+    if (!businessDetailsViewModel.errorMessageHidden.value) {
       Text(
-        text = errorMessage,
+        text = businessDetailsViewModel.errorMessage.value,
         color = Color.Red,
         modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
         textAlign = TextAlign.Center
@@ -130,14 +97,16 @@ internal fun BusinessDetailsScreen(
         }
 
         IconToggleButton(
-          checked = showFilledStarIcon,
+          checked = businessDetailsViewModel.favoriteIconFilled.value,
           onCheckedChange = {
-            showFilledStarIcon = !showFilledStarIcon
+            businessDetailsViewModel.favoriteIconFilled.value =
+              !businessDetailsViewModel.favoriteIconFilled.value
             businessDetailsViewModel.toggleFavorite(businessId)
           }
         ) {
           Icon(
-            if (showFilledStarIcon) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+            if (businessDetailsViewModel.favoriteIconFilled.value) Icons.Filled.Star
+            else Icons.Filled.StarBorder,
             contentDescription = "Toggle favorite",
             tint = MaterialTheme.colorScheme.onPrimary
           )

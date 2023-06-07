@@ -1,5 +1,6 @@
 package com.example.dora.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -34,14 +35,45 @@ constructor(
   @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
   private val userDatastore: UserDatastore,
 ) : ViewModel() {
-  suspend fun getBusiness(businessId: String): Either<ErrorMessage, Business> =
-    withContext(viewModelScope.coroutineContext + ioDispatcher) {
-      businessRepository.getBusinessById(businessId)
+
+  private val _business = MutableStateFlow<Business?>(null)
+
+  private val _reviews = MutableStateFlow(emptyList<Review>())
+
+  val business = _business.asStateFlow()
+
+  val reviews = _reviews.asStateFlow()
+
+  var favoriteIconFilled = mutableStateOf(false)
+
+  val errorMessage = mutableStateOf("")
+
+  val errorMessageHidden = mutableStateOf(true)
+
+  fun getBusiness(businessId: String) =
+    viewModelScope.launch {
+      businessRepository
+        .getBusinessById(businessId)
+        .fold(
+          { error ->
+            errorMessage.value = error.message
+            errorMessageHidden.value = false
+          },
+          { business -> _business.update { business } }
+        )
     }
 
-  suspend fun getReviews(businessId: String): Either<ErrorMessage, List<Review>> =
-    withContext(viewModelScope.coroutineContext + ioDispatcher) {
-      reviewRepository.getReviewsByBusinessId(businessId)
+  fun getReviews(businessId: String) =
+    viewModelScope.launch {
+      reviewRepository
+        .getReviewsByBusinessId(businessId)
+        .fold(
+          { error ->
+            errorMessage.value = error.message
+            errorMessageHidden.value = false
+          },
+          { reviews -> _reviews.update { reviews } }
+        )
     }
 
   suspend fun didILikeIt(reviewId: String): Either<ErrorMessage, Boolean> =
@@ -71,10 +103,8 @@ constructor(
       likeRepository.toggleLike(reviewId, userId)
     }
 
-  suspend fun isInFavorites(businessId: String): Boolean =
-    withContext(viewModelScope.coroutineContext + ioDispatcher) {
-      favoriteRepository.exists(businessId)
-    }
+  fun isInFavorites(businessId: String) =
+    viewModelScope.launch { favoriteIconFilled.value = favoriteRepository.exists(businessId) }
 
   fun toggleFavorite(businessId: String) =
     viewModelScope.launch {
