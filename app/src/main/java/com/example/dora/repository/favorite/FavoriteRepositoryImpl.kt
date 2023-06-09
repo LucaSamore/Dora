@@ -46,6 +46,10 @@ class FavoriteRepositoryImpl(
   override suspend fun fetch(vararg businessIds: String): Either<ErrorMessage, List<Business>> =
     withContext(ioDispatcher) {
       try {
+        if (businessIds.isEmpty()) {
+          return@withContext emptyList<Business>().right()
+        }
+
         val request =
           FirestoreRequest(
             collection = Business.collection,
