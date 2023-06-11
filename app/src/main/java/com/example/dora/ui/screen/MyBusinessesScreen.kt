@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.dora.ui.composable.BusinessCard
 import com.example.dora.viewmodel.MyBusinessesViewModel
@@ -37,6 +38,15 @@ internal fun MyBusinessesScreen(
         color = Color.Red,
         modifier = modifier.padding(top = 4.dp, bottom = 6.dp),
         textAlign = TextAlign.Center
+      )
+    }
+
+    if (businesses.isEmpty()) {
+      Text(
+        text = "No businesses",
+        modifier = modifier.padding(top = 24.dp),
+        textAlign = TextAlign.Center,
+        fontSize = 20.sp,
       )
     }
 
