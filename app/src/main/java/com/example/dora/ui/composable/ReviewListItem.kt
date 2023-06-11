@@ -57,12 +57,16 @@ internal fun ReviewListItem(
         Row(
           verticalAlignment = Alignment.Top,
         ) {
-          ProfilePicture(
-            image = Uri.parse(review.user?.profilePicture),
-            context = context,
-            size = Pair(64.dp, 64.dp),
-            defaultAvatar = false,
-          )
+          if (!review.user?.profilePicture.isNullOrEmpty()) {
+            ProfilePicture(
+              image = Uri.parse(review.user?.profilePicture),
+              context = context,
+              size = Pair(64.dp, 64.dp),
+              defaultAvatar = false,
+            )
+          } else {
+            ProfilePicture(context = context, size = Pair(64.dp, 64.dp))
+          }
 
           Column(
             modifier = modifier.padding(horizontal = 12.dp),
