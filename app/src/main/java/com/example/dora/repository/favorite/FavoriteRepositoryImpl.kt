@@ -39,7 +39,7 @@ class FavoriteRepositoryImpl(
     favoriteDAO.deleteAll()
   }
 
-  @WorkerThread override suspend fun exists(businessId: String) = favoriteDAO.exists(businessId)
+  @WorkerThread override suspend fun exists(businessId: String, userId: String) = favoriteDAO.exists(businessId, userId)
 
   @WorkerThread override suspend fun single(businessId: String) = favoriteDAO.single(businessId)
 

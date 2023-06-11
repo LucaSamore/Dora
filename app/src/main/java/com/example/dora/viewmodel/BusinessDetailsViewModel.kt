@@ -104,12 +104,15 @@ constructor(
     }
 
   fun isInFavorites(businessId: String) =
-    viewModelScope.launch { favoriteIconFilled.value = favoriteRepository.exists(businessId) }
+    viewModelScope.launch {
+      val userId = userDatastore.userId.first() ?: ""
+      favoriteIconFilled.value = favoriteRepository.exists(businessId, userId)
+    }
 
   fun toggleFavorite(businessId: String) =
     viewModelScope.launch {
       val userId = userDatastore.userId.first() ?: ""
-      if (favoriteRepository.exists(businessId)) {
+      if (favoriteRepository.exists(businessId, userId)) {
         favoriteRepository.delete(favoriteRepository.single(businessId))
       } else {
         favoriteRepository.insert(

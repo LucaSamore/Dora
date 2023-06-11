@@ -14,7 +14,7 @@ interface FavoriteRepository {
 
   suspend fun deleteAll()
 
-  suspend fun exists(businessId: String): Boolean
+  suspend fun exists(businessId: String, userId: String): Boolean
 
   suspend fun single(businessId: String): Favorite
 
