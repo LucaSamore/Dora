@@ -139,7 +139,8 @@ constructor(
       lastName = credentials.lastName,
       emailAddress = credentials.emailAddress,
       password = BCrypt.withDefaults().hashToString(12, credentials.password.toCharArray()),
-      profilePicture = credentials.profilePicture.toString()
+      profilePicture =
+        if (credentials.profilePicture == Uri.EMPTY) null else credentials.profilePicture.toString()
     )
   }
 
